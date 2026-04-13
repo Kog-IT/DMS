@@ -254,3 +254,6 @@ paket-files/
 src/DMS.Web.Mvc/secrets.json
 src/DMS.Web.Host/secrets.json
 src/DMS.Migrator/secrets.json
+/.claude
+/docs
+/CLAUDE.md

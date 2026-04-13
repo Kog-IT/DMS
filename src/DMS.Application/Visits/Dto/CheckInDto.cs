@@ -1,0 +1,8 @@
+namespace DMS.Visits.Dto;
+
+public class CheckInDto
+{
+    public int VisitId { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
+}
