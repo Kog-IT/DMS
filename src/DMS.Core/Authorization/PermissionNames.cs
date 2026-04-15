@@ -30,4 +30,11 @@ public static class PermissionNames
     public const string Pages_Visits_Delete = "Pages.Visits.Delete";
     public const string Pages_Visits_CheckIn = "Pages.Visits.CheckIn";
     public const string Pages_Visits_CheckOut = "Pages.Visits.CheckOut";
+
+
+    public const string Pages_Products = "Pages.Products";
+    public const string Pages_Products_Create = "Pages.Products.Create";
+    public const string Pages_Products_Edit = "Pages.Products.Edit";
+    public const string Pages_Products_Delete = "Pages.Products.Delete";
+
 }

@@ -34,6 +34,12 @@ public class DMSAuthorizationProvider : AuthorizationProvider
         visits.CreateChildPermission(PermissionNames.Pages_Visits_Delete, L("VisitsDelete"));
         visits.CreateChildPermission(PermissionNames.Pages_Visits_CheckIn, L("VisitsCheckIn"));
         visits.CreateChildPermission(PermissionNames.Pages_Visits_CheckOut, L("VisitsCheckOut"));
+
+
+        var products = context.CreatePermission(PermissionNames.Pages_Products, L("Products"));
+        products.CreateChildPermission(PermissionNames.Pages_Products_Create, L("CreateProduct"));
+        products.CreateChildPermission(PermissionNames.Pages_Products_Edit, L("EditProduct"));
+        products.CreateChildPermission(PermissionNames.Pages_Products_Delete, L("DeleteProduct"));
     }
 
     private static ILocalizableString L(string name)
