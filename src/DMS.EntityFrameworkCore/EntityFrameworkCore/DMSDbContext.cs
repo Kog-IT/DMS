@@ -8,6 +8,8 @@ using DMS.Routes;
 using DMS.Visits;
 using DMS.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
+using DMS.Products;
+using DMS.Categories;
 
 namespace DMS.EntityFrameworkCore;
 
@@ -19,7 +21,8 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<RouteItem> RouteItems { get; set; }
     public DbSet<Visit> Visits { get; set; }
     public DbSet<VisitPhoto> VisitPhotos { get; set; }
-
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Category> Categories { get; set; }
     public DMSDbContext(DbContextOptions<DMSDbContext> options)
         : base(options)
     {
@@ -35,5 +38,8 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
         modelBuilder.ApplyConfiguration(new RouteItemConfiguration());
         modelBuilder.ApplyConfiguration(new VisitConfiguration());
         modelBuilder.ApplyConfiguration(new VisitPhotoConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+
     }
 }
