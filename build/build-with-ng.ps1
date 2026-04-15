@@ -4,11 +4,19 @@ echo ""
 
 $ABP_HOST="abp/host"
 $ABP_HOST_DOCKERFILE_PATH="src/DMS.Web.Host/Dockerfile"
+$ABP_MIGRATOR="abp/migrator"
+$ABP_MIGRATOR_DOCKERFILE_PATH="src/DMS.Migrator/Dockerfile"
 $ABP_NG="abp/ng"
 
 cd ..
+echo " Building docker image $ABP_MIGRATOR..."
+docker build -t $ABP_MIGRATOR -f $ABP_MIGRATOR_DOCKERFILE_PATH .
+echo " Done. -- Building docker image $ABP_MIGRATOR..."
+echo ""
+echo ""
+
 echo " Building docker image $ABP_HOST..."
-docker build -t $ABP_HOST -f $ABP_HOST_DOCKERFILE_PATH . 
+docker build -t $ABP_HOST -f $ABP_HOST_DOCKERFILE_PATH .
 echo " Done. -- Building docker image $ABP_HOST..."
 echo ""
 echo ""
