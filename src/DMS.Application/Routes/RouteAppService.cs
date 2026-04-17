@@ -1,13 +1,18 @@
 using Abp.Application.Services;
 using Abp.Authorization;
+using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
+using Abp.Timing;
 using Abp.UI;
 using DMS.Authorization;
+using DMS.Customers;
 using DMS.Routes.Dto;
 using DMS.Visits;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,10 +28,18 @@ public class RouteAppService : AsyncCrudAppService<
     UpdateRouteDto>, IRouteAppService
 {
     private readonly IRepository<Visit, int> _visitRepository;
+    private readonly IRepository<RouteItem, int> _routeItemRepository;
+    private readonly IRepository<Customer, int> _customerRepository;
+    private readonly ISettingManager _settingManager;
+    private readonly RouteOptimizationService _optimizationService;
 
     public RouteAppService(
         IRepository<Route, int> repository,
-        IRepository<Visit, int> visitRepository)
+        IRepository<Visit, int> visitRepository,
+        IRepository<RouteItem, int> routeItemRepository,
+        IRepository<Customer, int> customerRepository,
+        ISettingManager settingManager,
+        RouteOptimizationService optimizationService)
         : base(repository)
     {
         GetPermissionName = PermissionNames.Pages_Routes;
@@ -36,6 +49,10 @@ public class RouteAppService : AsyncCrudAppService<
         DeletePermissionName = PermissionNames.Pages_Routes_Delete;
 
         _visitRepository = visitRepository;
+        _routeItemRepository = routeItemRepository;
+        _customerRepository = customerRepository;
+        _settingManager = settingManager;
+        _optimizationService = optimizationService;
     }
 
     protected override IQueryable<Route> CreateFilteredQuery(PagedRouteResultRequestDto input)
@@ -77,5 +94,101 @@ public class RouteAppService : AsyncCrudAppService<
                 PlannedDate = route.PlannedDate
             });
         }
+    }
+
+    [AbpAuthorize(PermissionNames.Pages_Routes_Edit)]
+    public async Task<OptimizeRouteResultDto> OptimizeRouteAsync(OptimizeRouteInputDto input)
+    {
+        var route = await Repository.GetAll()
+            .Include(r => r.Items)
+            .FirstOrDefaultAsync(r => r.Id == input.RouteId);
+
+        if (route == null)
+            throw new UserFriendlyException("Route not found.");
+
+        if (route.Status == RouteStatus.Completed)
+            throw new UserFriendlyException("Cannot optimize a completed route.");
+
+        if (!route.Items.Any())
+            return new OptimizeRouteResultDto { RouteId = input.RouteId };
+
+        // Load customer GPS data
+        var customerIds = route.Items.Select(i => i.CustomerId).Distinct().ToList();
+        var customers = await _customerRepository.GetAll()
+            .Where(c => customerIds.Contains(c.Id))
+            .ToListAsync();
+        var customerMap = customers.ToDictionary(c => c.Id);
+
+        // Read tenant settings
+        var defaultDuration = await _settingManager.GetSettingValueAsync<int>(
+            VisitSettingNames.DefaultVisitDurationMinutes);
+        var travelSpeed = await _settingManager.GetSettingValueAsync<double>(
+            VisitSettingNames.AverageTravelSpeedKmh);
+
+        var startTime = input.StartTime ?? Clock.Now;
+
+        // Build stop inputs for domain service
+        var stopInputs = route.Items.Select(item =>
+        {
+            customerMap.TryGetValue(item.CustomerId, out var customer);
+            return new RouteOptimizationService.StopInput
+            {
+                RouteItemId = item.Id,
+                CustomerId = item.CustomerId,
+                CustomerName = customer?.Name,
+                CustomerAddress = customer?.Address,
+                Latitude = customer?.Latitude,
+                Longitude = customer?.Longitude,
+                PlannedDurationMinutes = item.PlannedDurationMinutes
+            };
+        }).ToList();
+
+        // Run optimization
+        var optimized = _optimizationService.Optimize(
+            stopInputs,
+            input.RepLatitude,
+            input.RepLongitude,
+            startTime,
+            defaultDuration,
+            travelSpeed);
+
+        // Persist updated OrderIndex values
+        foreach (var result in optimized)
+        {
+            var item = route.Items.First(i => i.Id == result.RouteItemId);
+            item.OrderIndex = result.OrderIndex;
+            await _routeItemRepository.UpdateAsync(item);
+        }
+
+        // Build result DTO
+        var resultItems = optimized.Select(r => new OptimizedRouteItemDto
+        {
+            RouteItemId = r.RouteItemId,
+            OrderIndex = r.OrderIndex,
+            CustomerId = r.CustomerId,
+            CustomerName = r.CustomerName,
+            CustomerAddress = r.CustomerAddress,
+            Latitude = r.Latitude,
+            Longitude = r.Longitude,
+            DistanceFromPreviousKm = r.DistanceFromPreviousKm,
+            PlannedDurationMinutes = r.PlannedDurationMinutes,
+            EstimatedArrivalTime = r.EstimatedArrivalTime
+        }).ToList();
+
+        var totalDistanceKm = resultItems.Sum(i => i.DistanceFromPreviousKm);
+        var totalDurationMinutes = resultItems.Sum(i => i.PlannedDurationMinutes)
+            + (int)resultItems.Sum(i =>
+                i.DistanceFromPreviousKm > 0 && travelSpeed > 0
+                    ? (i.DistanceFromPreviousKm / travelSpeed) * 60
+                    : 0);
+
+        return new OptimizeRouteResultDto
+        {
+            RouteId = input.RouteId,
+            Items = resultItems,
+            TotalDistanceKm = Math.Round(totalDistanceKm, 3),
+            TotalDurationMinutes = totalDurationMinutes,
+            EstimatedEndTime = startTime.AddMinutes(totalDurationMinutes)
+        };
     }
 }

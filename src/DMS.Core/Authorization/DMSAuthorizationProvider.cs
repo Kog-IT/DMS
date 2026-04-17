@@ -22,6 +22,11 @@ public class DMSAuthorizationProvider : AuthorizationProvider
         customers.CreateChildPermission(PermissionNames.Pages_Customers_Create, L("CustomersCreate"));
         customers.CreateChildPermission(PermissionNames.Pages_Customers_Edit, L("CustomersEdit"));
         customers.CreateChildPermission(PermissionNames.Pages_Customers_Delete, L("CustomersDelete"));
+        customers.CreateChildPermission(PermissionNames.Pages_Customers_Classify, L("CustomersClassify"));
+        var contacts = customers.CreateChildPermission(PermissionNames.Pages_Customers_Contacts, L("CustomerContacts"));
+        contacts.CreateChildPermission(PermissionNames.Pages_Customers_Contacts_Create, L("CustomerContactsCreate"));
+        contacts.CreateChildPermission(PermissionNames.Pages_Customers_Contacts_Edit, L("CustomerContactsEdit"));
+        contacts.CreateChildPermission(PermissionNames.Pages_Customers_Contacts_Delete, L("CustomerContactsDelete"));
 
         var routes = context.CreatePermission(PermissionNames.Pages_Routes, L("Routes"));
         routes.CreateChildPermission(PermissionNames.Pages_Routes_Create, L("RoutesCreate"));
@@ -40,6 +45,28 @@ public class DMSAuthorizationProvider : AuthorizationProvider
         products.CreateChildPermission(PermissionNames.Pages_Products_Create, L("CreateProduct"));
         products.CreateChildPermission(PermissionNames.Pages_Products_Edit, L("EditProduct"));
         products.CreateChildPermission(PermissionNames.Pages_Products_Delete, L("DeleteProduct"));
+
+        var orders = context.CreatePermission(PermissionNames.Pages_Orders, L("Orders"));
+        orders.CreateChildPermission(PermissionNames.Pages_Orders_Create, L("OrdersCreate"));
+        orders.CreateChildPermission(PermissionNames.Pages_Orders_Edit, L("OrdersEdit"));
+        orders.CreateChildPermission(PermissionNames.Pages_Orders_Delete, L("OrdersDelete"));
+        orders.CreateChildPermission(PermissionNames.Pages_Orders_Approve, L("OrdersApprove"));
+
+        var invoices = context.CreatePermission(PermissionNames.Pages_Invoices, L("Invoices"));
+        invoices.CreateChildPermission(PermissionNames.Pages_Invoices_Create, L("InvoicesCreate"));
+        invoices.CreateChildPermission(PermissionNames.Pages_Invoices_Edit, L("InvoicesEdit"));
+        invoices.CreateChildPermission(PermissionNames.Pages_Invoices_Delete, L("InvoicesDelete"));
+        invoices.CreateChildPermission(PermissionNames.Pages_Invoices_Void, L("InvoicesVoid"));
+
+        var paymentMethods = context.CreatePermission(PermissionNames.Pages_PaymentMethods, L("PaymentMethods"));
+        paymentMethods.CreateChildPermission(PermissionNames.Pages_PaymentMethods_Create, L("PaymentMethodsCreate"));
+        paymentMethods.CreateChildPermission(PermissionNames.Pages_PaymentMethods_Edit, L("PaymentMethodsEdit"));
+        paymentMethods.CreateChildPermission(PermissionNames.Pages_PaymentMethods_Delete, L("PaymentMethodsDelete"));
+
+        var payments = context.CreatePermission(PermissionNames.Pages_Payments, L("Payments"));
+        payments.CreateChildPermission(PermissionNames.Pages_Payments_Create, L("PaymentsCreate"));
+        payments.CreateChildPermission(PermissionNames.Pages_Payments_GetReceipt, L("PaymentsGetReceipt"));
+        payments.CreateChildPermission(PermissionNames.Pages_Payments_RegenerateReceipt, L("PaymentsRegenerateReceipt"));
     }
 
     private static ILocalizableString L(string name)

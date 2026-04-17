@@ -30,6 +30,10 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.Property(c => c.IsActive)
             .HasDefaultValue(true);
 
+        builder.Property(c => c.Classification)
+            .HasConversion<int>()
+            .HasDefaultValue(CustomerClassification.Unclassified);
+
         builder.HasIndex(c => new { c.TenantId, c.Code }).IsUnique();
         builder.HasIndex(c => c.IsActive);
     }

@@ -1,6 +1,7 @@
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using DMS.Customers;
+using System;
 
 namespace DMS.Customers.Dto;
 
@@ -15,4 +16,6 @@ public class CustomerDto : FullAuditedEntityDto<int>
     public string Phone { get; set; }
     public string Email { get; set; }
     public bool IsActive { get; set; }
+    public CustomerClassification Classification { get; set; }
+    public DateTime? LastClassifiedAt { get; set; }
 }
