@@ -37,6 +37,11 @@ public static class PermissionNames
     public const string Pages_Visits_CheckOut = "Pages.Visits.CheckOut";
 
 
+    public const string Pages_Categories = "Pages.Categories";
+    public const string Pages_Categories_Create = "Pages.Categories.Create";
+    public const string Pages_Categories_Edit = "Pages.Categories.Edit";
+    public const string Pages_Categories_Delete = "Pages.Categories.Delete";
+
     public const string Pages_Products = "Pages.Products";
     public const string Pages_Products_Create = "Pages.Products.Create";
     public const string Pages_Products_Edit = "Pages.Products.Edit";

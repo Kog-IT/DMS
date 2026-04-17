@@ -1,5 +1,42 @@
 # Changelog
 
+## 2026-04-17
+
+### Task: Product AppService tests
+
+Context:
+ProductAppService had no test coverage. Added 6 integration tests covering all CRUD paths
+plus keyword filter and categoryId filter. All 93 tests pass.
+
+Files Affected:
+- `test/DMS.Tests/Products/ProductAppService_Tests.cs` (new)
+
+### Feature
+- 6 tests: empty list, create+get (with CategoryName populated), keyword filter, categoryId filter, update, delete
+
+### Task: Category management AppService
+
+Context:
+Category entity already existed with EF config but had no service layer. Added full CRUD
+AppService with permissions and 6 integration tests. All 87 tests pass.
+
+Files Affected:
+- `src/DMS.Application/Categories/ICategoryAppService.cs` (new)
+- `src/DMS.Application/Categories/CategoryAppService.cs` (new)
+- `src/DMS.Application/Categories/Dto/CategoryDto.cs` (new)
+- `src/DMS.Application/Categories/Dto/CreateCategoryDto.cs` (new)
+- `src/DMS.Application/Categories/Dto/UpdateCategoryDto.cs` (new)
+- `src/DMS.Application/Categories/Dto/PagedCategoryResultRequestDto.cs` (new)
+- `src/DMS.Core/Authorization/PermissionNames.cs` (updated)
+- `src/DMS.Core/Authorization/DMSAuthorizationProvider.cs` (updated)
+- `test/DMS.Tests/Categories/CategoryAppService_Tests.cs` (new)
+
+### Feature
+- CategoryAppService: full CRUD (Get, GetAll, Create, Update, Delete)
+- GetAll supports keyword filter on Name
+- Permissions: Pages.Categories, Pages.Categories.Create, Pages.Categories.Edit, Pages.Categories.Delete
+- 6 integration tests: empty list, create+get, keyword filter, update, delete, tenant isolation
+
 ## 2026-04-13
 
 ### Task: Customer EF Core migration and xUnit tests

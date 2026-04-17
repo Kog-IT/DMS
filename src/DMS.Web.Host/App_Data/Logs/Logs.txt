@@ -245,3 +245,129 @@ INFO  2026-04-17 21:40:52,763 [6    ] c.Infrastructure.ControllerActionInvoker -
 INFO  2026-04-17 21:40:52,765 [6    ] ft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'DMS.Web.Host.Controllers.AntiForgeryController.SetCookie (DMS.Web.Host)'
 INFO  2026-04-17 21:40:52,768 [6    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/AntiForgery/SetCookie - 200 - application/json;+charset=utf-8 209.2469ms
 INFO  2026-04-17 21:40:52,790 [6    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/ApiVanSales/swagger/v1/swagger.json - 200 - application/json;charset=utf-8 196.1515ms
+DEBUG 2026-04-17 22:12:12,434 [2    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2026-04-17 22:12:12,499 [2    ] Abp.Modules.AbpModuleManager             - Found 15 ABP modules in total.
+DEBUG 2026-04-17 22:12:12,516 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.Web.Host.Startup.DMSWebHostModule, DMS.Web.Host, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,518 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.DMSWebCoreModule, DMS.Web.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,518 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.DMSApplicationModule, DMS.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,518 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.DMSCoreModule, DMS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,519 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,519 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,519 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,520 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AutoMapper.AbpAutoMapperModule, Abp.AutoMapper, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,521 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.EntityFrameworkCore.DMSEntityFrameworkModule, DMS.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,521 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,522 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,522 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,522 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AspNetCore.AbpAspNetCoreModule, Abp.AspNetCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,523 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Web.AbpWebCommonModule, Abp.Web.Common, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,523 [2    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AspNetCore.SignalR.AbpAspNetCoreSignalRModule, Abp.AspNetCore.SignalR, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:12,524 [2    ] Abp.Modules.AbpModuleManager             - 15 modules loaded.
+DEBUG 2026-04-17 22:12:12,594 [2    ] o.Configuration.LanguageManagementConfig - Converted Abp (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-17 22:12:12,594 [2    ] o.Configuration.LanguageManagementConfig - Converted AbpZero (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-17 22:12:12,595 [2    ] o.Configuration.LanguageManagementConfig - Converted DMS (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-17 22:12:12,595 [2    ] o.Configuration.LanguageManagementConfig - Converted AbpWeb (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-17 22:12:12,975 [2    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: DMS.EntityFrameworkCore.DMSDbContext, DMS.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-17 22:12:13,210 [2    ] Abp.Localization.LocalizationManager     - Initializing 4 localization sources.
+DEBUG 2026-04-17 22:12:13,245 [2    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2026-04-17 22:12:13,253 [2    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2026-04-17 22:12:13,257 [2    ] Abp.Localization.LocalizationManager     - Initialized localization source: DMS
+DEBUG 2026-04-17 22:12:13,260 [2    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpWeb
+DEBUG 2026-04-17 22:12:13,267 [2    ] Abp.BackgroundJobs.BackgroundJobManager  - Start background worker: Abp.BackgroundJobs.BackgroundJobManager
+DEBUG 2026-04-17 22:12:13,274 [2    ] , Culture=neutral, PublicKeyToken=null]] - Start background worker: Abp.Authorization.Users.UserTokenExpirationWorker`2[[DMS.MultiTenancy.Tenant, DMS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[DMS.Authorization.Users.User, DMS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]
+DEBUG 2026-04-17 22:12:13,294 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - Found 31 classes define auto mapping attributes
+DEBUG 2026-04-17 22:12:13,294 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.CreateVisitDto
+DEBUG 2026-04-17 22:12:13,296 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.UpdateVisitDto
+DEBUG 2026-04-17 22:12:13,297 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.VisitDto
+DEBUG 2026-04-17 22:12:13,297 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.VisitPhotoDto
+DEBUG 2026-04-17 22:12:13,297 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Users.Dto.CreateUserDto
+DEBUG 2026-04-17 22:12:13,297 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Users.Dto.UserDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Sessions.Dto.TenantLoginInfoDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Sessions.Dto.UserLoginInfoDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.CreateRouteDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.CreateRouteItemDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.RouteDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.RouteItemDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.UpdateRouteDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Roles.Dto.PermissionDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Products.Dto.CreateProductDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Products.Dto.ProductDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Products.Dto.UpdateProductDto
+DEBUG 2026-04-17 22:12:13,298 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Payments.Dto.CreatePaymentMethodDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Payments.Dto.PaymentMethodDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Payments.Dto.UpdatePaymentMethodDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.MultiTenancy.Dto.CreateTenantDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.MultiTenancy.Dto.TenantDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CreateCustomerContactDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CreateCustomerDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CustomerContactDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CustomerDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.UpdateCustomerContactDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.UpdateCustomerDto
+DEBUG 2026-04-17 22:12:13,299 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Companies.Dto.CompanyDto
+DEBUG 2026-04-17 22:12:13,300 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Companies.Dto.CreateCompanyDto
+DEBUG 2026-04-17 22:12:13,300 [2    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Companies.Dto.UpdateCompanyDto
+INFO  2026-04-17 22:12:16,166 [2    ] tCore.Builder.RequestLocalizationOptions - Supported Request Localization Cultures: en,es-MX,fr,de,it,nl,pt-BR,tr,ru,ar,fa,ja,zh-Hans
+INFO  2026-04-17 22:12:16,643 [13   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/ - - -
+INFO  2026-04-17 22:12:16,766 [2    ] Microsoft.Hosting.Lifetime               - Application started. Press Ctrl+C to shut down.
+INFO  2026-04-17 22:12:16,768 [2    ] Microsoft.Hosting.Lifetime               - Hosting environment: Development
+INFO  2026-04-17 22:12:16,770 [2    ] Microsoft.Hosting.Lifetime               - Content root path: D:\Kog\DMS\src\DMS.Web.Host
+INFO  2026-04-17 22:12:16,990 [6    ] ft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'DMS.Web.Host.Controllers.HomeController.Index (DMS.Web.Host)'
+INFO  2026-04-17 22:12:17,117 [6    ] c.Infrastructure.ControllerActionInvoker - Route matched with {action = "Index", controller = "Home", area = ""}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller DMS.Web.Host.Controllers.HomeController (DMS.Web.Host).
+INFO  2026-04-17 22:12:17,257 [12   ] vc.Infrastructure.RedirectResultExecutor - Executing RedirectResult, redirecting to /swagger.
+INFO  2026-04-17 22:12:17,268 [12   ] c.Infrastructure.ControllerActionInvoker - Executed action DMS.Web.Host.Controllers.HomeController.Index (DMS.Web.Host) in 140.7618ms
+INFO  2026-04-17 22:12:17,270 [12   ] ft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'DMS.Web.Host.Controllers.HomeController.Index (DMS.Web.Host)'
+INFO  2026-04-17 22:12:17,330 [14   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/swagger - - -
+INFO  2026-04-17 22:12:17,334 [12   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/ - 302 - - 696.9908ms
+INFO  2026-04-17 22:12:17,345 [13   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/swagger - 301 - - 47.0967ms
+INFO  2026-04-17 22:12:17,378 [12   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/_framework/aspnetcore-browser-refresh.js - - -
+INFO  2026-04-17 22:12:17,394 [14   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/swagger/ui/abp.swagger.js - - -
+INFO  2026-04-17 22:12:17,398 [6    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/_vs/browserLink - - -
+INFO  2026-04-17 22:12:17,400 [13   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/swagger/ui/abp.js - - -
+INFO  2026-04-17 22:12:17,449 [12   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/_framework/aspnetcore-browser-refresh.js - 200 14929 application/javascript;+charset=utf-8 38.5987ms
+INFO  2026-04-17 22:12:17,454 [14   ] NetCore.StaticFiles.StaticFileMiddleware - The file /swagger/ui/abp.swagger.js was not modified
+INFO  2026-04-17 22:12:17,456 [13   ] NetCore.StaticFiles.StaticFileMiddleware - The file /swagger/ui/abp.js was not modified
+INFO  2026-04-17 22:12:17,460 [14   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/swagger/ui/abp.swagger.js - 304 - text/javascript 75.1139ms
+INFO  2026-04-17 22:12:17,465 [13   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/swagger/ui/abp.js - 304 - text/javascript 66.7779ms
+INFO  2026-04-17 22:12:17,488 [8    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/_vs/browserLink - 200 - text/javascript;+charset=UTF-8 91.6909ms
+INFO  2026-04-17 22:12:17,507 [8    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/AntiForgery/SetCookie - - -
+INFO  2026-04-17 22:12:17,538 [6    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/ApiVanSales/swagger/v1/swagger.json - - -
+INFO  2026-04-17 22:12:17,590 [6    ] uthentication.JwtBearer.JwtBearerHandler - Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenSignatureKeyNotFoundException: IDX10517: Signature validation failed. The token's kid is missing. Keys tried: 'Microsoft.IdentityModel.Tokens.SymmetricSecurityKey, KeyId: '', InternalId: 'j5zqCVB5RLCa4ZOXMAa7UiUbeWnq_reN7FtEJTAz1MA'. , KeyId: 
+'. Number of keys in TokenValidationParameters: '1'. 
+Number of keys in Configuration: '0'. 
+Exceptions caught:
+ '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.
+token: '[PII of type 'Microsoft.IdentityModel.JsonWebTokens.JsonWebToken' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. See https://aka.ms/IDX10503 for details.
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateSignature(JsonWebToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateSignatureAndIssuerSecurityKey(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+INFO  2026-04-17 22:12:17,590 [8    ] uthentication.JwtBearer.JwtBearerHandler - Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenSignatureKeyNotFoundException: IDX10517: Signature validation failed. The token's kid is missing. Keys tried: 'Microsoft.IdentityModel.Tokens.SymmetricSecurityKey, KeyId: '', InternalId: 'j5zqCVB5RLCa4ZOXMAa7UiUbeWnq_reN7FtEJTAz1MA'. , KeyId: 
+'. Number of keys in TokenValidationParameters: '1'. 
+Number of keys in Configuration: '0'. 
+Exceptions caught:
+ '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.
+token: '[PII of type 'Microsoft.IdentityModel.JsonWebTokens.JsonWebToken' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. See https://aka.ms/IDX10503 for details.
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateSignature(JsonWebToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateSignatureAndIssuerSecurityKey(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+INFO  2026-04-17 22:12:17,598 [8    ] uthentication.JwtBearer.JwtBearerHandler - JwtBearer was not authenticated. Failure message: IDX10517: Signature validation failed. The token's kid is missing. Keys tried: 'Microsoft.IdentityModel.Tokens.SymmetricSecurityKey, KeyId: '', InternalId: 'j5zqCVB5RLCa4ZOXMAa7UiUbeWnq_reN7FtEJTAz1MA'. , KeyId: 
+'. Number of keys in TokenValidationParameters: '1'. 
+Number of keys in Configuration: '0'. 
+Exceptions caught:
+ '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.
+token: '[PII of type 'Microsoft.IdentityModel.JsonWebTokens.JsonWebToken' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. See https://aka.ms/IDX10503 for details.
+INFO  2026-04-17 22:12:17,598 [6    ] uthentication.JwtBearer.JwtBearerHandler - JwtBearer was not authenticated. Failure message: IDX10517: Signature validation failed. The token's kid is missing. Keys tried: 'Microsoft.IdentityModel.Tokens.SymmetricSecurityKey, KeyId: '', InternalId: 'j5zqCVB5RLCa4ZOXMAa7UiUbeWnq_reN7FtEJTAz1MA'. , KeyId: 
+'. Number of keys in TokenValidationParameters: '1'. 
+Number of keys in Configuration: '0'. 
+Exceptions caught:
+ '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.
+token: '[PII of type 'Microsoft.IdentityModel.JsonWebTokens.JsonWebToken' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. See https://aka.ms/IDX10503 for details.
+INFO  2026-04-17 22:12:17,600 [8    ] ft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'DMS.Web.Host.Controllers.AntiForgeryController.SetCookie (DMS.Web.Host)'
+INFO  2026-04-17 22:12:17,605 [8    ] c.Infrastructure.ControllerActionInvoker - Route matched with {action = "SetCookie", controller = "AntiForgery", area = ""}. Executing controller action with signature Void SetCookie() on controller DMS.Web.Host.Controllers.AntiForgeryController (DMS.Web.Host).
+INFO  2026-04-17 22:12:17,634 [23   ] .Mvc.Infrastructure.ObjectResultExecutor - Executing ObjectResult, writing value of type 'Abp.Web.Models.AjaxResponse'.
+INFO  2026-04-17 22:12:17,643 [23   ] c.Infrastructure.ControllerActionInvoker - Executed action DMS.Web.Host.Controllers.AntiForgeryController.SetCookie (DMS.Web.Host) in 35.4058ms
+INFO  2026-04-17 22:12:17,644 [23   ] ft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'DMS.Web.Host.Controllers.AntiForgeryController.SetCookie (DMS.Web.Host)'
+INFO  2026-04-17 22:12:17,678 [23   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/AntiForgery/SetCookie - 200 - application/json;+charset=utf-8 140.5114ms
+INFO  2026-04-17 22:12:17,702 [6    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/ApiVanSales/swagger/v1/swagger.json - 200 - application/json;charset=utf-8 163.9089ms

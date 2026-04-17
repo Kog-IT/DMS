@@ -41,6 +41,11 @@ public class DMSAuthorizationProvider : AuthorizationProvider
         visits.CreateChildPermission(PermissionNames.Pages_Visits_CheckOut, L("VisitsCheckOut"));
 
 
+        var categories = context.CreatePermission(PermissionNames.Pages_Categories, L("Categories"));
+        categories.CreateChildPermission(PermissionNames.Pages_Categories_Create, L("CategoriesCreate"));
+        categories.CreateChildPermission(PermissionNames.Pages_Categories_Edit, L("CategoriesEdit"));
+        categories.CreateChildPermission(PermissionNames.Pages_Categories_Delete, L("CategoriesDelete"));
+
         var products = context.CreatePermission(PermissionNames.Pages_Products, L("Products"));
         products.CreateChildPermission(PermissionNames.Pages_Products_Create, L("CreateProduct"));
         products.CreateChildPermission(PermissionNames.Pages_Products_Edit, L("EditProduct"));
