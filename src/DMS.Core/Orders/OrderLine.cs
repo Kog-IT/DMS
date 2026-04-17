@@ -23,4 +23,5 @@ public class OrderLine : Entity<int>, IMustHaveTenant
     public decimal DiscountValue { get; set; } = 0;
     public decimal LineTotal { get; set; }
     public bool IsBackOrder { get; set; } = false;
+    public bool IsBasePriceFallback { get; set; } = false;
 }

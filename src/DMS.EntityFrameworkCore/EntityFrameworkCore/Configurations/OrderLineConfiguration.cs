@@ -25,5 +25,7 @@ public class OrderLineConfiguration : IEntityTypeConfiguration<OrderLine>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(l => l.OrderId);
+
+        builder.Property(l => l.IsBasePriceFallback).HasDefaultValue(false);
     }
 }

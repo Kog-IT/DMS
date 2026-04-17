@@ -2,6 +2,47 @@
 
 ## 2026-04-17
 
+### Task: Price List module
+
+Context:
+Added a complete price list system replacing the hardcoded product.Price in order line
+creation. Supports customer-specific overrides, classification-based defaults, quantity
+tiers, and date-bound validity. PriceResolutionService resolves prices via: customer
+assignment → classification list → product.Price fallback with IsBasePriceFallback flag.
+
+Files Affected:
+- `src/DMS.Core/PriceLists/PriceList.cs` (new)
+- `src/DMS.Core/PriceLists/PriceListItem.cs` (new)
+- `src/DMS.Core/PriceLists/PriceListAssignment.cs` (new)
+- `src/DMS.Core/PriceLists/PriceResolutionResult.cs` (new)
+- `src/DMS.Core/PriceLists/PriceResolutionService.cs` (new)
+- `src/DMS.Core/Orders/OrderLine.cs` (IsBasePriceFallback added)
+- `src/DMS.Core/Authorization/PermissionNames.cs`
+- `src/DMS.Core/Authorization/DMSAuthorizationProvider.cs`
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/PriceListConfiguration.cs` (new)
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/PriceListItemConfiguration.cs` (new)
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/PriceListAssignmentConfiguration.cs` (new)
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/OrderLineConfiguration.cs`
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/DMSDbContext.cs`
+- `src/DMS.Application/PriceLists/` (IPriceListAppService, PriceListAppService, IPriceListAssignmentAppService, PriceListAssignmentAppService, 8 DTOs, MapProfile — all new)
+- `src/DMS.Application/Orders/OrderAppService.cs` (PriceResolutionService wired in)
+- `src/DMS.Application/Orders/Dto/OrderLineDto.cs` (IsBasePriceFallback added)
+- `test/DMS.Tests/PriceLists/PriceList_Tests.cs` (new)
+
+### Feature
+- PriceList CRUD with date-bound validity (StartDate, EndDate?) and IsActive toggle
+- PriceListItem: quantity-tiered pricing per product (multiple MinQuantity tiers per list)
+- PriceListAssignment: customer-specific list override (upsert, unique per customer)
+- PriceResolutionService: customer override → classification list → product.Price fallback
+- IsBasePriceFallback flag on OrderLine/OrderLineDto when no list matched
+- Permissions: Pages.PriceLists (Create, Edit, Delete, Assign)
+- 10 integration tests covering resolution hierarchy, tiers, all edge cases — 103 total tests pass
+
+### Migration
+- `Added_PriceList_Entities`: creates PriceLists, PriceListItems, PriceListAssignments tables + IsBasePriceFallback column on OrderLines
+
+## 2026-04-17
+
 ### Task: Product TaxRate — fix tax bug
 
 Context:

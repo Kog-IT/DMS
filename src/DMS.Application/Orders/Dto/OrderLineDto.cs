@@ -14,4 +14,5 @@ public class OrderLineDto
     public decimal DiscountValue { get; set; }
     public decimal LineTotal { get; set; }
     public bool IsBackOrder { get; set; }
+    public bool IsBasePriceFallback { get; set; }
 }

@@ -13,6 +13,7 @@ using DMS.Authorization.Roles;
 using DMS.Authorization.Users;
 using DMS.Customers;
 using DMS.Orders.Dto;
+using DMS.PriceLists;
 using DMS.Products;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,7 @@ public class OrderAppService : AsyncCrudAppService<
     private readonly IRepository<OrderLine, int> _lineRepository;
     private readonly ISettingManager _settingManager;
     private readonly UserManager _userManager;
+    private readonly PriceResolutionService _priceResolutionService;
 
     public OrderAppService(
         IRepository<Order, int> repository,
@@ -39,7 +41,8 @@ public class OrderAppService : AsyncCrudAppService<
         IRepository<Product, int> productRepository,
         IRepository<OrderLine, int> lineRepository,
         ISettingManager settingManager,
-        UserManager userManager)
+        UserManager userManager,
+        PriceResolutionService priceResolutionService)
         : base(repository)
     {
         GetPermissionName = PermissionNames.Pages_Orders;
@@ -53,6 +56,7 @@ public class OrderAppService : AsyncCrudAppService<
         _lineRepository = lineRepository;
         _settingManager = settingManager;
         _userManager = userManager;
+        _priceResolutionService = priceResolutionService;
     }
 
     protected override IQueryable<Order> CreateFilteredQuery(PagedOrderResultRequestDto input)
@@ -100,7 +104,7 @@ public class OrderAppService : AsyncCrudAppService<
         order.Status = OrderStatus.Draft;
         order.TenantId = AbpSession.TenantId!.Value;
 
-        var lines = await BuildLinesAsync(input.Lines, backOrderAllowed, order.TenantId);
+        var lines = await BuildLinesAsync(input.Lines, backOrderAllowed, order.TenantId, order.CustomerId);
         ComputeTotals(order, lines);
 
         await Repository.InsertAsync(order);
@@ -135,7 +139,7 @@ public class OrderAppService : AsyncCrudAppService<
         foreach (var existing in order.Lines.ToList())
             await _lineRepository.DeleteAsync(existing);
 
-        var lines = await BuildLinesAsync(input.Lines, backOrderAllowed, order.TenantId);
+        var lines = await BuildLinesAsync(input.Lines, backOrderAllowed, order.TenantId, order.CustomerId);
         ComputeTotals(order, lines);
 
         await Repository.UpdateAsync(order);
@@ -155,7 +159,8 @@ public class OrderAppService : AsyncCrudAppService<
     private async Task<List<OrderLine>> BuildLinesAsync(
         List<CreateOrderLineDto> inputLines,
         bool backOrderAllowed,
-        int tenantId)
+        int tenantId,
+        int customerId)
     {
         var lines = new List<OrderLine>();
 
@@ -170,16 +175,22 @@ public class OrderAppService : AsyncCrudAppService<
             if (!backOrderAllowed)
                 throw new UserFriendlyException($"Insufficient stock for product '{product.Name}'.");
 
+            var resolution = await _priceResolutionService.ResolveAsync(
+                customerId,
+                product.Id,
+                inputLine.Quantity);
+
             var line = new OrderLine
             {
                 ProductId = product.Id,
                 ProductName = product.Name,
-                UnitPrice = product.Price,
+                UnitPrice = resolution.Price,
                 TaxRate = product.TaxRate,
                 Quantity = inputLine.Quantity,
                 DiscountType = inputLine.DiscountType,
                 DiscountValue = inputLine.DiscountValue,
-                IsBackOrder = false
+                IsBackOrder = false,
+                IsBasePriceFallback = resolution.IsBasePriceFallback
             };
 
             if (line.DiscountType == DiscountType.Percentage && line.DiscountValue > 100)

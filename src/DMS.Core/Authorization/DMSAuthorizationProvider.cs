@@ -72,6 +72,12 @@ public class DMSAuthorizationProvider : AuthorizationProvider
         payments.CreateChildPermission(PermissionNames.Pages_Payments_Create, L("PaymentsCreate"));
         payments.CreateChildPermission(PermissionNames.Pages_Payments_GetReceipt, L("PaymentsGetReceipt"));
         payments.CreateChildPermission(PermissionNames.Pages_Payments_RegenerateReceipt, L("PaymentsRegenerateReceipt"));
+
+        var priceLists = context.CreatePermission(PermissionNames.Pages_PriceLists, L("PriceLists"));
+        priceLists.CreateChildPermission(PermissionNames.Pages_PriceLists_Create, L("PriceListsCreate"));
+        priceLists.CreateChildPermission(PermissionNames.Pages_PriceLists_Edit, L("PriceListsEdit"));
+        priceLists.CreateChildPermission(PermissionNames.Pages_PriceLists_Delete, L("PriceListsDelete"));
+        priceLists.CreateChildPermission(PermissionNames.Pages_PriceLists_Assign, L("PriceListsAssign"));
     }
 
     private static ILocalizableString L(string name)

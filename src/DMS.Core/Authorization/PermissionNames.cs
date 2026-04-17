@@ -69,4 +69,10 @@ public static class PermissionNames
     public const string Pages_Payments_GetReceipt = "Pages.Payments.GetReceipt";
     public const string Pages_Payments_RegenerateReceipt = "Pages.Payments.RegenerateReceipt";
 
+    public const string Pages_PriceLists = "Pages.PriceLists";
+    public const string Pages_PriceLists_Create = "Pages.PriceLists.Create";
+    public const string Pages_PriceLists_Edit = "Pages.PriceLists.Edit";
+    public const string Pages_PriceLists_Delete = "Pages.PriceLists.Delete";
+    public const string Pages_PriceLists_Assign = "Pages.PriceLists.Assign";
+
 }

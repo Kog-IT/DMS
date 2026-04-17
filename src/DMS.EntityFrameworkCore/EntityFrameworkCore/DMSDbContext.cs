@@ -12,6 +12,7 @@ using DMS.Orders;
 using DMS.Payments;
 using DMS.Products;
 using DMS.Categories;
+using DMS.PriceLists;
 using Microsoft.EntityFrameworkCore;
 
 namespace DMS.EntityFrameworkCore;
@@ -34,6 +35,9 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<PaymentMethod> PaymentMethods { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<PaymentLine> PaymentLines { get; set; }
+    public DbSet<PriceList> PriceLists { get; set; }
+    public DbSet<PriceListItem> PriceListItems { get; set; }
+    public DbSet<PriceListAssignment> PriceListAssignments { get; set; }
 
     public DMSDbContext(DbContextOptions<DMSDbContext> options)
         : base(options)
@@ -60,5 +64,8 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
         modelBuilder.ApplyConfiguration(new PaymentMethodConfiguration());
         modelBuilder.ApplyConfiguration(new PaymentConfiguration());
         modelBuilder.ApplyConfiguration(new PaymentLineConfiguration());
+        modelBuilder.ApplyConfiguration(new PriceListConfiguration());
+        modelBuilder.ApplyConfiguration(new PriceListItemConfiguration());
+        modelBuilder.ApplyConfiguration(new PriceListAssignmentConfiguration());
     }
 }
