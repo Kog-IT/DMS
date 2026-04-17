@@ -175,7 +175,7 @@ public class OrderAppService : AsyncCrudAppService<
                 ProductId = product.Id,
                 ProductName = product.Name,
                 UnitPrice = product.Price,
-                TaxRate = 0,
+                TaxRate = product.TaxRate,
                 Quantity = inputLine.Quantity,
                 DiscountType = inputLine.DiscountType,
                 DiscountValue = inputLine.DiscountValue,

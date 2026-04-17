@@ -2,6 +2,31 @@
 
 ## 2026-04-17
 
+### Task: Product TaxRate — fix tax bug
+
+Context:
+Every order line was created with TaxRate=0 because Product had no TaxRate field.
+Added TaxRate to Product entity, DTOs, and EF config. OrderAppService now copies
+the product's TaxRate into each order line automatically.
+
+Files Affected:
+- `src/DMS.Core/Products/Product.cs`
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/ProductConfiguration.cs`
+- `src/DMS.Application/Products/Dto/ProductDto.cs`
+- `src/DMS.Application/Products/Dto/CreateProductDto.cs`
+- `src/DMS.Application/Orders/OrderAppService.cs`
+- `src/DMS.EntityFrameworkCore/Migrations/Added_Product_TaxRate.cs` (new)
+
+### Fix
+- Added `TaxRate decimal(5,2)` column to Products table (default 0)
+- `CreateProductDto` / `UpdateProductDto` now accept `TaxRate` (0–100, validated)
+- `ProductDto` exposes `TaxRate`
+- `OrderAppService.BuildLinesAsync` copies `product.TaxRate` into each `OrderLine` instead of hardcoding 0
+- All 93 tests passing
+
+### Migration
+- `Added_Product_TaxRate`: adds nullable-with-default TaxRate column to Products table
+
 ### Task: Product AppService tests
 
 Context:

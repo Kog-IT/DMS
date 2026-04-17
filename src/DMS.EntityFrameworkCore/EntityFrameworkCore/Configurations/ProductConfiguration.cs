@@ -26,6 +26,10 @@ namespace DMS.EntityFrameworkCore.Configurations
             builder.Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
 
+            builder.Property(p => p.TaxRate)
+                .HasColumnType("decimal(5,2)")
+                .HasDefaultValue(0m);
+
             builder.HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId)

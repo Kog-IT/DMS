@@ -21,6 +21,9 @@ namespace DMS.Products.Dto
         [Range(0, double.MaxValue)]
         public decimal Price { get; set; }
 
+        [Range(0, 100)]
+        public decimal TaxRate { get; set; }
+
         [Required]
         public int CategoryId { get; set; }
     }

@@ -16,6 +16,7 @@ namespace DMS.Products
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
+        public decimal TaxRate { get; set; }
         public int CategoryId { get; set; } // Foreign Key
         public virtual Category Category { get; set; }
         public int TenantId { get ; set ; }
