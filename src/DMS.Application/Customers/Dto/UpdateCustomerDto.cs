@@ -30,4 +30,9 @@ public class UpdateCustomerDto : EntityDto<int>
 
     /// <summary>Full-replace semantics: client must always send the complete object. IsActive=false deactivates the customer.</summary>
     public bool IsActive { get; set; }
+
+    [Range(0, double.MaxValue)]
+    public decimal CreditLimit { get; set; }
+
+    public bool CreditEnabled { get; set; }
 }

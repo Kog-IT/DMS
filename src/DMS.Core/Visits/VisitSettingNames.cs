@@ -5,6 +5,8 @@ public static class VisitSettingNames
     public const string GeofencingEnabled = "Visit.GeofencingEnabled";
     public const string GeofencingRadiusMeters = "Visit.GeofencingRadiusMeters";
     public const string GpsEnforcement = "Visit.GpsEnforcement";
+    public const string DefaultVisitDurationMinutes = "Visit.DefaultVisitDurationMinutes";
+    public const string AverageTravelSpeedKmh = "Visit.AverageTravelSpeedKmh";
 }
 
 /// <summary>Valid values for the Visit.GpsEnforcement setting.</summary>

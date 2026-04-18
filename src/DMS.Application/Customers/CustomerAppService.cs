@@ -6,6 +6,7 @@ using Abp.Linq.Extensions;
 using DMS.Authorization;
 using DMS.Customers.Dto;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DMS.Customers;
 
@@ -18,7 +19,11 @@ public class CustomerAppService : AsyncCrudAppService<
     CreateCustomerDto,
     UpdateCustomerDto>, ICustomerAppService
 {
-    public CustomerAppService(IRepository<Customer, int> repository)
+    private readonly CreditCheckService _creditCheckService;
+
+    public CustomerAppService(
+        IRepository<Customer, int> repository,
+        CreditCheckService creditCheckService)
         : base(repository)
     {
         GetPermissionName = PermissionNames.Pages_Customers;
@@ -26,6 +31,8 @@ public class CustomerAppService : AsyncCrudAppService<
         CreatePermissionName = PermissionNames.Pages_Customers_Create;
         UpdatePermissionName = PermissionNames.Pages_Customers_Edit;
         DeletePermissionName = PermissionNames.Pages_Customers_Delete;
+
+        _creditCheckService = creditCheckService;
     }
 
     protected override IQueryable<Customer> CreateFilteredQuery(PagedCustomerResultRequestDto input)
@@ -35,5 +42,21 @@ public class CustomerAppService : AsyncCrudAppService<
                 !input.Keyword.IsNullOrWhiteSpace(),
                 c => c.Name.Contains(input.Keyword) || c.Code.Contains(input.Keyword)
             );
+    }
+
+    [AbpAuthorize(PermissionNames.Pages_Customers)]
+    public async Task<CreditStatusDto> GetCreditStatusAsync(int customerId)
+    {
+        var customer = await Repository.GetAsync(customerId);
+        var result = await _creditCheckService.CheckCreditAsync(customerId, orderTotal: 0m);
+
+        return new CreditStatusDto
+        {
+            CustomerId = customerId,
+            CreditEnabled = customer.CreditEnabled,
+            CreditLimit = result.CreditLimit,
+            OutstandingBalance = result.OutstandingBalance,
+            AvailableCredit = result.AvailableCredit
+        };
     }
 }

@@ -1,5 +1,6 @@
 using Abp.Domain.Entities.Auditing;
 using Abp.Domain.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DMS.Customers;
@@ -35,4 +36,10 @@ public class Customer : FullAuditedEntity<int>, IMustHaveTenant
     public string Email { get; set; }
 
     public bool IsActive { get; set; } = true;
+
+    public CustomerClassification Classification { get; set; } = CustomerClassification.Unclassified;
+    public DateTime? LastClassifiedAt { get; set; }
+
+    public decimal CreditLimit { get; set; } = 0m;
+    public bool CreditEnabled { get; set; } = false;
 }

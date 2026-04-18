@@ -1,5 +1,141 @@
 # Changelog
 
+## 2026-04-18
+
+### Task: Credit Management module
+
+Context:
+Added per-customer credit limits. Submitting an order that would push the customer over
+their credit limit sends it to PendingApproval — reusing the existing discount-escalation
+flow. Outstanding balance is computed from non-voided invoices via Order join.
+
+Files Affected:
+- `src/DMS.Core/Customers/Customer.cs` (CreditLimit, CreditEnabled added)
+- `src/DMS.Core/Customers/CreditCheckResult.cs` (new)
+- `src/DMS.Core/Customers/CreditCheckService.cs` (new)
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/CustomerConfiguration.cs`
+- `src/DMS.Application/Customers/Dto/CustomerDto.cs`
+- `src/DMS.Application/Customers/Dto/CreateCustomerDto.cs`
+- `src/DMS.Application/Customers/Dto/UpdateCustomerDto.cs`
+- `src/DMS.Application/Customers/Dto/CreditStatusDto.cs` (new)
+- `src/DMS.Application/Customers/ICustomerAppService.cs`
+- `src/DMS.Application/Customers/CustomerAppService.cs`
+- `src/DMS.Application/Orders/OrderAppService.cs`
+- `test/DMS.Tests/Customers/CreditManagement_Tests.cs` (new)
+
+### Feature
+- `CreditLimit` (decimal) and `CreditEnabled` (bool) on Customer; default false = no check
+- `CreditCheckService`: computes outstanding balance from non-voided invoices (via Order join), checks if orderTotal would exceed limit
+- `OrderAppService.SubmitAsync`: merges credit check with discount check — single PendingApproval trigger
+- `CustomerAppService.GetCreditStatusAsync`: exposes credit limit, balance, available credit
+- 5 integration tests; full suite: 108 tests, 0 failures
+
+### Migration
+- `Added_Customer_CreditLimit`: adds CreditLimit decimal(18,2) and CreditEnabled bit to Customers table
+
+## 2026-04-17
+
+### Task: Price List module
+
+Context:
+Added a complete price list system replacing the hardcoded product.Price in order line
+creation. Supports customer-specific overrides, classification-based defaults, quantity
+tiers, and date-bound validity. PriceResolutionService resolves prices via: customer
+assignment → classification list → product.Price fallback with IsBasePriceFallback flag.
+
+Files Affected:
+- `src/DMS.Core/PriceLists/PriceList.cs` (new)
+- `src/DMS.Core/PriceLists/PriceListItem.cs` (new)
+- `src/DMS.Core/PriceLists/PriceListAssignment.cs` (new)
+- `src/DMS.Core/PriceLists/PriceResolutionResult.cs` (new)
+- `src/DMS.Core/PriceLists/PriceResolutionService.cs` (new)
+- `src/DMS.Core/Orders/OrderLine.cs` (IsBasePriceFallback added)
+- `src/DMS.Core/Authorization/PermissionNames.cs`
+- `src/DMS.Core/Authorization/DMSAuthorizationProvider.cs`
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/PriceListConfiguration.cs` (new)
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/PriceListItemConfiguration.cs` (new)
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/PriceListAssignmentConfiguration.cs` (new)
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/OrderLineConfiguration.cs`
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/DMSDbContext.cs`
+- `src/DMS.Application/PriceLists/` (IPriceListAppService, PriceListAppService, IPriceListAssignmentAppService, PriceListAssignmentAppService, 8 DTOs, MapProfile — all new)
+- `src/DMS.Application/Orders/OrderAppService.cs` (PriceResolutionService wired in)
+- `src/DMS.Application/Orders/Dto/OrderLineDto.cs` (IsBasePriceFallback added)
+- `test/DMS.Tests/PriceLists/PriceList_Tests.cs` (new)
+
+### Feature
+- PriceList CRUD with date-bound validity (StartDate, EndDate?) and IsActive toggle
+- PriceListItem: quantity-tiered pricing per product (multiple MinQuantity tiers per list)
+- PriceListAssignment: customer-specific list override (upsert, unique per customer)
+- PriceResolutionService: customer override → classification list → product.Price fallback
+- IsBasePriceFallback flag on OrderLine/OrderLineDto when no list matched
+- Permissions: Pages.PriceLists (Create, Edit, Delete, Assign)
+- 10 integration tests covering resolution hierarchy, tiers, all edge cases — 103 total tests pass
+
+### Migration
+- `Added_PriceList_Entities`: creates PriceLists, PriceListItems, PriceListAssignments tables + IsBasePriceFallback column on OrderLines
+
+## 2026-04-17
+
+### Task: Product TaxRate — fix tax bug
+
+Context:
+Every order line was created with TaxRate=0 because Product had no TaxRate field.
+Added TaxRate to Product entity, DTOs, and EF config. OrderAppService now copies
+the product's TaxRate into each order line automatically.
+
+Files Affected:
+- `src/DMS.Core/Products/Product.cs`
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/ProductConfiguration.cs`
+- `src/DMS.Application/Products/Dto/ProductDto.cs`
+- `src/DMS.Application/Products/Dto/CreateProductDto.cs`
+- `src/DMS.Application/Orders/OrderAppService.cs`
+- `src/DMS.EntityFrameworkCore/Migrations/Added_Product_TaxRate.cs` (new)
+
+### Fix
+- Added `TaxRate decimal(5,2)` column to Products table (default 0)
+- `CreateProductDto` / `UpdateProductDto` now accept `TaxRate` (0–100, validated)
+- `ProductDto` exposes `TaxRate`
+- `OrderAppService.BuildLinesAsync` copies `product.TaxRate` into each `OrderLine` instead of hardcoding 0
+- All 93 tests passing
+
+### Migration
+- `Added_Product_TaxRate`: adds nullable-with-default TaxRate column to Products table
+
+### Task: Product AppService tests
+
+Context:
+ProductAppService had no test coverage. Added 6 integration tests covering all CRUD paths
+plus keyword filter and categoryId filter. All 93 tests pass.
+
+Files Affected:
+- `test/DMS.Tests/Products/ProductAppService_Tests.cs` (new)
+
+### Feature
+- 6 tests: empty list, create+get (with CategoryName populated), keyword filter, categoryId filter, update, delete
+
+### Task: Category management AppService
+
+Context:
+Category entity already existed with EF config but had no service layer. Added full CRUD
+AppService with permissions and 6 integration tests. All 87 tests pass.
+
+Files Affected:
+- `src/DMS.Application/Categories/ICategoryAppService.cs` (new)
+- `src/DMS.Application/Categories/CategoryAppService.cs` (new)
+- `src/DMS.Application/Categories/Dto/CategoryDto.cs` (new)
+- `src/DMS.Application/Categories/Dto/CreateCategoryDto.cs` (new)
+- `src/DMS.Application/Categories/Dto/UpdateCategoryDto.cs` (new)
+- `src/DMS.Application/Categories/Dto/PagedCategoryResultRequestDto.cs` (new)
+- `src/DMS.Core/Authorization/PermissionNames.cs` (updated)
+- `src/DMS.Core/Authorization/DMSAuthorizationProvider.cs` (updated)
+- `test/DMS.Tests/Categories/CategoryAppService_Tests.cs` (new)
+
+### Feature
+- CategoryAppService: full CRUD (Get, GetAll, Create, Update, Delete)
+- GetAll supports keyword filter on Name
+- Permissions: Pages.Categories, Pages.Categories.Create, Pages.Categories.Edit, Pages.Categories.Delete
+- 6 integration tests: empty list, create+get, keyword filter, update, delete, tenant isolation
+
 ## 2026-04-13
 
 ### Task: Customer EF Core migration and xUnit tests

@@ -12,4 +12,5 @@ public interface IRouteAppService : IAsyncCrudAppService<
     UpdateRouteDto>
 {
     Task ActivateAsync(int routeId);
+    Task<OptimizeRouteResultDto> OptimizeRouteAsync(OptimizeRouteInputDto input);
 }
