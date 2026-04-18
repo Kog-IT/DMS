@@ -10,6 +10,8 @@ using DMS.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
 using DMS.Products;
 using DMS.Categories;
+using DMS.Governorates;
+using DMS.Cities;
 
 namespace DMS.EntityFrameworkCore;
 
@@ -23,6 +25,10 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<VisitPhoto> VisitPhotos { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Governorate> Governorates { get; set; }
+    public DbSet<City> Cities { get; set; }
+
+
     public DMSDbContext(DbContextOptions<DMSDbContext> options)
         : base(options)
     {
