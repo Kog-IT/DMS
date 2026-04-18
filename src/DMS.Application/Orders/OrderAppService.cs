@@ -34,6 +34,7 @@ public class OrderAppService : AsyncCrudAppService<
     private readonly ISettingManager _settingManager;
     private readonly UserManager _userManager;
     private readonly PriceResolutionService _priceResolutionService;
+    private readonly CreditCheckService _creditCheckService;
 
     public OrderAppService(
         IRepository<Order, int> repository,
@@ -42,7 +43,8 @@ public class OrderAppService : AsyncCrudAppService<
         IRepository<OrderLine, int> lineRepository,
         ISettingManager settingManager,
         UserManager userManager,
-        PriceResolutionService priceResolutionService)
+        PriceResolutionService priceResolutionService,
+        CreditCheckService creditCheckService)
         : base(repository)
     {
         GetPermissionName = PermissionNames.Pages_Orders;
@@ -57,6 +59,7 @@ public class OrderAppService : AsyncCrudAppService<
         _settingManager = settingManager;
         _userManager = userManager;
         _priceResolutionService = priceResolutionService;
+        _creditCheckService = creditCheckService;
     }
 
     protected override IQueryable<Order> CreateFilteredQuery(PagedOrderResultRequestDto input)
@@ -249,11 +252,15 @@ public class OrderAppService : AsyncCrudAppService<
         if (order.Status != OrderStatus.Draft)
             throw new UserFriendlyException("Only draft orders can be submitted.");
 
-        var limit = await GetDiscountLimitForCurrentUserAsync();
+        var discountLimit = await GetDiscountLimitForCurrentUserAsync();
 
-        bool exceedsLimit = limit > 0 && (
-            order.Lines.Any(l => l.DiscountValue > limit) ||
-            order.OrderDiscountValue > limit);
+        bool discountExceedsLimit = discountLimit > 0 && (
+            order.Lines.Any(l => l.DiscountValue > discountLimit) ||
+            order.OrderDiscountValue > discountLimit);
+
+        var creditResult = await _creditCheckService.CheckCreditAsync(order.CustomerId, order.Total);
+
+        bool exceedsLimit = discountExceedsLimit || creditResult.IsOverLimit;
 
         order.Status = exceedsLimit ? OrderStatus.PendingApproval : OrderStatus.Confirmed;
         await Repository.UpdateAsync(order);

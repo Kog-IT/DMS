@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DMS.Migrations
 {
     [DbContext(typeof(DMSDbContext))]
-    [Migration("20260417213222_Added_Product_TaxRate")]
-    partial class Added_Product_TaxRate
+    [Migration("20260418102515_init180426")]
+    partial class init180426
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1723,6 +1723,16 @@ namespace DMS.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("CreditEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<decimal>("CreditLimit")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
                     b.Property<long?>("DeleterUserId")
                         .HasColumnType("bigint");
 
@@ -2156,6 +2166,11 @@ namespace DMS.Migrations
                     b.Property<bool>("IsBackOrder")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsBasePriceFallback")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<decimal>("LineTotal")
                         .HasColumnType("decimal(18,4)");
 
@@ -2306,6 +2321,123 @@ namespace DMS.Migrations
                         .IsUnique();
 
                     b.ToTable("PaymentMethods", (string)null);
+                });
+
+            modelBuilder.Entity("DMS.PriceLists.PriceList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ForClassification")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "ForClassification");
+
+                    b.HasIndex("TenantId", "IsActive");
+
+                    b.ToTable("PriceLists", (string)null);
+                });
+
+            modelBuilder.Entity("DMS.PriceLists.PriceListAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PriceListId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PriceListId");
+
+                    b.HasIndex("TenantId", "CustomerId")
+                        .IsUnique();
+
+                    b.ToTable("PriceListAssignments", (string)null);
+                });
+
+            modelBuilder.Entity("DMS.PriceLists.PriceListItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("MinQuantity")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("PriceListId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PriceListId", "ProductId", "MinQuantity")
+                        .IsUnique();
+
+                    b.ToTable("PriceListItems", (string)null);
                 });
 
             modelBuilder.Entity("DMS.Products.Product", b =>
@@ -2937,6 +3069,28 @@ namespace DMS.Migrations
                     b.Navigation("PaymentMethod");
                 });
 
+            modelBuilder.Entity("DMS.PriceLists.PriceListAssignment", b =>
+                {
+                    b.HasOne("DMS.PriceLists.PriceList", "PriceList")
+                        .WithMany("Assignments")
+                        .HasForeignKey("PriceListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PriceList");
+                });
+
+            modelBuilder.Entity("DMS.PriceLists.PriceListItem", b =>
+                {
+                    b.HasOne("DMS.PriceLists.PriceList", "PriceList")
+                        .WithMany("Items")
+                        .HasForeignKey("PriceListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PriceList");
+                });
+
             modelBuilder.Entity("DMS.Products.Product", b =>
                 {
                     b.HasOne("DMS.Categories.Category", "Category")
@@ -3059,6 +3213,13 @@ namespace DMS.Migrations
             modelBuilder.Entity("DMS.Payments.Payment", b =>
                 {
                     b.Navigation("Lines");
+                });
+
+            modelBuilder.Entity("DMS.PriceLists.PriceList", b =>
+                {
+                    b.Navigation("Assignments");
+
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("DMS.Routes.Route", b =>

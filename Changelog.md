@@ -1,5 +1,38 @@
 # Changelog
 
+## 2026-04-18
+
+### Task: Credit Management module
+
+Context:
+Added per-customer credit limits. Submitting an order that would push the customer over
+their credit limit sends it to PendingApproval — reusing the existing discount-escalation
+flow. Outstanding balance is computed from non-voided invoices via Order join.
+
+Files Affected:
+- `src/DMS.Core/Customers/Customer.cs` (CreditLimit, CreditEnabled added)
+- `src/DMS.Core/Customers/CreditCheckResult.cs` (new)
+- `src/DMS.Core/Customers/CreditCheckService.cs` (new)
+- `src/DMS.EntityFrameworkCore/EntityFrameworkCore/Configurations/CustomerConfiguration.cs`
+- `src/DMS.Application/Customers/Dto/CustomerDto.cs`
+- `src/DMS.Application/Customers/Dto/CreateCustomerDto.cs`
+- `src/DMS.Application/Customers/Dto/UpdateCustomerDto.cs`
+- `src/DMS.Application/Customers/Dto/CreditStatusDto.cs` (new)
+- `src/DMS.Application/Customers/ICustomerAppService.cs`
+- `src/DMS.Application/Customers/CustomerAppService.cs`
+- `src/DMS.Application/Orders/OrderAppService.cs`
+- `test/DMS.Tests/Customers/CreditManagement_Tests.cs` (new)
+
+### Feature
+- `CreditLimit` (decimal) and `CreditEnabled` (bool) on Customer; default false = no check
+- `CreditCheckService`: computes outstanding balance from non-voided invoices (via Order join), checks if orderTotal would exceed limit
+- `OrderAppService.SubmitAsync`: merges credit check with discount check — single PendingApproval trigger
+- `CustomerAppService.GetCreditStatusAsync`: exposes credit limit, balance, available credit
+- 5 integration tests; full suite: 108 tests, 0 failures
+
+### Migration
+- `Added_Customer_CreditLimit`: adds CreditLimit decimal(18,2) and CreditEnabled bit to Customers table
+
 ## 2026-04-17
 
 ### Task: Price List module

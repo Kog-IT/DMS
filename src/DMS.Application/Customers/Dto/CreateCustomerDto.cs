@@ -28,4 +28,9 @@ public class CreateCustomerDto
     public string Email { get; set; }
 
     public bool IsActive { get; set; } = true;
+
+    [Range(0, double.MaxValue)]
+    public decimal CreditLimit { get; set; } = 0m;
+
+    public bool CreditEnabled { get; set; } = false;
 }

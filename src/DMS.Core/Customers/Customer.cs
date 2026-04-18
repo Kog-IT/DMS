@@ -39,4 +39,7 @@ public class Customer : FullAuditedEntity<int>, IMustHaveTenant
 
     public CustomerClassification Classification { get; set; } = CustomerClassification.Unclassified;
     public DateTime? LastClassifiedAt { get; set; }
+
+    public decimal CreditLimit { get; set; } = 0m;
+    public bool CreditEnabled { get; set; } = false;
 }
