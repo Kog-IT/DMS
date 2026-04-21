@@ -14,8 +14,9 @@ namespace DMS.Products.Dto
            
             CreateMap<Product, ProductDto>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+            CreateMap<CreateProductVariantDto, ProductVariant>();
+            CreateMap<ProductVariant, ProductVariantDto>();
 
-            
         }
     }
 }
