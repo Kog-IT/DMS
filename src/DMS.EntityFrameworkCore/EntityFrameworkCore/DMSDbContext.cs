@@ -12,6 +12,8 @@ using DMS.Orders;
 using DMS.Payments;
 using DMS.Products;
 using DMS.Categories;
+using DMS.Governorates;
+using DMS.Cities;
 using DMS.PriceLists;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +30,10 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<VisitPhoto> VisitPhotos { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Governorate> Governorates { get; set; }
+    public DbSet<City> Cities { get; set; }
+
+
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderLine> OrderLines { get; set; }
     public DbSet<Invoice> Invoices { get; set; }
