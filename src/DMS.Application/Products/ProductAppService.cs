@@ -130,7 +130,7 @@ namespace DMS.Products
             var inserted = await _variantRepository.InsertAsync(variant);
 
            
-            await CurrentUnitOfWork.SaveChangesAsync();
+            await CurrentUnitOfWork.SaveChangesAsync(); 
 
             return ObjectMapper.Map<ProductVariantDto>(inserted);
         }

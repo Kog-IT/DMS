@@ -15997,3 +15997,174 @@ INFO  2026-04-21 14:11:21,047 [20   ] .Mvc.Infrastructure.ObjectResultExecutor -
 INFO  2026-04-21 14:11:21,088 [20   ] c.Infrastructure.ControllerActionInvoker - Executed action DMS.Products.ProductAppService.GetAsync (DMS.Application) in 576.1745ms
 INFO  2026-04-21 14:11:21,088 [20   ] ft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'DMS.Products.ProductAppService.GetAsync (DMS.Application)'
 INFO  2026-04-21 14:11:21,089 [20   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/ApiVanSales/api/services/app/Product/Get?Id=1 - 200 - application/json;+charset=utf-8 597.0160ms
+DEBUG 2026-04-21 14:15:04,970 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2026-04-21 14:15:05,517 [1    ] Abp.Modules.AbpModuleManager             - Found 15 ABP modules in total.
+DEBUG 2026-04-21 14:15:05,591 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.Web.Host.Startup.DMSWebHostModule, DMS.Web.Host, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,597 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.DMSWebCoreModule, DMS.Web.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,598 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.DMSApplicationModule, DMS.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,599 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.DMSCoreModule, DMS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,600 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,601 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,601 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,604 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AutoMapper.AbpAutoMapperModule, Abp.AutoMapper, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,605 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.EntityFrameworkCore.DMSEntityFrameworkModule, DMS.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,606 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,607 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,608 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,608 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AspNetCore.AbpAspNetCoreModule, Abp.AspNetCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,609 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Web.AbpWebCommonModule, Abp.Web.Common, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,609 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AspNetCore.SignalR.AbpAspNetCoreSignalRModule, Abp.AspNetCore.SignalR, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:05,613 [1    ] Abp.Modules.AbpModuleManager             - 15 modules loaded.
+DEBUG 2026-04-21 14:15:05,807 [1    ] o.Configuration.LanguageManagementConfig - Converted Abp (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-21 14:15:05,807 [1    ] o.Configuration.LanguageManagementConfig - Converted AbpZero (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-21 14:15:05,807 [1    ] o.Configuration.LanguageManagementConfig - Converted DMS (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-21 14:15:05,808 [1    ] o.Configuration.LanguageManagementConfig - Converted AbpWeb (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-21 14:15:06,854 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: DMS.EntityFrameworkCore.DMSDbContext, DMS.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 14:15:07,848 [1    ] Abp.Localization.LocalizationManager     - Initializing 4 localization sources.
+DEBUG 2026-04-21 14:15:07,945 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2026-04-21 14:15:07,974 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2026-04-21 14:15:07,995 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: DMS
+DEBUG 2026-04-21 14:15:08,010 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpWeb
+DEBUG 2026-04-21 14:15:08,029 [1    ] Abp.BackgroundJobs.BackgroundJobManager  - Start background worker: Abp.BackgroundJobs.BackgroundJobManager
+DEBUG 2026-04-21 14:15:08,036 [1    ] , Culture=neutral, PublicKeyToken=null]] - Start background worker: Abp.Authorization.Users.UserTokenExpirationWorker`2[[DMS.MultiTenancy.Tenant, DMS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[DMS.Authorization.Users.User, DMS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]
+DEBUG 2026-04-21 14:15:08,085 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - Found 37 classes define auto mapping attributes
+DEBUG 2026-04-21 14:15:08,085 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.CreateVisitDto
+DEBUG 2026-04-21 14:15:08,090 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.UpdateVisitDto
+DEBUG 2026-04-21 14:15:08,091 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.VisitDto
+DEBUG 2026-04-21 14:15:08,092 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.VisitPhotoDto
+DEBUG 2026-04-21 14:15:08,092 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Users.Dto.CreateUserDto
+DEBUG 2026-04-21 14:15:08,092 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Users.Dto.UserDto
+DEBUG 2026-04-21 14:15:08,093 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Sessions.Dto.TenantLoginInfoDto
+DEBUG 2026-04-21 14:15:08,093 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Sessions.Dto.UserLoginInfoDto
+DEBUG 2026-04-21 14:15:08,094 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.CreateRouteDto
+DEBUG 2026-04-21 14:15:08,094 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.CreateRouteItemDto
+DEBUG 2026-04-21 14:15:08,094 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.RouteDto
+DEBUG 2026-04-21 14:15:08,094 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.RouteItemDto
+DEBUG 2026-04-21 14:15:08,094 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.UpdateRouteDto
+DEBUG 2026-04-21 14:15:08,095 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Roles.Dto.PermissionDto
+DEBUG 2026-04-21 14:15:08,095 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Products.Dto.CreateProductDto
+DEBUG 2026-04-21 14:15:08,095 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Products.Dto.ProductDto
+DEBUG 2026-04-21 14:15:08,095 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Products.Dto.UpdateProductDto
+DEBUG 2026-04-21 14:15:08,096 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.PriceLists.Dto.CreatePriceListDto
+DEBUG 2026-04-21 14:15:08,096 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.PriceLists.Dto.PriceListDto
+DEBUG 2026-04-21 14:15:08,096 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.PriceLists.Dto.UpdatePriceListDto
+DEBUG 2026-04-21 14:15:08,096 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Payments.Dto.CreatePaymentMethodDto
+DEBUG 2026-04-21 14:15:08,096 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Payments.Dto.PaymentMethodDto
+DEBUG 2026-04-21 14:15:08,097 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Payments.Dto.UpdatePaymentMethodDto
+DEBUG 2026-04-21 14:15:08,097 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.MultiTenancy.Dto.CreateTenantDto
+DEBUG 2026-04-21 14:15:08,097 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.MultiTenancy.Dto.TenantDto
+DEBUG 2026-04-21 14:15:08,097 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CreateCustomerContactDto
+DEBUG 2026-04-21 14:15:08,097 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CreateCustomerDto
+DEBUG 2026-04-21 14:15:08,097 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CustomerContactDto
+DEBUG 2026-04-21 14:15:08,098 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CustomerDto
+DEBUG 2026-04-21 14:15:08,098 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.UpdateCustomerContactDto
+DEBUG 2026-04-21 14:15:08,098 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.UpdateCustomerDto
+DEBUG 2026-04-21 14:15:08,099 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Companies.Dto.CompanyDto
+DEBUG 2026-04-21 14:15:08,099 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Companies.Dto.CreateCompanyDto
+DEBUG 2026-04-21 14:15:08,099 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Companies.Dto.UpdateCompanyDto
+DEBUG 2026-04-21 14:15:08,099 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Categories.Dto.CategoryDto
+DEBUG 2026-04-21 14:15:08,099 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Categories.Dto.CreateCategoryDto
+DEBUG 2026-04-21 14:15:08,099 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Categories.Dto.UpdateCategoryDto
+WARN  2026-04-21 14:15:11,195 [1    ] oft.EntityFrameworkCore.Model.Validation - Entity 'PriceList' has a global query filter defined and is the required end of a relationship with the entity 'PriceListItem'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+WARN  2026-04-21 14:15:11,464 [1    ] oft.EntityFrameworkCore.Model.Validation - No store type was specified for the decimal property 'Price' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+INFO  2026-04-21 14:15:15,023 [1    ] tCore.Builder.RequestLocalizationOptions - Supported Request Localization Cultures: en,es-MX,fr,de,it,nl,pt-BR,tr,ru,ar,fa,ja,zh-Hans
+WARN  2026-04-21 14:15:15,861 [1    ] Microsoft.AspNetCore.Server.Kestrel      - Overriding address(es) 'https://localhost:44311/'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+INFO  2026-04-21 14:15:15,943 [1    ] Microsoft.Hosting.Lifetime               - Now listening on: https://localhost:44311
+INFO  2026-04-21 14:15:16,147 [1    ] Microsoft.Hosting.Lifetime               - Application started. Press Ctrl+C to shut down.
+INFO  2026-04-21 14:15:16,147 [1    ] Microsoft.Hosting.Lifetime               - Hosting environment: Development
+INFO  2026-04-21 14:15:16,147 [1    ] Microsoft.Hosting.Lifetime               - Content root path: D:\DMSNewStructure\src\DMS.Web.Host
+INFO  2026-04-21 14:15:36,904 [12   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/ - - -
+INFO  2026-04-21 14:15:37,256 [6    ] ft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'DMS.Web.Host.Controllers.HomeController.Index (DMS.Web.Host)'
+INFO  2026-04-21 14:15:37,383 [6    ] c.Infrastructure.ControllerActionInvoker - Route matched with {action = "Index", controller = "Home", area = ""}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller DMS.Web.Host.Controllers.HomeController (DMS.Web.Host).
+INFO  2026-04-21 14:15:37,635 [12   ] vc.Infrastructure.RedirectResultExecutor - Executing RedirectResult, redirecting to /swagger.
+INFO  2026-04-21 14:15:37,658 [12   ] c.Infrastructure.ControllerActionInvoker - Executed action DMS.Web.Host.Controllers.HomeController.Index (DMS.Web.Host) in 253.7708ms
+INFO  2026-04-21 14:15:37,659 [12   ] ft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'DMS.Web.Host.Controllers.HomeController.Index (DMS.Web.Host)'
+INFO  2026-04-21 14:15:37,671 [12   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/ - 302 0 - 771.7215ms
+INFO  2026-04-21 14:15:37,749 [12   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/_framework/aspnetcore-browser-refresh.js - - -
+INFO  2026-04-21 14:15:37,770 [14   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/_framework/aspnetcore-browser-refresh.js - 200 13776 application/javascript;+charset=utf-8 20.1429ms
+INFO  2026-04-21 14:15:37,835 [6    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/_vs/browserLink - - -
+INFO  2026-04-21 14:15:37,893 [14   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/_vs/browserLink - 200 - text/javascript;+charset=UTF-8 57.2425ms
+INFO  2026-04-21 14:15:37,998 [14   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/AntiForgery/SetCookie - - -
+INFO  2026-04-21 14:15:38,083 [18   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/ApiVanSales/swagger/v1/swagger.json - - -
+INFO  2026-04-21 14:15:38,283 [18   ] ft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'DMS.Web.Host.Controllers.AntiForgeryController.SetCookie (DMS.Web.Host)'
+INFO  2026-04-21 14:15:38,308 [18   ] c.Infrastructure.ControllerActionInvoker - Route matched with {action = "SetCookie", controller = "AntiForgery", area = ""}. Executing controller action with signature Void SetCookie() on controller DMS.Web.Host.Controllers.AntiForgeryController (DMS.Web.Host).
+INFO  2026-04-21 14:15:38,365 [6    ] .Mvc.Infrastructure.ObjectResultExecutor - Executing ObjectResult, writing value of type 'Abp.Web.Models.AjaxResponse'.
+INFO  2026-04-21 14:15:38,380 [6    ] c.Infrastructure.ControllerActionInvoker - Executed action DMS.Web.Host.Controllers.AntiForgeryController.SetCookie (DMS.Web.Host) in 71.771ms
+INFO  2026-04-21 14:15:38,380 [6    ] ft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'DMS.Web.Host.Controllers.AntiForgeryController.SetCookie (DMS.Web.Host)'
+INFO  2026-04-21 14:15:38,381 [6    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/AntiForgery/SetCookie - 200 - application/json;+charset=utf-8 383.2540ms
+INFO  2026-04-21 14:15:38,588 [6    ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/ApiVanSales/swagger/v1/swagger.json - 200 - application/json;charset=utf-8 504.7146ms
+INFO  2026-04-21 14:15:56,356 [18   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request starting HTTP/2 GET https://localhost:44311/ApiVanSales/api/services/app/Product/GetVariantsByProductId?productId=1 - - -
+INFO  2026-04-21 14:15:56,370 [18   ] ft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'DMS.Products.ProductAppService.GetVariantsByProductIdAsync (DMS.Application)'
+INFO  2026-04-21 14:15:56,407 [18   ] c.Infrastructure.ControllerActionInvoker - Route matched with {area = "app", action = "GetVariantsByProductId", controller = "Product"}. Executing controller action with signature System.Threading.Tasks.Task`1[System.Collections.Generic.List`1[DMS.Products.Dto.ProductVariantDto]] GetVariantsByProductIdAsync(Int32) on controller DMS.Products.ProductAppService (DMS.Application).
+INFO  2026-04-21 14:15:57,656 [14   ] .Mvc.Infrastructure.ObjectResultExecutor - Executing ObjectResult, writing value of type 'Abp.Web.Models.AjaxResponse'.
+INFO  2026-04-21 14:15:57,670 [14   ] c.Infrastructure.ControllerActionInvoker - Executed action DMS.Products.ProductAppService.GetVariantsByProductIdAsync (DMS.Application) in 1262.7398ms
+INFO  2026-04-21 14:15:57,670 [14   ] ft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'DMS.Products.ProductAppService.GetVariantsByProductIdAsync (DMS.Application)'
+INFO  2026-04-21 14:15:57,671 [14   ] Microsoft.AspNetCore.Hosting.Diagnostics - Request finished HTTP/2 GET https://localhost:44311/ApiVanSales/api/services/app/Product/GetVariantsByProductId?productId=1 - 200 - application/json;+charset=utf-8 1314.5883ms
+DEBUG 2026-04-21 15:02:46,382 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2026-04-21 15:02:47,859 [1    ] Abp.Modules.AbpModuleManager             - Found 15 ABP modules in total.
+DEBUG 2026-04-21 15:02:47,883 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.Web.Host.Startup.DMSWebHostModule, DMS.Web.Host, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,886 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.DMSWebCoreModule, DMS.Web.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,886 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.DMSApplicationModule, DMS.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,887 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.DMSCoreModule, DMS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,887 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.ZeroCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,888 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,888 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,889 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AutoMapper.AbpAutoMapperModule, Abp.AutoMapper, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,890 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: DMS.EntityFrameworkCore.DMSEntityFrameworkModule, DMS.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,891 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFrameworkCore.AbpZeroCoreEntityFrameworkCoreModule, Abp.ZeroCore.EntityFrameworkCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,892 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFrameworkCore.AbpEntityFrameworkCoreModule, Abp.EntityFrameworkCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,892 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,893 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AspNetCore.AbpAspNetCoreModule, Abp.AspNetCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,894 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Web.AbpWebCommonModule, Abp.Web.Common, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,894 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AspNetCore.SignalR.AbpAspNetCoreSignalRModule, Abp.AspNetCore.SignalR, Version=10.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:47,897 [1    ] Abp.Modules.AbpModuleManager             - 15 modules loaded.
+DEBUG 2026-04-21 15:02:48,538 [1    ] o.Configuration.LanguageManagementConfig - Converted Abp (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-21 15:02:48,538 [1    ] o.Configuration.LanguageManagementConfig - Converted AbpZero (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-21 15:02:48,538 [1    ] o.Configuration.LanguageManagementConfig - Converted DMS (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-21 15:02:48,538 [1    ] o.Configuration.LanguageManagementConfig - Converted AbpWeb (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2026-04-21 15:02:50,519 [1    ] ameworkCore.AbpEntityFrameworkCoreModule - Registering DbContext: DMS.EntityFrameworkCore.DMSDbContext, DMS.EntityFrameworkCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2026-04-21 15:02:50,810 [1    ] Abp.Localization.LocalizationManager     - Initializing 4 localization sources.
+DEBUG 2026-04-21 15:02:50,898 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2026-04-21 15:02:50,915 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2026-04-21 15:02:50,926 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: DMS
+DEBUG 2026-04-21 15:02:50,934 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpWeb
+DEBUG 2026-04-21 15:02:50,949 [1    ] Abp.BackgroundJobs.BackgroundJobManager  - Start background worker: Abp.BackgroundJobs.BackgroundJobManager
+DEBUG 2026-04-21 15:02:50,987 [1    ] , Culture=neutral, PublicKeyToken=null]] - Start background worker: Abp.Authorization.Users.UserTokenExpirationWorker`2[[DMS.MultiTenancy.Tenant, DMS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[DMS.Authorization.Users.User, DMS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]
+DEBUG 2026-04-21 15:02:51,020 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - Found 37 classes define auto mapping attributes
+DEBUG 2026-04-21 15:02:51,021 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.CreateVisitDto
+DEBUG 2026-04-21 15:02:51,025 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.UpdateVisitDto
+DEBUG 2026-04-21 15:02:51,026 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.VisitDto
+DEBUG 2026-04-21 15:02:51,027 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Visits.Dto.VisitPhotoDto
+DEBUG 2026-04-21 15:02:51,027 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Users.Dto.CreateUserDto
+DEBUG 2026-04-21 15:02:51,027 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Users.Dto.UserDto
+DEBUG 2026-04-21 15:02:51,028 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Sessions.Dto.TenantLoginInfoDto
+DEBUG 2026-04-21 15:02:51,028 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Sessions.Dto.UserLoginInfoDto
+DEBUG 2026-04-21 15:02:51,028 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.CreateRouteDto
+DEBUG 2026-04-21 15:02:51,028 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.CreateRouteItemDto
+DEBUG 2026-04-21 15:02:51,028 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.RouteDto
+DEBUG 2026-04-21 15:02:51,028 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.RouteItemDto
+DEBUG 2026-04-21 15:02:51,028 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Routes.Dto.UpdateRouteDto
+DEBUG 2026-04-21 15:02:51,029 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Roles.Dto.PermissionDto
+DEBUG 2026-04-21 15:02:51,029 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Products.Dto.CreateProductDto
+DEBUG 2026-04-21 15:02:51,029 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Products.Dto.ProductDto
+DEBUG 2026-04-21 15:02:51,029 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Products.Dto.UpdateProductDto
+DEBUG 2026-04-21 15:02:51,029 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.PriceLists.Dto.CreatePriceListDto
+DEBUG 2026-04-21 15:02:51,030 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.PriceLists.Dto.PriceListDto
+DEBUG 2026-04-21 15:02:51,030 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.PriceLists.Dto.UpdatePriceListDto
+DEBUG 2026-04-21 15:02:51,030 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Payments.Dto.CreatePaymentMethodDto
+DEBUG 2026-04-21 15:02:51,030 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Payments.Dto.PaymentMethodDto
+DEBUG 2026-04-21 15:02:51,030 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Payments.Dto.UpdatePaymentMethodDto
+DEBUG 2026-04-21 15:02:51,030 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.MultiTenancy.Dto.CreateTenantDto
+DEBUG 2026-04-21 15:02:51,030 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.MultiTenancy.Dto.TenantDto
+DEBUG 2026-04-21 15:02:51,030 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CreateCustomerContactDto
+DEBUG 2026-04-21 15:02:51,030 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CreateCustomerDto
+DEBUG 2026-04-21 15:02:51,031 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CustomerContactDto
+DEBUG 2026-04-21 15:02:51,031 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.CustomerDto
+DEBUG 2026-04-21 15:02:51,031 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.UpdateCustomerContactDto
+DEBUG 2026-04-21 15:02:51,031 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Customers.Dto.UpdateCustomerDto
+DEBUG 2026-04-21 15:02:51,031 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Companies.Dto.CompanyDto
+DEBUG 2026-04-21 15:02:51,031 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Companies.Dto.CreateCompanyDto
+DEBUG 2026-04-21 15:02:51,031 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Companies.Dto.UpdateCompanyDto
+DEBUG 2026-04-21 15:02:51,031 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Categories.Dto.CategoryDto
+DEBUG 2026-04-21 15:02:51,032 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Categories.Dto.CreateCategoryDto
+DEBUG 2026-04-21 15:02:51,032 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - DMS.Categories.Dto.UpdateCategoryDto
