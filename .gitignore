@@ -257,3 +257,4 @@ src/DMS.Migrator/secrets.json
 /.claude
 /docs
 /CLAUDE.md
+/src/DMS.Web.Host/App_Data/Logs/Logs.txt
