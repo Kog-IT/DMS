@@ -981,6 +981,8 @@ namespace DMS.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    SKU = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Barcode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TaxRate = table.Column<decimal>(type: "decimal(5,2)", nullable: false, defaultValue: 0m),
@@ -2014,6 +2016,13 @@ namespace DMS.Migrations
                 name: "IX_ProductImages_ProductId",
                 table: "ProductImages",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_Barcode",
+                table: "Products",
+                column: "Barcode",
+                unique: true,
+                filter: "[Barcode] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",

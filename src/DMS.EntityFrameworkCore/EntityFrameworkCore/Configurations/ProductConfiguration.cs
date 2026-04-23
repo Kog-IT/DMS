@@ -22,8 +22,16 @@ namespace DMS.EntityFrameworkCore.Configurations
             builder.Property(p => p.Description)
                 .HasMaxLength(Product.MaxDescriptionLength);
 
+            builder.Property(p => p.SKU)
+                .IsRequired()
+               .HasMaxLength(50);
+               
 
-        
+            builder.Property(p => p.Barcode)
+                .HasMaxLength(50);
+
+            builder.HasIndex(p => p.Barcode).IsUnique();
+
             builder.Property(p => p.TaxRate)
                 .HasColumnType("decimal(5,2)")
                 .HasDefaultValue(0m);

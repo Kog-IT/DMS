@@ -16,6 +16,8 @@ using Abp.UI;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace DMS.Products
 {
     public class ProductAppService : AsyncCrudAppService<
@@ -27,12 +29,14 @@ namespace DMS.Products
       UpdateProductDto>, IProductAppService
     {
         private readonly IRepository<ProductVariant, int> _variantRepository;
-        public ProductAppService(IRepository<Product, int> repository,
+        private readonly IRepository<Product, int> _productRepository;
+
+        public ProductAppService(IRepository<Product, int> productRepository,
             IRepository<ProductVariant, int> variantRepository)
-            : base(repository)
+            : base(productRepository)
         {
             _variantRepository = variantRepository;
-
+            _productRepository = productRepository;
             GetPermissionName = PermissionNames.Pages_Products;
             GetAllPermissionName = PermissionNames.Pages_Products;
             CreatePermissionName = PermissionNames.Pages_Products_Create;
@@ -41,9 +45,48 @@ namespace DMS.Products
 
         }
 
+        public override async Task<ProductDto> CreateAsync(CreateProductDto input)
+        {
+           
+            if (!string.IsNullOrEmpty(input.Barcode))
+            {
+                var isBarcodeExists = await _productRepository.GetAll().AnyAsync(p => p.Barcode == input.Barcode);
+                if (isBarcodeExists)
+                {
+                    throw new UserFriendlyException("عفواً، هذا الباركود مسجل مسبقاً لمنتج آخر!");
+                }
+            }
+
+          
+            var isSkuExists = await _productRepository.GetAll().AnyAsync(p => p.SKU == input.SKU);
+            if (isSkuExists)
+            {
+                throw new UserFriendlyException("عفواً، هذا الـ SKU مستخدم بالفعل!");
+            }
+
+            return await base.CreateAsync(input);
+        }
+
+        public override async Task<ProductDto> UpdateAsync(UpdateProductDto input)
+        {
+            
+            if (!string.IsNullOrEmpty(input.Barcode))
+            {
+                var isBarcodeExists = await _productRepository.GetAll().AnyAsync(p =>
+                    p.Barcode == input.Barcode); 
+
+                if (isBarcodeExists)
+                {
+                    throw new UserFriendlyException("هذا الباركود مستخدم بالفعل في منتج آخر!");
+                }
+            }
+
+            return await base.UpdateAsync(input);
+        }
 
         protected override IQueryable<Product> CreateFilteredQuery(PagedProductResultRequestDto input)
         {
+
             return Repository.GetAllIncluding(x => x.Category)
                 .WhereIf(
                     !input.Keyword.IsNullOrWhiteSpace(), 
@@ -84,20 +127,20 @@ namespace DMS.Products
         [AbpAuthorize(PermissionNames.Pages_Products_Edit)]
         public async Task<string> UploadProductImage(IFormFile file)
         {
-            // 1. التحقق من نوع الملف 
+           
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
             var extension = Path.GetExtension(file.FileName).ToLower();
             if (!allowedExtensions.Contains(extension))
                 throw new UserFriendlyException("Only image files are allowed!");
 
-            // 2. تحديد مسار الحفظ (Images/Oils)
+          
             var folderName = Path.Combine("wwwroot", "images", "oils");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             
             if (!Directory.Exists(pathToSave))
                 Directory.CreateDirectory(pathToSave);
 
-            // 3. توليد اسم فريد للملف
+            
             var fileName = Guid.NewGuid().ToString() + extension;
             var fullPath = Path.Combine(pathToSave, fileName);
 
@@ -106,7 +149,7 @@ namespace DMS.Products
                 await file.CopyToAsync(stream);
             }
 
-            return "/images/oils/" + fileName; // المسار الذي سيخزن في الداتابيز
+            return "/images/oils/" + fileName;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Products_Edit)] 
@@ -143,6 +186,20 @@ namespace DMS.Products
 
            
             return ObjectMapper.Map<List<ProductVariantDto>>(variants);
+        }
+
+        public async Task<ProductDto> GetByBarcodeAsync(GetProductByBarcodeDto input)
+        {
+            
+            var product = await Repository.GetAllIncluding(p => p.Category, p => p.Variants)
+                .FirstOrDefaultAsync(p => p.Barcode == input.Barcode);
+
+            if (product == null)
+            {
+                throw new UserFriendlyException("عفواً، لا يوجد منتج مسجل بهذا الباركود!");
+            }
+
+            return ObjectMapper.Map<ProductDto>(product);
         }
     }
 }

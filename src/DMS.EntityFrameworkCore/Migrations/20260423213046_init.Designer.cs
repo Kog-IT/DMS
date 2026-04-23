@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DMS.Migrations
 {
     [DbContext(typeof(DMSDbContext))]
-    [Migration("20260419203905_AddProductVariantsAndImages")]
-    partial class AddProductVariantsAndImages
+    [Migration("20260423213046_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1628,6 +1628,54 @@ namespace DMS.Migrations
                     b.ToTable("Categories", (string)null);
                 });
 
+            modelBuilder.Entity("DMS.Cities.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GovernorateId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name_EN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GovernorateId");
+
+                    b.ToTable("Cities");
+                });
+
             modelBuilder.Entity("DMS.Companies.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -1860,6 +1908,52 @@ namespace DMS.Migrations
                     b.HasIndex("TenantId", "CustomerId");
 
                     b.ToTable("CustomerContacts", (string)null);
+                });
+
+            modelBuilder.Entity("DMS.Governorates.Governorate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GovernorateCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name_EN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Governorates");
                 });
 
             modelBuilder.Entity("DMS.Invoices.Invoice", b =>
@@ -2448,6 +2542,10 @@ namespace DMS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Barcode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -2484,6 +2582,11 @@ namespace DMS.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("SKU")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<decimal>("TaxRate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(5,2)")
@@ -2493,6 +2596,10 @@ namespace DMS.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Barcode")
+                        .IsUnique()
+                        .HasFilter("[Barcode] IS NOT NULL");
 
                     b.HasIndex("CategoryId");
 
@@ -2585,6 +2692,9 @@ namespace DMS.Migrations
 
                     b.Property<string>("SKU")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -3062,6 +3172,17 @@ namespace DMS.Migrations
                     b.Navigation("LastModifierUser");
                 });
 
+            modelBuilder.Entity("DMS.Cities.City", b =>
+                {
+                    b.HasOne("DMS.Governorates.Governorate", "Governorate")
+                        .WithMany("Cities")
+                        .HasForeignKey("GovernorateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Governorate");
+                });
+
             modelBuilder.Entity("DMS.Customers.CustomerContact", b =>
                 {
                     b.HasOne("DMS.Customers.Customer", null)
@@ -3311,6 +3432,11 @@ namespace DMS.Migrations
             modelBuilder.Entity("DMS.Categories.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("DMS.Governorates.Governorate", b =>
+                {
+                    b.Navigation("Cities");
                 });
 
             modelBuilder.Entity("DMS.Invoices.Invoice", b =>

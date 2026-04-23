@@ -7,6 +7,7 @@ public static class StaticRoleNames
         public const string Admin = "Admin";
     }
 
+    
     public static class Tenants
     {
         public const string Admin = "Admin";
