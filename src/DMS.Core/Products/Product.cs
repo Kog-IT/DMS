@@ -20,5 +20,8 @@ namespace DMS.Products
         public int CategoryId { get; set; } // Foreign Key
         public virtual Category Category { get; set; }
         public int TenantId { get ; set ; }
+
+        public virtual ICollection<ProductVariant> Variants { get; set; }
+        //public virtual ICollection<ProductImage> Images { get; set; }
     }
 }

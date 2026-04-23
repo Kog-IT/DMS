@@ -12,6 +12,8 @@ using DMS.Orders;
 using DMS.Payments;
 using DMS.Products;
 using DMS.Categories;
+using DMS.Governorates;
+using DMS.Cities;
 using DMS.PriceLists;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +29,13 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<Visit> Visits { get; set; }
     public DbSet<VisitPhoto> VisitPhotos { get; set; }
     public DbSet<Product> Products { get; set; }
+    public virtual DbSet<ProductVariant> ProductVariants { get; set; }
+    public virtual DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Governorate> Governorates { get; set; }
+    public DbSet<City> Cities { get; set; }
+
+
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderLine> OrderLines { get; set; }
     public DbSet<Invoice> Invoices { get; set; }
@@ -38,6 +46,7 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<PriceList> PriceLists { get; set; }
     public DbSet<PriceListItem> PriceListItems { get; set; }
     public DbSet<PriceListAssignment> PriceListAssignments { get; set; }
+
 
     public DMSDbContext(DbContextOptions<DMSDbContext> options)
         : base(options)
@@ -56,6 +65,7 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
         modelBuilder.ApplyConfiguration(new VisitConfiguration());
         modelBuilder.ApplyConfiguration(new VisitPhotoConfiguration());
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductVariantConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
         modelBuilder.ApplyConfiguration(new OrderLineConfiguration());
