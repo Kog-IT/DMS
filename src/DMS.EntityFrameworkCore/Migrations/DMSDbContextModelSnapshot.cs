@@ -1768,6 +1768,9 @@ namespace DMS.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
+                    b.Property<int>("CreditDays")
+                        .HasColumnType("int");
+
                     b.Property<bool>("CreditEnabled")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -1792,6 +1795,9 @@ namespace DMS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

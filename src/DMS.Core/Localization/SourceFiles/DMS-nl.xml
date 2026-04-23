@@ -84,5 +84,9 @@
     <text name="EditUser">Bewerk gebruiker</text>
     <text name="TenantIdIsNotActive{0}">HuurderId {0} is niet actief</text>
     <text name="UnknownTenantId{0}">Onbekend huurderId {0}</text>
+    <text name="RetrievedSuccessfully" value="Retrieved successfully" />
+    <text name="CreatedSuccessfully" value="Created successfully" />
+    <text name="UpdatedSuccessfully" value="Updated successfully" />
+    <text name="DeletedSuccessfully" value="Deleted successfully" />
   </texts>
 </localizationDictionary>

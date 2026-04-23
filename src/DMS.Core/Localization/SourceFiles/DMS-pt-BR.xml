@@ -106,5 +106,9 @@
     <text name="RoleDeleteWarningMessage">A função {0} será excluída e desassociada de todos os usuários pertencentes a ela.</text>
     <text name="TenantDeleteWarningMessage">O Tenant {0} será excluído.</text>
     <text name="SearchWithThreeDot">Pesquisar...</text>
+    <text name="RetrievedSuccessfully" value="Retrieved successfully" />
+    <text name="CreatedSuccessfully" value="Created successfully" />
+    <text name="UpdatedSuccessfully" value="Updated successfully" />
+    <text name="DeletedSuccessfully" value="Deleted successfully" />
   </texts>
 </localizationDictionary>

@@ -127,5 +127,9 @@
     <text name="ResetPasswordStepOneInfo">1. Įveskite savo administratoriaus slaptažodį</text>
     <text name="ResetPasswordStepTwoInfo">2. Nusikopijuokite šį atsitiktinį slaptažodį, kad persiųstumėte vartotojui</text>
     <text name="UsersActivation">Vartotojų aktyvacija</text>
+    <text name="RetrievedSuccessfully" value="Retrieved successfully" />
+    <text name="CreatedSuccessfully" value="Created successfully" />
+    <text name="UpdatedSuccessfully" value="Updated successfully" />
+    <text name="DeletedSuccessfully" value="Deleted successfully" />
   </texts>
 </localizationDictionary>

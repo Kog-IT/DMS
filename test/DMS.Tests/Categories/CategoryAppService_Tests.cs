@@ -23,8 +23,8 @@ public class CategoryAppService_Tests : DMSTestBase
         var result = await _categoryAppService.GetAllAsync(
             new PagedCategoryResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
-        result.TotalCount.ShouldBe(0);
-        result.Items.Count.ShouldBe(0);
+        result.Data.TotalCount.ShouldBe(0);
+        result.Data.Items.Count.ShouldBe(0);
     }
 
     [Fact]
@@ -33,11 +33,11 @@ public class CategoryAppService_Tests : DMSTestBase
         var created = await _categoryAppService.CreateAsync(
             new CreateCategoryDto { Name = "Beverages" });
 
-        created.Id.ShouldBeGreaterThan(0);
-        created.Name.ShouldBe("Beverages");
+        created.Data.Id.ShouldBeGreaterThan(0);
+        created.Data.Name.ShouldBe("Beverages");
 
-        var fetched = await _categoryAppService.GetAsync(new EntityDto<int>(created.Id));
-        fetched.Name.ShouldBe("Beverages");
+        var fetched = await _categoryAppService.GetAsync(new EntityDto<int>(created.Data.Id));
+        fetched.Data.Name.ShouldBe("Beverages");
     }
 
     [Fact]
@@ -49,8 +49,8 @@ public class CategoryAppService_Tests : DMSTestBase
         var result = await _categoryAppService.GetAllAsync(
             new PagedCategoryResultRequestDto { MaxResultCount = 20, SkipCount = 0, Keyword = "Bev" });
 
-        result.TotalCount.ShouldBe(1);
-        result.Items[0].Name.ShouldBe("Beverages");
+        result.Data.TotalCount.ShouldBe(1);
+        result.Data.Items[0].Name.ShouldBe("Beverages");
     }
 
     [Fact]
@@ -61,11 +61,11 @@ public class CategoryAppService_Tests : DMSTestBase
 
         var updated = await _categoryAppService.UpdateAsync(new UpdateCategoryDto
         {
-            Id = created.Id,
+            Id = created.Data.Id,
             Name = "New Name"
         });
 
-        updated.Name.ShouldBe("New Name");
+        updated.Data.Name.ShouldBe("New Name");
     }
 
     [Fact]
@@ -74,12 +74,12 @@ public class CategoryAppService_Tests : DMSTestBase
         var created = await _categoryAppService.CreateAsync(
             new CreateCategoryDto { Name = "To Delete" });
 
-        await _categoryAppService.DeleteAsync(new EntityDto<int>(created.Id));
+        await _categoryAppService.DeleteAsync(new EntityDto<int>(created.Data.Id));
 
         var result = await _categoryAppService.GetAllAsync(
             new PagedCategoryResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
-        result.Items.ShouldNotContain(c => c.Id == created.Id);
+        result.Data.Items.ShouldNotContain(c => c.Id == created.Data.Id);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class CategoryAppService_Tests : DMSTestBase
         {
             var category = await context.Set<Category>()
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(c => c.Id == created.Id);
+                .FirstOrDefaultAsync(c => c.Id == created.Data.Id);
 
             category.ShouldNotBeNull();
             category.TenantId.ShouldBe(AbpSession.TenantId.Value);

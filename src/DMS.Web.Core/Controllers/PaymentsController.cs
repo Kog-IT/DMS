@@ -17,15 +17,15 @@ namespace DMS.Controllers
         [HttpGet("{id}/receipt")]
         public async Task<IActionResult> GetReceipt(int id)
         {
-            var bytes = await _paymentService.GetReceiptBytesAsync(id);
-            return File(bytes, "application/pdf", $"receipt-{id}.pdf");
+            var response = await _paymentService.GetReceiptBytesAsync(id);
+            return File(response.Data, "application/pdf", $"receipt-{id}.pdf");
         }
 
         [HttpPost("{id}/receipt/regenerate")]
         public async Task<IActionResult> RegenerateReceipt(int id)
         {
-            var bytes = await _paymentService.RegenerateReceiptAsync(id);
-            return File(bytes, "application/pdf", $"receipt-{id}.pdf");
+            var response = await _paymentService.RegenerateReceiptAsync(id);
+            return File(response.Data, "application/pdf", $"receipt-{id}.pdf");
         }
     }
 }

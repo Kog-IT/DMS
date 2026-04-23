@@ -1,5 +1,3 @@
-﻿using Abp.Application.Services;
-using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
@@ -12,6 +10,8 @@ using Abp.UI;
 using DMS.Authorization;
 using DMS.Authorization.Roles;
 using DMS.Authorization.Users;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.Roles.Dto;
 using DMS.Users.Dto;
 using Microsoft.AspNetCore.Identity;
@@ -21,11 +21,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
 
 namespace DMS.Users;
 
 [AbpAuthorize(PermissionNames.Pages_Users)]
-public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUserResultRequestDto, CreateUserDto, UserDto>, IUserAppService
+public class UserAppService : DmsCrudAppService<User, UserDto, long, PagedUserResultRequestDto, CreateUserDto, UserDto>, IUserAppService
 {
     private readonly UserManager _userManager;
     private readonly RoleManager _roleManager;
@@ -52,10 +53,8 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
         _logInManager = logInManager;
     }
 
-    public override async Task<UserDto> CreateAsync(CreateUserDto input)
+    public override async Task<ApiResponse<UserDto>> CreateAsync(CreateUserDto input)
     {
-        CheckCreatePermission();
-
         var user = ObjectMapper.Map<User>(input);
 
         user.TenantId = AbpSession.TenantId;
@@ -72,13 +71,12 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
 
         CurrentUnitOfWork.SaveChanges();
 
-        return MapToEntityDto(user);
+        var dto = MapToEntityDto(user);
+        return Ok(dto, L("CreatedSuccessfully"));
     }
 
-    public override async Task<UserDto> UpdateAsync(UserDto input)
+    public override async Task<ApiResponse<UserDto>> UpdateAsync(UserDto input)
     {
-        CheckUpdatePermission();
-
         var user = await _userManager.GetUserByIdAsync(input.Id);
 
         MapToEntity(input, user);
@@ -90,46 +88,53 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
             CheckErrors(await _userManager.SetRolesAsync(user, input.RoleNames));
         }
 
-        return await GetAsync(input);
+        var result = await GetEntityByIdAsync(input.Id);
+        var dto = MapToEntityDto(result);
+        return Ok(dto, L("UpdatedSuccessfully"));
     }
 
-    public override async Task DeleteAsync(EntityDto<long> input)
+    public override async Task<ApiResponse<object>> DeleteAsync(EntityDto<long> input)
     {
         var user = await _userManager.GetUserByIdAsync(input.Id);
         await _userManager.DeleteAsync(user);
+        return Ok<object>(null, L("DeletedSuccessfully"));
     }
 
     [AbpAuthorize(PermissionNames.Pages_Users_Activation)]
-    public async Task Activate(EntityDto<long> user)
+    public async Task<ApiResponse<object>> Activate(EntityDto<long> user)
     {
         await Repository.UpdateAsync(user.Id, async (entity) =>
         {
             entity.IsActive = true;
         });
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
     [AbpAuthorize(PermissionNames.Pages_Users_Activation)]
-    public async Task DeActivate(EntityDto<long> user)
+    public async Task<ApiResponse<object>> DeActivate(EntityDto<long> user)
     {
         await Repository.UpdateAsync(user.Id, async (entity) =>
         {
             entity.IsActive = false;
         });
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
-    public async Task<ListResultDto<RoleDto>> GetRoles()
+    public async Task<ApiResponse<ListResultDto<RoleDto>>> GetRoles()
     {
         var roles = await _roleRepository.GetAllListAsync();
-        return new ListResultDto<RoleDto>(ObjectMapper.Map<List<RoleDto>>(roles));
+        var result = new ListResultDto<RoleDto>(ObjectMapper.Map<List<RoleDto>>(roles));
+        return Ok(result, L("RetrievedSuccessfully"));
     }
 
-    public async Task ChangeLanguage(ChangeUserLanguageDto input)
+    public async Task<ApiResponse<object>> ChangeLanguage(ChangeUserLanguageDto input)
     {
         await SettingManager.ChangeSettingForUserAsync(
             AbpSession.ToUserIdentifier(),
             LocalizationSettingNames.DefaultLanguage,
             input.LanguageName
         );
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
     protected override User MapToEntity(CreateUserDto createInput)
@@ -186,7 +191,7 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
         identityResult.CheckErrors(LocalizationManager);
     }
 
-    public async Task<bool> ChangePassword(ChangePasswordDto input)
+    public async Task<ApiResponse<bool>> ChangePassword(ChangePasswordDto input)
     {
         await _userManager.InitializeOptionsAsync(AbpSession.TenantId);
 
@@ -208,7 +213,7 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
             }));
         }
 
-        return true;
+        return Ok(true, L("UpdatedSuccessfully"));
     }
 
     public async Task<bool> ResetPassword(ResetPasswordDto input)
@@ -246,4 +251,3 @@ public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUser
         return true;
     }
 }
-

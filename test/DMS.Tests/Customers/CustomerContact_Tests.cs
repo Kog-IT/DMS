@@ -49,9 +49,9 @@ public class CustomerContact_Tests : DMSTestBase
             Title = "Manager"
         });
 
-        result.Id.ShouldBeGreaterThan(0);
-        result.Name.ShouldBe("John Doe");
-        result.CustomerId.ShouldBe(customerId);
+        result.Data.Id.ShouldBeGreaterThan(0);
+        result.Data.Name.ShouldBe("John Doe");
+        result.Data.CustomerId.ShouldBe(customerId);
     }
 
     [Fact]
@@ -94,8 +94,8 @@ public class CustomerContact_Tests : DMSTestBase
 
         await UsingDbContextAsync(async ctx =>
         {
-            var firstContact = await ctx.Set<CustomerContact>().FindAsync(first.Id);
-            var secondContact = await ctx.Set<CustomerContact>().FindAsync(second.Id);
+            var firstContact = await ctx.Set<CustomerContact>().FindAsync(first.Data.Id);
+            var secondContact = await ctx.Set<CustomerContact>().FindAsync(second.Data.Id);
             firstContact.IsPrimary.ShouldBeFalse();
             secondContact.IsPrimary.ShouldBeTrue();
         });
@@ -114,13 +114,13 @@ public class CustomerContact_Tests : DMSTestBase
 
         var updated = await _contactService.UpdateAsync(new UpdateCustomerContactDto
         {
-            Id = created.Id,
+            Id = created.Data.Id,
             Name = "Updated Name",
             Phone = "999-0000"
         });
 
-        updated.Name.ShouldBe("Updated Name");
-        updated.Phone.ShouldBe("999-0000");
+        updated.Data.Name.ShouldBe("Updated Name");
+        updated.Data.Phone.ShouldBe("999-0000");
     }
 
     [Fact]
@@ -134,13 +134,13 @@ public class CustomerContact_Tests : DMSTestBase
             CustomerId = customerId, Name = "To Delete"
         });
 
-        await _contactService.DeleteAsync(new EntityDto<int>(created.Id));
+        await _contactService.DeleteAsync(new EntityDto<int>(created.Data.Id));
 
         await UsingDbContextAsync(async ctx =>
         {
             var contact = await ctx.Set<CustomerContact>()
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(c => c.Id == created.Id);
+                .FirstOrDefaultAsync(c => c.Id == created.Data.Id);
             contact.IsDeleted.ShouldBeTrue();
         });
     }
@@ -162,8 +162,8 @@ public class CustomerContact_Tests : DMSTestBase
             SkipCount = 0
         });
 
-        result.TotalCount.ShouldBe(1);
-        result.Items[0].Name.ShouldBe("C1 Contact");
+        result.Data.TotalCount.ShouldBe(1);
+        result.Data.Items[0].Name.ShouldBe("C1 Contact");
     }
 
     [Fact]
@@ -199,13 +199,13 @@ public class CustomerContact_Tests : DMSTestBase
         // Promote second to primary via update
         await _contactService.UpdateAsync(new UpdateCustomerContactDto
         {
-            Id = second.Id, Name = "Second", IsPrimary = true
+            Id = second.Data.Id, Name = "Second", IsPrimary = true
         });
 
         await UsingDbContextAsync(async ctx =>
         {
-            var firstContact = await ctx.Set<CustomerContact>().FindAsync(first.Id);
-            var secondContact = await ctx.Set<CustomerContact>().FindAsync(second.Id);
+            var firstContact = await ctx.Set<CustomerContact>().FindAsync(first.Data.Id);
+            var secondContact = await ctx.Set<CustomerContact>().FindAsync(second.Data.Id);
             firstContact.IsPrimary.ShouldBeFalse();
             secondContact.IsPrimary.ShouldBeTrue();
         });

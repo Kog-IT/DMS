@@ -1,16 +1,16 @@
-using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
 using DMS.Authorization;
 using DMS.Categories.Dto;
+using DMS.Common;
 using System.Linq;
 
 namespace DMS.Categories;
 
 [AbpAuthorize(PermissionNames.Pages_Categories)]
-public class CategoryAppService : AsyncCrudAppService<
+public class CategoryAppService : DmsCrudAppService<
     Category,
     CategoryDto,
     int,

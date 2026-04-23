@@ -1,16 +1,16 @@
-using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
 using DMS.Authorization;
+using DMS.Common;
 using DMS.Companies.Dto;
 using System.Linq;
 
 namespace DMS.Companies;
 
 [AbpAuthorize(PermissionNames.Pages_Companies)]
-public class CompanyAppService : AsyncCrudAppService<
+public class CompanyAppService : DmsCrudAppService<
     Company,
     CompanyDto,
     int,

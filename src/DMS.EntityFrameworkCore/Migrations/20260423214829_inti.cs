@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DMS.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class inti : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -514,6 +514,8 @@ namespace DMS.Migrations
                     LastClassifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreditLimit = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValue: 0m),
                     CreditEnabled = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreditDays = table.Column<int>(type: "int", nullable: false),
+                    IsBlocked = table.Column<bool>(type: "bit", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),

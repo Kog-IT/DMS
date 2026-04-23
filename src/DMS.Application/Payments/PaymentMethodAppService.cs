@@ -1,16 +1,16 @@
-using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
 using DMS.Authorization;
+using DMS.Common;
 using DMS.Payments.Dto;
 using System.Linq;
 
 namespace DMS.Payments;
 
 [AbpAuthorize(PermissionNames.Pages_PaymentMethods)]
-public class PaymentMethodAppService : AsyncCrudAppService<
+public class PaymentMethodAppService : DmsCrudAppService<
     PaymentMethod,
     PaymentMethodDto,
     int,

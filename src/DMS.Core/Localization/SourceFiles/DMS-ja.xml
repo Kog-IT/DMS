@@ -53,5 +53,9 @@
     <text name="Yes" value="はい" />
     <text name="No" value="いいえ" />
     <text name="Optional" value="オプション" />
+    <text name="RetrievedSuccessfully" value="Retrieved successfully" />
+    <text name="CreatedSuccessfully" value="Created successfully" />
+    <text name="UpdatedSuccessfully" value="Updated successfully" />
+    <text name="DeletedSuccessfully" value="Deleted successfully" />
   </texts>
 </localizationDictionary>

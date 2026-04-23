@@ -1,17 +1,18 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.UI;
 using DMS.Authorization;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.Customers.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace DMS.Customers;
 
 [AbpAuthorize(PermissionNames.Pages_Customers_Contacts)]
-public class CustomerContactAppService : AsyncCrudAppService<
+public class CustomerContactAppService : DmsCrudAppService<
     CustomerContact,
     CustomerContactDto,
     int,
@@ -40,7 +41,7 @@ public class CustomerContactAppService : AsyncCrudAppService<
             .Where(c => c.CustomerId == input.CustomerId);
     }
 
-    public override async Task<CustomerContactDto> CreateAsync(CreateCustomerContactDto input)
+    public override async Task<ApiResponse<CustomerContactDto>> CreateAsync(CreateCustomerContactDto input)
     {
         var customerExists = await _customerRepository.GetAll()
             .AnyAsync(c => c.Id == input.CustomerId);
@@ -57,7 +58,7 @@ public class CustomerContactAppService : AsyncCrudAppService<
         return await base.CreateAsync(input);
     }
 
-    public override async Task<CustomerContactDto> UpdateAsync(UpdateCustomerContactDto input)
+    public override async Task<ApiResponse<CustomerContactDto>> UpdateAsync(UpdateCustomerContactDto input)
     {
         var existing = await Repository.GetAsync(input.Id);
 

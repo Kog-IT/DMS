@@ -20,4 +20,6 @@ public class CustomerDto : FullAuditedEntityDto<int>
     public DateTime? LastClassifiedAt { get; set; }
     public decimal CreditLimit { get; set; }
     public bool CreditEnabled { get; set; }
+    public int CreditDays { get; set; }
+    public bool IsBlocked { get; set; }
 }

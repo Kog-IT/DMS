@@ -88,11 +88,12 @@ public class Payment_Tests : DMSTestBase
             OrderDate = DateTime.UtcNow,
             Lines = new() { new CreateOrderLineDto { ProductId = productId, Quantity = 2 } }
         });
-        await _orderService.SubmitAsync(order.Id);
+        await _orderService.SubmitAsync(order.Data.Id);
 
-        var invoice = await _invoiceService.GenerateFromOrderAsync(order.Id);
-        await _invoiceService.IssueAsync(invoice.Id);
-        return await _invoiceService.GetAsync(new EntityDto<int>(invoice.Id));
+        var invoice = await _invoiceService.GenerateFromOrderAsync(order.Data.Id);
+        await _invoiceService.IssueAsync(invoice.Data.Id);
+        var fetched = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Data.Id));
+        return fetched.Data;
     }
 
     [Fact]
@@ -109,14 +110,14 @@ public class Payment_Tests : DMSTestBase
             Lines = new() { new CreatePaymentLineDto { PaymentMethodId = methodId, Amount = invoice.Total } }
         });
 
-        payment.ShouldNotBeNull();
-        payment.ReceiptNumber.ShouldStartWith("RCP-");
-        payment.TotalAmount.ShouldBe(invoice.Total);
-        payment.Lines.Count.ShouldBe(1);
+        payment.Data.ShouldNotBeNull();
+        payment.Data.ReceiptNumber.ShouldStartWith("RCP-");
+        payment.Data.TotalAmount.ShouldBe(invoice.Total);
+        payment.Data.Lines.Count.ShouldBe(1);
 
         var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Id));
-        updated.Status.ShouldBe(InvoiceStatus.Paid);
-        updated.PaidAmount.ShouldBe(invoice.Total);
+        updated.Data.Status.ShouldBe(InvoiceStatus.Paid);
+        updated.Data.PaidAmount.ShouldBe(invoice.Total);
     }
 
     [Fact]
@@ -139,11 +140,11 @@ public class Payment_Tests : DMSTestBase
             }
         });
 
-        payment.Lines.Count.ShouldBe(2);
-        payment.TotalAmount.ShouldBe(partial);
+        payment.Data.Lines.Count.ShouldBe(2);
+        payment.Data.TotalAmount.ShouldBe(partial);
 
         var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Id));
-        updated.Status.ShouldBe(InvoiceStatus.PartiallyPaid);
+        updated.Data.Status.ShouldBe(InvoiceStatus.PartiallyPaid);
     }
 
     [Fact]
@@ -178,13 +179,13 @@ public class Payment_Tests : DMSTestBase
             OrderDate = DateTime.UtcNow,
             Lines = new() { new CreateOrderLineDto { ProductId = productId, Quantity = 1 } }
         });
-        await _orderService.SubmitAsync(order.Id);
-        var invoice = await _invoiceService.GenerateFromOrderAsync(order.Id);
+        await _orderService.SubmitAsync(order.Data.Id);
+        var invoice = await _invoiceService.GenerateFromOrderAsync(order.Data.Id);
 
         var ex = await Should.ThrowAsync<UserFriendlyException>(async () =>
             await _paymentService.RecordPaymentAsync(new RecordPaymentDto
             {
-                InvoiceId = invoice.Id,
+                InvoiceId = invoice.Data.Id,
                 PaymentDate = DateTime.UtcNow,
                 Lines = new() { new CreatePaymentLineDto { PaymentMethodId = methodId, Amount = 50m } }
             }));
@@ -213,7 +214,7 @@ public class Payment_Tests : DMSTestBase
             SkipCount = 0
         });
 
-        result.TotalCount.ShouldBe(1);
-        result.Items[0].InvoiceId.ShouldBe(invoice.Id);
+        result.Data.TotalCount.ShouldBe(1);
+        result.Data.Items[0].InvoiceId.ShouldBe(invoice.Id);
     }
 }
