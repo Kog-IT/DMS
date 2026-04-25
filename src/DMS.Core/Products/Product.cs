@@ -21,6 +21,7 @@ namespace DMS.Products
         public virtual Category Category { get; set; }
         public int TenantId { get ; set ; }
 
+        public bool IsActive { get; set; } = true;
         public virtual ICollection<ProductVariant> Variants { get; set; }
         //public virtual ICollection<ProductImage> Images { get; set; }
     }

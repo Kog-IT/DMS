@@ -12,6 +12,7 @@ namespace DMS.Products.Dto
     [AutoMapFrom(typeof(Product))]
     public class ProductDto : FullAuditedEntityDto<int>
     {
+        public bool IsActive { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }

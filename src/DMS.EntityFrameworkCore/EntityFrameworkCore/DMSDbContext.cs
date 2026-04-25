@@ -15,6 +15,9 @@ using DMS.Categories;
 using DMS.Governorates;
 using DMS.Cities;
 using DMS.PriceLists;
+using DMS.Brands;
+using DMS.ProductGroups;
+using DMS.Warehouses;
 using Microsoft.EntityFrameworkCore;
 
 namespace DMS.EntityFrameworkCore;
@@ -34,6 +37,10 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<Category> Categories { get; set; }
     public DbSet<Governorate> Governorates { get; set; }
     public DbSet<City> Cities { get; set; }
+    public DbSet<Brand> Brands { get; set; }
+    public DbSet<ProductGroup> ProductGroups { get; set; }
+    public DbSet<Warehouse> Warehouses { get; set; }
+    public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
 
 
     public DbSet<Order> Orders { get; set; }
@@ -67,6 +74,10 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new ProductVariantConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new BrandConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductGroupConfiguration());
+        modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
+        modelBuilder.ApplyConfiguration(new WarehouseProductConfiguration());
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
         modelBuilder.ApplyConfiguration(new OrderLineConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
