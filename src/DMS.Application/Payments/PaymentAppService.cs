@@ -5,6 +5,7 @@ using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.UI;
 using DMS.Authorization;
+using DMS.Common.Dto;
 using DMS.Invoices;
 using DMS.Payments.Dto;
 using DMS.Payments.Pdf;
@@ -43,7 +44,7 @@ public class PaymentAppService : DMSAppServiceBase, IPaymentAppService
     }
 
     [AbpAuthorize(PermissionNames.Pages_Payments_Create)]
-    public async Task<PaymentDto> RecordPaymentAsync(RecordPaymentDto input)
+    public async Task<ApiResponse<PaymentDto>> RecordPaymentAsync(RecordPaymentDto input)
     {
         var invoice = await _invoiceRepository.GetAll()
             .FirstOrDefaultAsync(i => i.Id == input.InvoiceId)
@@ -100,7 +101,7 @@ public class PaymentAppService : DMSAppServiceBase, IPaymentAppService
         return await GetAsync(payment.Id);
     }
 
-    public async Task<PaymentDto> GetAsync(int id)
+    public async Task<ApiResponse<PaymentDto>> GetAsync(int id)
     {
         var payment = await _paymentRepository.GetAll()
             .Include(p => p.Lines)
@@ -108,10 +109,10 @@ public class PaymentAppService : DMSAppServiceBase, IPaymentAppService
             .FirstOrDefaultAsync(p => p.Id == id)
             ?? throw new UserFriendlyException("Payment not found.");
 
-        return ObjectMapper.Map<PaymentDto>(payment);
+        return Ok(ObjectMapper.Map<PaymentDto>(payment), L("RetrievedSuccessfully"));
     }
 
-    public async Task<PagedResultDto<PaymentDto>> GetAllAsync(PagedPaymentRequestDto input)
+    public async Task<ApiResponse<PagedResultDto<PaymentDto>>> GetAllAsync(PagedPaymentRequestDto input)
     {
         var query = _paymentRepository.GetAll()
             .Include(p => p.Lines)
@@ -134,12 +135,12 @@ public class PaymentAppService : DMSAppServiceBase, IPaymentAppService
             .Take(input.MaxResultCount)
             .ToListAsync();
 
-        return new PagedResultDto<PaymentDto>(total,
-            ObjectMapper.Map<System.Collections.Generic.List<PaymentDto>>(items));
+        return Ok(new PagedResultDto<PaymentDto>(total,
+            ObjectMapper.Map<System.Collections.Generic.List<PaymentDto>>(items)), L("RetrievedSuccessfully"));
     }
 
     [AbpAuthorize(PermissionNames.Pages_Payments_GetReceipt)]
-    public async Task<byte[]> GetReceiptBytesAsync(int paymentId)
+    public async Task<ApiResponse<byte[]>> GetReceiptBytesAsync(int paymentId)
     {
         var payment = await _paymentRepository.GetAll()
             .Include(p => p.Lines).ThenInclude(l => l.PaymentMethod)
@@ -148,20 +149,20 @@ public class PaymentAppService : DMSAppServiceBase, IPaymentAppService
 
         var stored = await _fileStore.LoadAsync(payment.TenantId, payment.ReceiptNumber);
         if (stored != null)
-            return stored;
+            return Ok(stored, L("RetrievedSuccessfully"));
 
-        return await RegenerateAndSaveAsync(payment);
+        return Ok(await RegenerateAndSaveAsync(payment), L("RetrievedSuccessfully"));
     }
 
     [AbpAuthorize(PermissionNames.Pages_Payments_RegenerateReceipt)]
-    public async Task<byte[]> RegenerateReceiptAsync(int paymentId)
+    public async Task<ApiResponse<byte[]>> RegenerateReceiptAsync(int paymentId)
     {
         var payment = await _paymentRepository.GetAll()
             .Include(p => p.Lines).ThenInclude(l => l.PaymentMethod)
             .FirstOrDefaultAsync(p => p.Id == paymentId)
             ?? throw new UserFriendlyException("Payment not found.");
 
-        return await RegenerateAndSaveAsync(payment);
+        return Ok(await RegenerateAndSaveAsync(payment), L("RetrievedSuccessfully"));
     }
 
     private async Task<byte[]> RegenerateAndSaveAsync(Payment payment)

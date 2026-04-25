@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-04-23
+
+### Task: Fix P0 credit management gaps
+
+Context:
+Six P0 gaps identified against the requirements doc: missing entity fields, incomplete credit outstanding calculation, no block/unblock endpoints, no dedicated credit limit endpoint, missing utilization metric, and orders not checking customer blocked status.
+
+Files Affected:
+- `src/DMS.Core/Customers/Customer.cs`
+- `src/DMS.Core/Customers/CreditCheckResult.cs`
+- `src/DMS.Core/Customers/CreditCheckService.cs`
+- `src/DMS.Core/Authorization/PermissionNames.cs`
+- `src/DMS.Core/Authorization/DMSAuthorizationProvider.cs`
+- `src/DMS.Core/Localization/SourceFiles/DMS.xml`
+- `src/DMS.Application/Customers/ICustomerAppService.cs`
+- `src/DMS.Application/Customers/CustomerAppService.cs`
+- `src/DMS.Application/Customers/Dto/CustomerDto.cs`
+- `src/DMS.Application/Customers/Dto/CreateCustomerDto.cs`
+- `src/DMS.Application/Customers/Dto/UpdateCustomerDto.cs`
+- `src/DMS.Application/Customers/Dto/CreditStatusDto.cs`
+- `src/DMS.Application/Orders/OrderAppService.cs`
+- `src/DMS.EntityFrameworkCore/Migrations/` (AddCustomerBlockedAndCreditDays)
+
+### Fix
+- Added `IsBlocked` and `CreditDays` fields to `Customer` entity with EF migration.
+- Added `UtilizationPercent` to `CreditCheckResult`; `CreditCheckService` now includes confirmed/pending (uninvoiced) orders in the outstanding balance calculation.
+- Added `BlockAsync`, `UnblockAsync`, and `UpdateCreditLimitAsync` to `CustomerAppService` and `ICustomerAppService`.
+- Added `Pages.Customers.Block` and `Pages.Customers.ManageCredit` permissions with localization keys.
+- `OrderAppService.CreateAsync` now throws if the customer `IsBlocked`.
+- Updated `CustomerDto`, `CreateCustomerDto`, `UpdateCustomerDto`, and `CreditStatusDto` to include `IsBlocked`, `CreditDays`, and `UtilizationPercent`.
+
 ## 2026-04-18
 
 ### Task: Credit Management module
@@ -317,3 +348,28 @@ Files Affected:
 
 ### Feature
 - Added `Tenant_Isolation_Customer_TenantId_Stamped_Correctly` test: creates a customer, bypasses EF query filters to read the raw row, asserts `TenantId` matches `AbpSession.TenantId`, and asserts a cross-tenant query returns nothing. All 7 CustomerAppService tests pass.
+
+## 2026-04-22
+
+### Task: Add localized message field to all API responses
+
+Context:
+All app service methods now return ApiResponse<T> containing a localized `message` string and the original result as `data`. Messages are sourced from ABP localization (DMS.xml). A new DmsCrudAppService base replaces AsyncCrudAppService across all services.
+
+Files Affected:
+- src/DMS.Application/Common/Dto/ApiResponse.cs (new)
+- src/DMS.Application/Common/DmsCrudAppService.cs (new)
+- src/DMS.Application/DMSAppServiceBase.cs
+- src/DMS.Core/Localization/SourceFiles/DMS.xml + all language files
+- All IAppService interfaces and AppService implementations
+- All test files under test/DMS.Tests/
+
+### Feature
+- Added `ApiResponse<T>` DTO with `Message` and `Data` properties.
+- Added `DmsCrudAppService` abstract base implementing CRUD returning `ApiResponse<T>`.
+- Added `Ok<T>(data, message)` helper on `DMSAppServiceBase`.
+- Added localization keys: RetrievedSuccessfully, CreatedSuccessfully, UpdatedSuccessfully, DeletedSuccessfully.
+- All services migrated from AsyncCrudAppService to DmsCrudAppService.
+- All custom service methods wrap returns in ApiResponse<T> with localized messages.
+- UserAppService.Activate/DeActivate/ChangeLanguage/ChangePassword updated to return ApiResponse<T>.
+- PaymentsController updated to unwrap ApiResponse<T>.Data for byte[] responses.

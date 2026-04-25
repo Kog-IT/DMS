@@ -120,5 +120,9 @@
     <text name="403PageHeader">Yetkisiz Erişim</text>
     <text name="403PageDescription">Bu sayfaya erişmek için yetkiniz yok. Lütfen yöneticinizle iletişime geçin.</text>
     <text name="403PageButton">Dashboard'a dön</text>
+    <text name="RetrievedSuccessfully" value="Retrieved successfully" />
+    <text name="CreatedSuccessfully" value="Created successfully" />
+    <text name="UpdatedSuccessfully" value="Updated successfully" />
+    <text name="DeletedSuccessfully" value="Deleted successfully" />
   </texts>
 </localizationDictionary>

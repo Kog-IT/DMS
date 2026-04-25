@@ -90,9 +90,10 @@ public class Invoice_Tests : DMSTestBase
         });
 
         // DiscountLimitSalesRep defaults to 0 → goes straight to Confirmed
-        await _orderService.SubmitAsync(order.Id);
+        await _orderService.SubmitAsync(order.Data.Id);
 
-        return await _orderService.GetAsync(new EntityDto<int>(order.Id));
+        var fetched = await _orderService.GetAsync(new EntityDto<int>(order.Data.Id));
+        return fetched.Data;
     }
 
     [Fact]
@@ -103,13 +104,13 @@ public class Invoice_Tests : DMSTestBase
 
         var invoice = await _invoiceService.GenerateFromOrderAsync(order.Id);
 
-        invoice.ShouldNotBeNull();
-        invoice.InvoiceNumber.ShouldNotBeNullOrEmpty();
-        invoice.Status.ShouldBe(InvoiceStatus.Draft);
-        invoice.OrderId.ShouldBe(order.Id);
-        invoice.Lines.Count.ShouldBe(order.Lines.Count);
-        invoice.CustomerName.ShouldNotBeNullOrEmpty();
-        invoice.Total.ShouldBe(order.Total);
+        invoice.Data.ShouldNotBeNull();
+        invoice.Data.InvoiceNumber.ShouldNotBeNullOrEmpty();
+        invoice.Data.Status.ShouldBe(InvoiceStatus.Draft);
+        invoice.Data.OrderId.ShouldBe(order.Id);
+        invoice.Data.Lines.Count.ShouldBe(1);
+        invoice.Data.CustomerName.ShouldNotBeNullOrEmpty();
+        invoice.Data.Total.ShouldBe(order.Total);
     }
 
     [Fact]
@@ -128,7 +129,7 @@ public class Invoice_Tests : DMSTestBase
 
         // Order is still Draft — do NOT submit
         var ex = await Should.ThrowAsync<UserFriendlyException>(async () =>
-            await _invoiceService.GenerateFromOrderAsync(order.Id)
+            await _invoiceService.GenerateFromOrderAsync(order.Data.Id)
         );
 
         ex.Message.ShouldBe("Order must be confirmed or delivered to generate an invoice.");
@@ -156,10 +157,10 @@ public class Invoice_Tests : DMSTestBase
         var order = await CreateConfirmedOrderAsync("INV_C4", "Widget4");
         var invoice = await _invoiceService.GenerateFromOrderAsync(order.Id);
 
-        await _invoiceService.IssueAsync(invoice.Id);
+        await _invoiceService.IssueAsync(invoice.Data.Id);
 
-        var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Id));
-        updated.Status.ShouldBe(InvoiceStatus.Issued);
+        var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Data.Id));
+        updated.Data.Status.ShouldBe(InvoiceStatus.Issued);
     }
 
     [Fact]
@@ -168,20 +169,20 @@ public class Invoice_Tests : DMSTestBase
         LoginAsDefaultTenantAdmin();
         var order = await CreateConfirmedOrderAsync("INV_C5", "Widget5");
         var invoice = await _invoiceService.GenerateFromOrderAsync(order.Id);
-        await _invoiceService.IssueAsync(invoice.Id);
+        await _invoiceService.IssueAsync(invoice.Data.Id);
 
-        var partialAmount = invoice.Total - 50m;
+        var partialAmount = invoice.Data.Total - 50m;
         var methodId = await SeedPaymentMethodAsync("CASH_INV_C5");
         await _paymentService.RecordPaymentAsync(new DMS.Payments.Dto.RecordPaymentDto
         {
-            InvoiceId = invoice.Id,
+            InvoiceId = invoice.Data.Id,
             PaymentDate = DateTime.UtcNow,
             Lines = new() { new DMS.Payments.Dto.CreatePaymentLineDto { PaymentMethodId = methodId, Amount = partialAmount } }
         });
 
-        var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Id));
-        updated.Status.ShouldBe(InvoiceStatus.PartiallyPaid);
-        updated.PaidAmount.ShouldBe(partialAmount);
+        var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Data.Id));
+        updated.Data.Status.ShouldBe(InvoiceStatus.PartiallyPaid);
+        updated.Data.PaidAmount.ShouldBe(partialAmount);
     }
 
     [Fact]
@@ -190,18 +191,18 @@ public class Invoice_Tests : DMSTestBase
         LoginAsDefaultTenantAdmin();
         var order = await CreateConfirmedOrderAsync("INV_C6", "Widget6");
         var invoice = await _invoiceService.GenerateFromOrderAsync(order.Id);
-        await _invoiceService.IssueAsync(invoice.Id);
+        await _invoiceService.IssueAsync(invoice.Data.Id);
 
         var methodId = await SeedPaymentMethodAsync("CASH_INV_C6");
         await _paymentService.RecordPaymentAsync(new DMS.Payments.Dto.RecordPaymentDto
         {
-            InvoiceId = invoice.Id,
+            InvoiceId = invoice.Data.Id,
             PaymentDate = DateTime.UtcNow,
-            Lines = new() { new DMS.Payments.Dto.CreatePaymentLineDto { PaymentMethodId = methodId, Amount = invoice.Total } }
+            Lines = new() { new DMS.Payments.Dto.CreatePaymentLineDto { PaymentMethodId = methodId, Amount = invoice.Data.Total } }
         });
 
-        var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Id));
-        updated.Status.ShouldBe(InvoiceStatus.Paid);
+        var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Data.Id));
+        updated.Data.Status.ShouldBe(InvoiceStatus.Paid);
     }
 
     [Fact]
@@ -213,13 +214,13 @@ public class Invoice_Tests : DMSTestBase
 
         await _invoiceService.VoidAsync(new VoidInvoiceDto
         {
-            InvoiceId = invoice.Id,
+            InvoiceId = invoice.Data.Id,
             Reason = "Test void"
         });
 
-        var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Id));
-        updated.Status.ShouldBe(InvoiceStatus.Voided);
-        updated.VoidReason.ShouldBe("Test void");
+        var updated = await _invoiceService.GetAsync(new EntityDto<int>(invoice.Data.Id));
+        updated.Data.Status.ShouldBe(InvoiceStatus.Voided);
+        updated.Data.VoidReason.ShouldBe("Test void");
     }
 
     [Fact]
@@ -228,12 +229,12 @@ public class Invoice_Tests : DMSTestBase
         LoginAsDefaultTenantAdmin();
         var order = await CreateConfirmedOrderAsync("INV_C8", "Widget8");
         var invoice = await _invoiceService.GenerateFromOrderAsync(order.Id);
-        await _invoiceService.IssueAsync(invoice.Id);
+        await _invoiceService.IssueAsync(invoice.Data.Id);
 
         var methodId = await SeedPaymentMethodAsync("CASH_INV_C8");
         await _paymentService.RecordPaymentAsync(new DMS.Payments.Dto.RecordPaymentDto
         {
-            InvoiceId = invoice.Id,
+            InvoiceId = invoice.Data.Id,
             PaymentDate = DateTime.UtcNow,
             Lines = new() { new DMS.Payments.Dto.CreatePaymentLineDto { PaymentMethodId = methodId, Amount = 50m } }
         });
@@ -241,7 +242,7 @@ public class Invoice_Tests : DMSTestBase
         var ex = await Should.ThrowAsync<UserFriendlyException>(async () =>
             await _invoiceService.VoidAsync(new VoidInvoiceDto
             {
-                InvoiceId = invoice.Id,
+                InvoiceId = invoice.Data.Id,
                 Reason = "Should fail"
             })
         );

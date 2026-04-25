@@ -23,6 +23,8 @@ public class DMSAuthorizationProvider : AuthorizationProvider
         customers.CreateChildPermission(PermissionNames.Pages_Customers_Edit, L("CustomersEdit"));
         customers.CreateChildPermission(PermissionNames.Pages_Customers_Delete, L("CustomersDelete"));
         customers.CreateChildPermission(PermissionNames.Pages_Customers_Classify, L("CustomersClassify"));
+        customers.CreateChildPermission(PermissionNames.Pages_Customers_Block, L("CustomersBlock"));
+        customers.CreateChildPermission(PermissionNames.Pages_Customers_ManageCredit, L("CustomersManageCredit"));
         var contacts = customers.CreateChildPermission(PermissionNames.Pages_Customers_Contacts, L("CustomerContacts"));
         contacts.CreateChildPermission(PermissionNames.Pages_Customers_Contacts_Create, L("CustomerContactsCreate"));
         contacts.CreateChildPermission(PermissionNames.Pages_Customers_Contacts_Edit, L("CustomerContactsEdit"));

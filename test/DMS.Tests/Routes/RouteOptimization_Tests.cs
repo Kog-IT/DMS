@@ -25,7 +25,7 @@ public class RouteOptimization_Tests : DMSTestBase
 
     private async Task<int> CreateCustomerWithGps(string code, double lat, double lon)
     {
-        var dto = await _customerAppService.CreateAsync(new CreateCustomerDto
+        var response = await _customerAppService.CreateAsync(new CreateCustomerDto
         {
             Code = code,
             Name = $"Customer {code}",
@@ -33,29 +33,30 @@ public class RouteOptimization_Tests : DMSTestBase
             Longitude = lon,
             IsActive = true
         });
-        return dto.Id;
+        return response.Data.Id;
     }
 
     private async Task<int> CreateCustomerNoGps(string code)
     {
-        var dto = await _customerAppService.CreateAsync(new CreateCustomerDto
+        var response = await _customerAppService.CreateAsync(new CreateCustomerDto
         {
             Code = code,
             Name = $"Customer {code}",
             IsActive = true
         });
-        return dto.Id;
+        return response.Data.Id;
     }
 
     private async Task<RouteDto> CreateRouteWithItems(List<CreateRouteItemDto> items)
     {
-        return await _routeAppService.CreateAsync(new CreateRouteDto
+        var response = await _routeAppService.CreateAsync(new CreateRouteDto
         {
             Name = "Test Route",
             AssignedUserId = AbpSession.UserId.Value,
             PlannedDate = DateTime.Today.AddDays(1),
             Items = items
         });
+        return response.Data;
     }
 
     private OptimizeRouteInputDto RepAt(int routeId, double lat, double lon) => new OptimizeRouteInputDto
@@ -73,10 +74,10 @@ public class RouteOptimization_Tests : DMSTestBase
 
         var result = await _routeAppService.OptimizeRouteAsync(RepAt(route.Id, 30.0, 31.0));
 
-        result.RouteId.ShouldBe(route.Id);
-        result.Items.ShouldBeEmpty();
-        result.TotalDistanceKm.ShouldBe(0);
-        result.TotalDurationMinutes.ShouldBe(0);
+        result.Data.RouteId.ShouldBe(route.Id);
+        result.Data.Items.ShouldBeEmpty();
+        result.Data.TotalDistanceKm.ShouldBe(0);
+        result.Data.TotalDurationMinutes.ShouldBe(0);
     }
 
     [Fact]
@@ -90,10 +91,10 @@ public class RouteOptimization_Tests : DMSTestBase
 
         var result = await _routeAppService.OptimizeRouteAsync(RepAt(route.Id, 30.0, 31.0));
 
-        result.Items.Count.ShouldBe(1);
-        result.Items[0].CustomerId.ShouldBe(custId);
-        result.Items[0].OrderIndex.ShouldBe(0);
-        result.Items[0].DistanceFromPreviousKm.ShouldBeGreaterThan(0);
+        result.Data.Items.Count.ShouldBe(1);
+        result.Data.Items[0].CustomerId.ShouldBe(custId);
+        result.Data.Items[0].OrderIndex.ShouldBe(0);
+        result.Data.Items[0].DistanceFromPreviousKm.ShouldBeGreaterThan(0);
     }
 
     [Fact]
@@ -114,9 +115,9 @@ public class RouteOptimization_Tests : DMSTestBase
 
         var result = await _routeAppService.OptimizeRouteAsync(RepAt(route.Id, 30.0, 31.0));
 
-        result.Items.Count.ShouldBe(2);
-        result.Items.First(i => i.CustomerId == nearId).OrderIndex.ShouldBe(0);
-        result.Items.First(i => i.CustomerId == farId).OrderIndex.ShouldBe(1);
+        result.Data.Items.Count.ShouldBe(2);
+        result.Data.Items.First(i => i.CustomerId == nearId).OrderIndex.ShouldBe(0);
+        result.Data.Items.First(i => i.CustomerId == farId).OrderIndex.ShouldBe(1);
     }
 
     [Fact]
@@ -133,9 +134,9 @@ public class RouteOptimization_Tests : DMSTestBase
 
         var result = await _routeAppService.OptimizeRouteAsync(RepAt(route.Id, 30.0, 31.0));
 
-        result.Items.Count.ShouldBe(2);
-        result.Items.First(i => i.CustomerId == gpsId).OrderIndex.ShouldBe(0);
-        result.Items.First(i => i.CustomerId == noGpsId).OrderIndex.ShouldBe(1);
+        result.Data.Items.Count.ShouldBe(2);
+        result.Data.Items.First(i => i.CustomerId == gpsId).OrderIndex.ShouldBe(0);
+        result.Data.Items.First(i => i.CustomerId == noGpsId).OrderIndex.ShouldBe(1);
     }
 
     [Fact]
@@ -149,7 +150,7 @@ public class RouteOptimization_Tests : DMSTestBase
 
         var result = await _routeAppService.OptimizeRouteAsync(RepAt(route.Id, 30.0, 31.0));
 
-        result.Items[0].PlannedDurationMinutes.ShouldBe(45);
+        result.Data.Items[0].PlannedDurationMinutes.ShouldBe(45);
     }
 
     [Fact]
@@ -163,7 +164,7 @@ public class RouteOptimization_Tests : DMSTestBase
 
         var result = await _routeAppService.OptimizeRouteAsync(RepAt(route.Id, 30.0, 31.0));
 
-        result.Items[0].PlannedDurationMinutes.ShouldBe(30);
+        result.Data.Items[0].PlannedDurationMinutes.ShouldBe(30);
     }
 
     [Fact]
@@ -210,8 +211,8 @@ public class RouteOptimization_Tests : DMSTestBase
 
         var result = await _routeAppService.OptimizeRouteAsync(RepAt(route.Id, 30.0, 31.0));
 
-        result.TotalDurationMinutes.ShouldBeGreaterThanOrEqualTo(50);
-        result.TotalDistanceKm.ShouldBeGreaterThan(0);
-        result.EstimatedEndTime.ShouldBeGreaterThan(new DateTime(2026, 4, 15, 8, 0, 0));
+        result.Data.TotalDurationMinutes.ShouldBeGreaterThanOrEqualTo(50);
+        result.Data.TotalDistanceKm.ShouldBeGreaterThan(0);
+        result.Data.EstimatedEndTime.ShouldBeGreaterThan(new DateTime(2026, 4, 15, 8, 0, 0));
     }
 }

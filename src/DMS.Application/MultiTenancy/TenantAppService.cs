@@ -1,4 +1,3 @@
-﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
@@ -10,6 +9,8 @@ using Abp.Runtime.Security;
 using DMS.Authorization;
 using DMS.Authorization.Roles;
 using DMS.Authorization.Users;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.Editions;
 using DMS.MultiTenancy.Dto;
 using Microsoft.AspNetCore.Identity;
@@ -20,7 +21,7 @@ using System.Threading.Tasks;
 namespace DMS.MultiTenancy;
 
 [AbpAuthorize(PermissionNames.Pages_Tenants)]
-public class TenantAppService : AsyncCrudAppService<Tenant, TenantDto, int, PagedTenantResultRequestDto, CreateTenantDto, TenantDto>, ITenantAppService
+public class TenantAppService : DmsCrudAppService<Tenant, TenantDto, int, PagedTenantResultRequestDto, CreateTenantDto, TenantDto>, ITenantAppService
 {
     private readonly TenantManager _tenantManager;
     private readonly EditionManager _editionManager;
@@ -44,10 +45,8 @@ public class TenantAppService : AsyncCrudAppService<Tenant, TenantDto, int, Page
         _abpZeroDbMigrator = abpZeroDbMigrator;
     }
 
-    public override async Task<TenantDto> CreateAsync(CreateTenantDto input)
+    public override async Task<ApiResponse<TenantDto>> CreateAsync(CreateTenantDto input)
     {
-        CheckCreatePermission();
-
         // Create tenant
         var tenant = ObjectMapper.Map<Tenant>(input);
         tenant.ConnectionString = input.ConnectionString.IsNullOrEmpty()
@@ -89,7 +88,8 @@ public class TenantAppService : AsyncCrudAppService<Tenant, TenantDto, int, Page
             await CurrentUnitOfWork.SaveChangesAsync();
         }
 
-        return MapToEntityDto(tenant);
+        var dto = MapToEntityDto(tenant);
+        return Ok(dto, L("CreatedSuccessfully"));
     }
 
     protected override IQueryable<Tenant> CreateFilteredQuery(PagedTenantResultRequestDto input)
@@ -112,12 +112,11 @@ public class TenantAppService : AsyncCrudAppService<Tenant, TenantDto, int, Page
         entity.IsActive = updateInput.IsActive;
     }
 
-    public override async Task DeleteAsync(EntityDto<int> input)
+    public override async Task<ApiResponse<object>> DeleteAsync(EntityDto<int> input)
     {
-        CheckDeletePermission();
-
         var tenant = await _tenantManager.GetByIdAsync(input.Id);
         await _tenantManager.DeleteAsync(tenant);
+        return Ok<object>(null, L("DeletedSuccessfully"));
     }
 
     private void CheckErrors(IdentityResult identityResult)
@@ -125,4 +124,3 @@ public class TenantAppService : AsyncCrudAppService<Tenant, TenantDto, int, Page
         identityResult.CheckErrors(LocalizationManager);
     }
 }
-

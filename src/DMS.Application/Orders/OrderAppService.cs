@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Configuration;
@@ -11,6 +10,8 @@ using Abp.UI;
 using DMS.Authorization;
 using DMS.Authorization.Roles;
 using DMS.Authorization.Users;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.Customers;
 using DMS.Orders.Dto;
 using DMS.PriceLists;
@@ -20,7 +21,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DMS.Orders;
 
 [AbpAuthorize(PermissionNames.Pages_Orders)]
-public class OrderAppService : AsyncCrudAppService<
+public class OrderAppService : DmsCrudAppService<
     Order,
     OrderDto,
     int,
@@ -81,7 +82,7 @@ public class OrderAppService : AsyncCrudAppService<
         return query;
     }
 
-    protected override async Task<Order> GetEntityByIdAsync(int id)
+    protected async Task<Order> GetEntityByIdAsync(int id)
     {
         return await Repository.GetAll()
             .Include(o => o.Lines)
@@ -89,15 +90,17 @@ public class OrderAppService : AsyncCrudAppService<
             ?? throw new UserFriendlyException("Order not found.");
     }
 
-    public override async Task<OrderDto> CreateAsync(CreateOrderDto input)
+    public override async Task<ApiResponse<OrderDto>> CreateAsync(CreateOrderDto input)
     {
         if (input.Lines == null || input.Lines.Count == 0)
             throw new UserFriendlyException("Order must have at least one line.");
 
-        var customerExists = await _customerRepository.GetAll()
-            .AnyAsync(c => c.Id == input.CustomerId);
-        if (!customerExists)
+        var customer = await _customerRepository.GetAll()
+            .FirstOrDefaultAsync(c => c.Id == input.CustomerId);
+        if (customer == null)
             throw new UserFriendlyException("Customer not found.");
+        if (customer.IsBlocked)
+            throw new UserFriendlyException("Customer is blocked. Orders cannot be placed for a blocked customer.");
 
         var allowBackOrder = await _settingManager.GetSettingValueAsync(OrderSettingNames.AllowOrdersWithoutStock);
         var backOrderAllowed = bool.Parse(allowBackOrder);
@@ -124,7 +127,7 @@ public class OrderAppService : AsyncCrudAppService<
         return await GetAsync(new EntityDto<int>(order.Id));
     }
 
-    public override async Task<OrderDto> UpdateAsync(UpdateOrderDto input)
+    public override async Task<ApiResponse<OrderDto>> UpdateAsync(UpdateOrderDto input)
     {
         var order = await GetEntityByIdAsync(input.Id);
 
@@ -246,7 +249,7 @@ public class OrderAppService : AsyncCrudAppService<
         order.Total = lines.Sum(l => l.LineTotal) - order.OrderDiscountAmount;
     }
 
-    public async Task SubmitAsync(int id)
+    public async Task<ApiResponse<object>> SubmitAsync(int id)
     {
         var order = await GetEntityByIdAsync(id);
         if (order.Status != OrderStatus.Draft)
@@ -264,10 +267,11 @@ public class OrderAppService : AsyncCrudAppService<
 
         order.Status = exceedsLimit ? OrderStatus.PendingApproval : OrderStatus.Confirmed;
         await Repository.UpdateAsync(order);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
     [AbpAuthorize(PermissionNames.Pages_Orders_Approve)]
-    public async Task ApproveAsync(int id)
+    public async Task<ApiResponse<object>> ApproveAsync(int id)
     {
         var order = await GetEntityByIdAsync(id);
         if (order.Status != OrderStatus.PendingApproval)
@@ -275,10 +279,11 @@ public class OrderAppService : AsyncCrudAppService<
 
         order.Status = OrderStatus.Confirmed;
         await Repository.UpdateAsync(order);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
     [AbpAuthorize(PermissionNames.Pages_Orders_Approve)]
-    public async Task RejectAsync(int id, string reason)
+    public async Task<ApiResponse<object>> RejectAsync(int id, string reason)
     {
         var order = await GetEntityByIdAsync(id);
         if (order.Status != OrderStatus.PendingApproval)
@@ -287,9 +292,10 @@ public class OrderAppService : AsyncCrudAppService<
         order.RejectionReason = reason;
         order.Status = OrderStatus.Cancelled;
         await Repository.UpdateAsync(order);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
-    public async Task CancelAsync(int id)
+    public async Task<ApiResponse<object>> CancelAsync(int id)
     {
         var order = await GetEntityByIdAsync(id);
         if (order.Status != OrderStatus.Draft && order.Status != OrderStatus.Confirmed)
@@ -297,9 +303,10 @@ public class OrderAppService : AsyncCrudAppService<
 
         order.Status = OrderStatus.Cancelled;
         await Repository.UpdateAsync(order);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
-    public async Task MarkDeliveredAsync(int id)
+    public async Task<ApiResponse<object>> MarkDeliveredAsync(int id)
     {
         var order = await GetEntityByIdAsync(id);
         if (order.Status != OrderStatus.Confirmed && order.Status != OrderStatus.PartiallyDelivered)
@@ -307,6 +314,7 @@ public class OrderAppService : AsyncCrudAppService<
 
         order.Status = OrderStatus.Delivered;
         await Repository.UpdateAsync(order);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
     private async Task<decimal> GetDiscountLimitForCurrentUserAsync()

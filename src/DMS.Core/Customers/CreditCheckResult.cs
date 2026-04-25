@@ -6,4 +6,5 @@ public class CreditCheckResult
     public decimal CreditLimit { get; set; }
     public decimal OutstandingBalance { get; set; }
     public decimal AvailableCredit { get; set; }
+    public decimal UtilizationPercent { get; set; }
 }

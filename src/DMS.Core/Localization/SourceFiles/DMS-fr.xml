@@ -43,5 +43,9 @@
     <text name="TenantSelection_Detail" value="Veuillez choisir l'un de ces clients (tenants) suivants." />
     <text name="Logout" value="Déconnexion" />
     <text name="SearchWithThreeDot">Rechercher...</text>
+    <text name="RetrievedSuccessfully" value="Retrieved successfully" />
+    <text name="CreatedSuccessfully" value="Created successfully" />
+    <text name="UpdatedSuccessfully" value="Updated successfully" />
+    <text name="DeletedSuccessfully" value="Deleted successfully" />
   </texts>
 </localizationDictionary>

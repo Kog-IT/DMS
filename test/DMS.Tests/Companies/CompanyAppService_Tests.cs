@@ -26,8 +26,8 @@ public class CompanyAppService_Tests : DMSTestBase
         var result = await _companyAppService.GetAllAsync(
             new PagedCompanyResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
-        result.TotalCount.ShouldBe(0);
-        result.Items.Count.ShouldBe(0);
+        result.Data.TotalCount.ShouldBe(0);
+        result.Data.Items.Count.ShouldBe(0);
     }
 
     [Fact]
@@ -48,10 +48,10 @@ public class CompanyAppService_Tests : DMSTestBase
         var created = await _companyAppService.CreateAsync(input);
 
         // Assert
-        created.Id.ShouldBeGreaterThan(0);
-        created.Name.ShouldBe("Acme Corp");
-        created.TaxNumber.ShouldBe("TAX123");
-        created.IsActive.ShouldBeTrue();
+        created.Data.Id.ShouldBeGreaterThan(0);
+        created.Data.Name.ShouldBe("Acme Corp");
+        created.Data.TaxNumber.ShouldBe("TAX123");
+        created.Data.IsActive.ShouldBeTrue();
     }
 
     [Fact]
@@ -66,8 +66,8 @@ public class CompanyAppService_Tests : DMSTestBase
             new PagedCompanyResultRequestDto { MaxResultCount = 20, SkipCount = 0, Keyword = "Acme" });
 
         // Assert
-        result.TotalCount.ShouldBe(1);
-        result.Items[0].Name.ShouldBe("Acme Corp");
+        result.Data.TotalCount.ShouldBe(1);
+        result.Data.Items[0].Name.ShouldBe("Acme Corp");
     }
 
     [Fact]
@@ -80,14 +80,14 @@ public class CompanyAppService_Tests : DMSTestBase
         // Act
         var updated = await _companyAppService.UpdateAsync(new UpdateCompanyDto
         {
-            Id = created.Id,
+            Id = created.Data.Id,
             Name = "New Name",
             IsActive = false
         });
 
         // Assert
-        updated.Name.ShouldBe("New Name");
-        updated.IsActive.ShouldBeFalse();
+        updated.Data.Name.ShouldBe("New Name");
+        updated.Data.IsActive.ShouldBeFalse();
     }
 
     [Fact]
@@ -98,13 +98,13 @@ public class CompanyAppService_Tests : DMSTestBase
             new CreateCompanyDto { Name = "To Delete", IsActive = true });
 
         // Act
-        await _companyAppService.DeleteAsync(new EntityDto<int>(created.Id));
+        await _companyAppService.DeleteAsync(new EntityDto<int>(created.Data.Id));
 
         // Assert — soft-deleted; GetAll should not return it
         var result = await _companyAppService.GetAllAsync(
             new PagedCompanyResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
-        result.Items.ShouldNotContain(c => c.Id == created.Id);
+        result.Data.Items.ShouldNotContain(c => c.Id == created.Data.Id);
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class CompanyAppService_Tests : DMSTestBase
         {
             var company = await context.Set<DMS.Companies.Company>()
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(c => c.Id == created.Id);
+                .FirstOrDefaultAsync(c => c.Id == created.Data.Id);
 
             company.ShouldNotBeNull();
             company.TenantId.ShouldBe(AbpSession.TenantId.Value);
@@ -127,7 +127,7 @@ public class CompanyAppService_Tests : DMSTestBase
             // Verify a query scoped to a different TenantId returns nothing
             var otherTenantCompanies = await context.Set<DMS.Companies.Company>()
                 .IgnoreQueryFilters()
-                .Where(c => c.TenantId == 999 && c.Id == created.Id)
+                .Where(c => c.TenantId == 999 && c.Id == created.Data.Id)
                 .ToListAsync();
 
             otherTenantCompanies.ShouldBeEmpty();

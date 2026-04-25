@@ -1,4 +1,3 @@
-﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
@@ -8,6 +7,8 @@ using Abp.Linq.Extensions;
 using DMS.Authorization;
 using DMS.Authorization.Roles;
 using DMS.Authorization.Users;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.Roles.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ using System.Threading.Tasks;
 namespace DMS.Roles;
 
 [AbpAuthorize(PermissionNames.Pages_Roles)]
-public class RoleAppService : AsyncCrudAppService<Role, RoleDto, int, PagedRoleResultRequestDto, CreateRoleDto, RoleDto>, IRoleAppService
+public class RoleAppService : DmsCrudAppService<Role, RoleDto, int, PagedRoleResultRequestDto, CreateRoleDto, RoleDto>, IRoleAppService
 {
     private readonly RoleManager _roleManager;
     private readonly UserManager _userManager;
@@ -31,10 +32,8 @@ public class RoleAppService : AsyncCrudAppService<Role, RoleDto, int, PagedRoleR
         _userManager = userManager;
     }
 
-    public override async Task<RoleDto> CreateAsync(CreateRoleDto input)
+    public override async Task<ApiResponse<RoleDto>> CreateAsync(CreateRoleDto input)
     {
-        CheckCreatePermission();
-
         var role = ObjectMapper.Map<Role>(input);
         role.SetNormalizedName();
 
@@ -47,10 +46,11 @@ public class RoleAppService : AsyncCrudAppService<Role, RoleDto, int, PagedRoleR
 
         await _roleManager.SetGrantedPermissionsAsync(role, grantedPermissions);
 
-        return MapToEntityDto(role);
+        var dto = MapToEntityDto(role);
+        return Ok(dto, L("CreatedSuccessfully"));
     }
 
-    public async Task<ListResultDto<RoleListDto>> GetRolesAsync(GetRolesInput input)
+    public async Task<ApiResponse<ListResultDto<RoleListDto>>> GetRolesAsync(GetRolesInput input)
     {
         var roles = await _roleManager
             .Roles
@@ -60,13 +60,12 @@ public class RoleAppService : AsyncCrudAppService<Role, RoleDto, int, PagedRoleR
             )
             .ToListAsync();
 
-        return new ListResultDto<RoleListDto>(ObjectMapper.Map<List<RoleListDto>>(roles));
+        var result = new ListResultDto<RoleListDto>(ObjectMapper.Map<List<RoleListDto>>(roles));
+        return Ok(result, L("RetrievedSuccessfully"));
     }
 
-    public override async Task<RoleDto> UpdateAsync(RoleDto input)
+    public override async Task<ApiResponse<RoleDto>> UpdateAsync(RoleDto input)
     {
-        CheckUpdatePermission();
-
         var role = await _roleManager.GetRoleByIdAsync(input.Id);
 
         ObjectMapper.Map(input, role);
@@ -80,13 +79,12 @@ public class RoleAppService : AsyncCrudAppService<Role, RoleDto, int, PagedRoleR
 
         await _roleManager.SetGrantedPermissionsAsync(role, grantedPermissions);
 
-        return MapToEntityDto(role);
+        var dto = MapToEntityDto(role);
+        return Ok(dto, L("UpdatedSuccessfully"));
     }
 
-    public override async Task DeleteAsync(EntityDto<int> input)
+    public override async Task<ApiResponse<object>> DeleteAsync(EntityDto<int> input)
     {
-        CheckDeletePermission();
-
         var role = await _roleManager.FindByIdAsync(input.Id.ToString());
         var users = await _userManager.GetUsersInRoleAsync(role.NormalizedName);
 
@@ -96,15 +94,17 @@ public class RoleAppService : AsyncCrudAppService<Role, RoleDto, int, PagedRoleR
         }
 
         CheckErrors(await _roleManager.DeleteAsync(role));
+        return Ok<object>(null, L("DeletedSuccessfully"));
     }
 
-    public Task<ListResultDto<PermissionDto>> GetAllPermissions()
+    public Task<ApiResponse<ListResultDto<PermissionDto>>> GetAllPermissions()
     {
         var permissions = PermissionManager.GetAllPermissions();
 
-        return Task.FromResult(new ListResultDto<PermissionDto>(
+        var result = new ListResultDto<PermissionDto>(
             ObjectMapper.Map<List<PermissionDto>>(permissions).OrderBy(p => p.DisplayName).ToList()
-        ));
+        );
+        return Task.FromResult(Ok(result, L("RetrievedSuccessfully")));
     }
 
     protected override IQueryable<Role> CreateFilteredQuery(PagedRoleResultRequestDto input)
@@ -130,19 +130,19 @@ public class RoleAppService : AsyncCrudAppService<Role, RoleDto, int, PagedRoleR
         identityResult.CheckErrors(LocalizationManager);
     }
 
-    public async Task<GetRoleForEditOutput> GetRoleForEdit(EntityDto input)
+    public async Task<ApiResponse<GetRoleForEditOutput>> GetRoleForEdit(EntityDto input)
     {
         var permissions = PermissionManager.GetAllPermissions();
         var role = await _roleManager.GetRoleByIdAsync(input.Id);
         var grantedPermissions = (await _roleManager.GetGrantedPermissionsAsync(role)).ToArray();
         var roleEditDto = ObjectMapper.Map<RoleEditDto>(role);
 
-        return new GetRoleForEditOutput
+        var result = new GetRoleForEditOutput
         {
             Role = roleEditDto,
             Permissions = ObjectMapper.Map<List<FlatPermissionDto>>(permissions).OrderBy(p => p.DisplayName).ToList(),
             GrantedPermissionNames = grantedPermissions.Select(p => p.Name).ToList()
         };
+        return Ok(result, L("RetrievedSuccessfully"));
     }
 }
-
