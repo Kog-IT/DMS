@@ -21,14 +21,15 @@ namespace DMS.EntityFrameworkCore.Seed.Host
             if (_context.Cities.Any())
                 return;
 
-            var jsonPath = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "EntityFrameworkCore", "Seed", "Data", "cities.json");
+            var candidates = new[]
+            {
+                Path.Combine(Directory.GetCurrentDirectory(), "EntityFrameworkCore", "Seed", "Data", "cities.json"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EntityFrameworkCore", "Seed", "Data", "cities.json"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cities.json"),
+            };
 
-            if (!File.Exists(jsonPath))
-                jsonPath = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "EntityFrameworkCore", "Seed", "Data", "cities.json");
+            var jsonPath = Array.Find(candidates, File.Exists);
+            if (jsonPath == null) return; // No cities JSON found (e.g. test environment) — skip silently
 
             var json = File.ReadAllText(jsonPath);
             var items = JsonSerializer.Deserialize<List<CityJsonItem>>(json,
