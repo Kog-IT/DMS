@@ -12,7 +12,6 @@ public class Warehouse : FullAuditedEntity<int>, IMustHaveTenant
     public const int MaxDataLength = 500;
     public const int MaxStreetLength = 200;
     public const int MaxLandmarkLength = 200;
-    public const int MaxCoordLength = 50;
     public const int MaxBuildingDataLength = 200;
 
     [Required]
@@ -38,11 +37,9 @@ public class Warehouse : FullAuditedEntity<int>, IMustHaveTenant
     [StringLength(MaxLandmarkLength)]
     public string? Landmark { get; set; }
 
-    [StringLength(MaxCoordLength)]
-    public string? Latitude { get; set; }
+    public double? Latitude { get; set; }
 
-    [StringLength(MaxCoordLength)]
-    public string? Longitude { get; set; }
+    public double? Longitude { get; set; }
 
     [StringLength(MaxBuildingDataLength)]
     public string? BuildingData { get; set; }

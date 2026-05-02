@@ -27,12 +27,6 @@ public class WarehouseConfiguration : IEntityTypeConfiguration<Warehouse>
         builder.Property(w => w.Landmark)
             .HasMaxLength(Warehouse.MaxLandmarkLength);
 
-        builder.Property(w => w.Latitude)
-            .HasMaxLength(Warehouse.MaxCoordLength);
-
-        builder.Property(w => w.Longitude)
-            .HasMaxLength(Warehouse.MaxCoordLength);
-
         builder.Property(w => w.BuildingData)
             .HasMaxLength(Warehouse.MaxBuildingDataLength);
     }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
@@ -17,7 +18,25 @@ public class SupplierAppService : DmsCrudAppService<
     PagedSupplierResultRequestDto,
     CreateSupplierDto, UpdateSupplierDto>, ISupplierAppService
 {
-    public SupplierAppService(IRepository<Supplier, int> repository) : base(repository) { }
+    private readonly IRepository<DMS.Media.MediaFile, int> _mediaRepository;
+
+    public SupplierAppService(
+        IRepository<Supplier, int> repository,
+        IRepository<DMS.Media.MediaFile, int> mediaRepository)
+        : base(repository)
+    {
+        _mediaRepository = mediaRepository;
+    }
+
+    protected override SupplierDto MapToEntityDto(Supplier entity)
+    {
+        var dto = base.MapToEntityDto(entity);
+        dto.Media = _mediaRepository.GetAll()
+            .Where(m => m.MediaType == DMS.Media.MediaType.Supplier && m.ModelId == entity.Id)
+            .Select(m => new DMS.Application.Media.Dto.MediaItemDto { Id = m.Id, Path = m.FilePath })
+            .ToList();
+        return dto;
+    }
 
     protected override IQueryable<Supplier> CreateFilteredQuery(PagedSupplierResultRequestDto input)
     {
@@ -45,6 +64,7 @@ public class SupplierAppService : DmsCrudAppService<
         return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
+    [HttpPost]
     public async Task<ApiResponse<object>> BulkDeleteAsync(List<int> ids)
     {
         if (ids == null || ids.Count == 0)

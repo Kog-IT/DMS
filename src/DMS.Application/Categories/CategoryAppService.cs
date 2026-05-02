@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
@@ -7,6 +8,7 @@ using DMS.Authorization;
 using DMS.Categories.Dto;
 using DMS.Common;
 using DMS.Common.Dto;
+using DMS.Media;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +22,30 @@ namespace DMS.Categories
         PagedCategoryResultRequestDto,
         CreateCategoryDto, UpdateCategoryDto>, ICategoryAppService
     {
-        public CategoryAppService(IRepository<Category, int> repository) : base(repository)
+        private readonly IRepository<MediaFile, int> _mediaRepository;
+
+        public CategoryAppService(
+            IRepository<Category, int> repository,
+            IRepository<MediaFile, int> mediaRepository)
+            : base(repository)
         {
             GetPermissionName = PermissionNames.Pages_Categories;
             GetAllPermissionName = PermissionNames.Pages_Categories;
             CreatePermissionName = PermissionNames.Pages_Categories_Create;
             UpdatePermissionName = PermissionNames.Pages_Categories_Edit;
             DeletePermissionName = PermissionNames.Pages_Categories_Delete;
+
+            _mediaRepository = mediaRepository;
+        }
+
+        protected override CategoryDto MapToEntityDto(Category entity)
+        {
+            var dto = base.MapToEntityDto(entity);
+            dto.Media = _mediaRepository.GetAll()
+                .Where(m => m.MediaType == MediaType.Category && m.ModelId == entity.Id)
+                .Select(m => new DMS.Application.Media.Dto.MediaItemDto { Id = m.Id, Path = m.FilePath })
+                .ToList();
+            return dto;
         }
 
         protected override IQueryable<Category> CreateFilteredQuery(PagedCategoryResultRequestDto input)
@@ -52,6 +71,7 @@ namespace DMS.Categories
             return Ok<object>(null, L("UpdatedSuccessfully"));
         }
 
+        [HttpPost]
         public async Task<ApiResponse<object>> BulkDeleteAsync(List<int> ids)
         {
             if (ids == null || ids.Count == 0)

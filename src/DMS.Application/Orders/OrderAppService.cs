@@ -36,6 +36,7 @@ public class OrderAppService : DmsCrudAppService<
     private readonly UserManager _userManager;
     private readonly PriceResolutionService _priceResolutionService;
     private readonly CreditCheckService _creditCheckService;
+    private readonly IRepository<DMS.Media.MediaFile, int> _mediaRepository;
 
     public OrderAppService(
         IRepository<Order, int> repository,
@@ -45,7 +46,8 @@ public class OrderAppService : DmsCrudAppService<
         ISettingManager settingManager,
         UserManager userManager,
         PriceResolutionService priceResolutionService,
-        CreditCheckService creditCheckService)
+        CreditCheckService creditCheckService,
+        IRepository<DMS.Media.MediaFile, int> mediaRepository)
         : base(repository)
     {
         GetPermissionName = PermissionNames.Pages_Orders;
@@ -61,11 +63,22 @@ public class OrderAppService : DmsCrudAppService<
         _userManager = userManager;
         _priceResolutionService = priceResolutionService;
         _creditCheckService = creditCheckService;
+        _mediaRepository = mediaRepository;
+    }
+
+    protected override OrderDto MapToEntityDto(Order entity)
+    {
+        var dto = base.MapToEntityDto(entity);
+        dto.Media = _mediaRepository.GetAll()
+            .Where(m => m.MediaType == DMS.Media.MediaType.Order && m.ModelId == entity.Id)
+            .Select(m => new DMS.Application.Media.Dto.MediaItemDto { Id = m.Id, Path = m.FilePath })
+            .ToList();
+        return dto;
     }
 
     protected override IQueryable<Order> CreateFilteredQuery(PagedOrderResultRequestDto input)
     {
-        IQueryable<Order> query = Repository.GetAll().Include(o => o.Lines);
+        IQueryable<Order> query = Repository.GetAll().Include(o => o.Customer).Include(o => o.Lines);
 
         if (input.CustomerId.HasValue)
             query = query.Where(o => o.CustomerId == input.CustomerId.Value);
@@ -82,13 +95,12 @@ public class OrderAppService : DmsCrudAppService<
         return query;
     }
 
-    protected async Task<Order> GetEntityByIdAsync(int id)
-    {
-        return await Repository.GetAll()
+    protected override async Task<Order> GetEntityByIdAsync(int id)
+        => await Repository.GetAll()
+            .Include(o => o.Customer)
             .Include(o => o.Lines)
             .FirstOrDefaultAsync(o => o.Id == id)
             ?? throw new UserFriendlyException("Order not found.");
-    }
 
     public override async Task<ApiResponse<OrderDto>> CreateAsync(CreateOrderDto input)
     {

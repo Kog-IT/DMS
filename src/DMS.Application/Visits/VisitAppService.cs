@@ -8,6 +8,7 @@ using DMS.Authorization;
 using DMS.Common;
 using DMS.Common.Dto;
 using DMS.Customers;
+using DMS.Media;
 using DMS.Visits.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,12 +31,14 @@ public class VisitAppService : DmsCrudAppService<
     private readonly IRepository<VisitPhoto, int> _photoRepository;
     private readonly IRepository<Customer, int> _customerRepository;
     private readonly ISettingManager _settingManager;
+    private readonly IRepository<MediaFile, int> _mediaRepository;
 
     public VisitAppService(
         IRepository<Visit, int> repository,
         IRepository<VisitPhoto, int> photoRepository,
         IRepository<Customer, int> customerRepository,
-        ISettingManager settingManager)
+        ISettingManager settingManager,
+        IRepository<MediaFile, int> mediaRepository)
         : base(repository)
     {
         GetPermissionName = PermissionNames.Pages_Visits;
@@ -47,11 +50,30 @@ public class VisitAppService : DmsCrudAppService<
         _photoRepository = photoRepository;
         _customerRepository = customerRepository;
         _settingManager = settingManager;
+        _mediaRepository = mediaRepository;
     }
+
+    protected override VisitDto MapToEntityDto(Visit entity)
+    {
+        var dto = base.MapToEntityDto(entity);
+        dto.Media = _mediaRepository.GetAll()
+            .Where(m => m.MediaType == MediaType.Visit && m.ModelId == entity.Id)
+            .Select(m => new DMS.Application.Media.Dto.MediaItemDto { Id = m.Id, Path = m.FilePath })
+            .ToList();
+        return dto;
+    }
+
+    protected override async Task<Visit> GetEntityByIdAsync(int id)
+        => await Repository.GetAll()
+            .Include(v => v.Customer)
+            .Include(v => v.Photos)
+            .FirstOrDefaultAsync(v => v.Id == id)
+            ?? throw new UserFriendlyException("Visit not found.");
 
     protected override IQueryable<Visit> CreateFilteredQuery(PagedVisitResultRequestDto input)
     {
         return Repository.GetAll()
+            .Include(v => v.Customer)
             .WhereIf(input.Status.HasValue, v => v.Status == input.Status.Value)
             .WhereIf(input.AssignedUserId.HasValue, v => v.AssignedUserId == input.AssignedUserId.Value)
             .WhereIf(input.CustomerId.HasValue, v => v.CustomerId == input.CustomerId.Value)

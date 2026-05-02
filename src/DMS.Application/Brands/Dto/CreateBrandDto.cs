@@ -1,4 +1,5 @@
 using Abp.AutoMapper;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DMS.Brands.Dto;
@@ -14,4 +15,6 @@ public class CreateBrandDto
     public string Name_EN { get; set; }
 
     public bool IsActive { get; set; } = true;
+
+    public List<string> Paths { get; set; } = new List<string>();
 }

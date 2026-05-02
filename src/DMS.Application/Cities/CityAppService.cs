@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +15,25 @@ namespace DMS.Cities
 {
     public class CityAppService : DmsCrudAppService<City, CityDto, int, PagedCityResultRequestDto, CreateCityDto, UpdateCityDto>, ICityAppService
     {
-        public CityAppService(IRepository<City, int> repository) : base(repository) { }
+        private readonly IRepository<DMS.Media.MediaFile, int> _mediaRepository;
+
+        public CityAppService(
+            IRepository<City, int> repository,
+            IRepository<DMS.Media.MediaFile, int> mediaRepository)
+            : base(repository)
+        {
+            _mediaRepository = mediaRepository;
+        }
+
+        protected override CityDto MapToEntityDto(City entity)
+        {
+            var dto = base.MapToEntityDto(entity);
+            dto.Media = _mediaRepository.GetAll()
+                .Where(m => m.MediaType == DMS.Media.MediaType.City && m.ModelId == entity.Id)
+                .Select(m => new DMS.Application.Media.Dto.MediaItemDto { Id = m.Id, Path = m.FilePath })
+                .ToList();
+            return dto;
+        }
 
         protected override IQueryable<City> CreateFilteredQuery(PagedCityResultRequestDto input)
         {
@@ -49,6 +68,7 @@ namespace DMS.Cities
             return Ok<object>(null, L("UpdatedSuccessfully"));
         }
 
+        [HttpPost]
         public async Task<ApiResponse<object>> BulkDeleteAsync(List<int> ids)
         {
             if (ids == null || ids.Count == 0)

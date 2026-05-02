@@ -25,7 +25,7 @@ public class SalesmanAppService_Tests : DMSTestBase
         var result = await _salesmanAppService.CreateAsync(new CreateSalesmanDto
         {
             Name = "Test Salesman",
-            Code = "SAL001",
+            JobCode = "SAL001",
             IsActive = true
         });
 

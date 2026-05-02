@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
@@ -43,6 +44,7 @@ public class CustomerGroupAppService : DmsCrudAppService<
         return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
+    [HttpPost]
     public async Task<ApiResponse<object>> BulkDeleteAsync(List<int> ids)
     {
         if (ids == null || ids.Count == 0)

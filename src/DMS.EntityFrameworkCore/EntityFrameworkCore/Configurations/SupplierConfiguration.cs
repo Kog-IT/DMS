@@ -17,8 +17,8 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
         builder.Property(s => s.Code)
             .HasMaxLength(Supplier.MaxCodeLength);
 
-        builder.Property(s => s.Phone)
-            .HasMaxLength(Supplier.MaxPhoneLength);
+        builder.Property(s => s.Mobile)
+            .HasMaxLength(Supplier.MaxMobileLength);
 
         builder.Property(s => s.Email)
             .HasMaxLength(Supplier.MaxEmailLength);
@@ -26,8 +26,11 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
         builder.Property(s => s.Address)
             .HasMaxLength(Supplier.MaxAddressLength);
 
-        builder.Property(s => s.ImageUrl)
-            .HasMaxLength(Supplier.MaxImageUrlLength);
+        builder.Property(s => s.CollaborationAdministrator)
+            .HasMaxLength(Supplier.MaxCollaborationAdministratorLength);
+
+        builder.Property(s => s.Path)
+            .HasMaxLength(Supplier.MaxPathLength);
 
         builder.Property(s => s.IsActive)
             .HasDefaultValue(true);

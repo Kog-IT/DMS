@@ -8,9 +8,11 @@ namespace DMS.Orders.Dto;
 public class OrderDto : EntityDto<int>
 {
     public int CustomerId { get; set; }
+    public string CustomerName { get; set; }
     public int? VisitId { get; set; }
     public long AssignedUserId { get; set; }
     public OrderStatus Status { get; set; }
+    public string StatusName { get; set; }
     public DateTime OrderDate { get; set; }
     public string Notes { get; set; }
     public DiscountType OrderDiscountType { get; set; }
@@ -21,4 +23,5 @@ public class OrderDto : EntityDto<int>
     public decimal Total { get; set; }
     public string RejectionReason { get; set; }
     public List<OrderLineDto> Lines { get; set; } = new();
+    public List<DMS.Application.Media.Dto.MediaItemDto> Media { get; set; } = new List<DMS.Application.Media.Dto.MediaItemDto>();
 }

@@ -1,4 +1,5 @@
 // src/DMS.Application/Warehouses/WarehouseAppService.cs
+using Microsoft.AspNetCore.Mvc;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
@@ -19,13 +20,26 @@ public class WarehouseAppService : DmsCrudAppService<
     CreateWarehouseDto, UpdateWarehouseDto>, IWarehouseAppService
 {
     private readonly IRepository<WarehouseProduct, int> _warehouseProductRepository;
+    private readonly IRepository<DMS.Media.MediaFile, int> _mediaRepository;
 
     public WarehouseAppService(
         IRepository<Warehouse, int> repository,
-        IRepository<WarehouseProduct, int> warehouseProductRepository)
+        IRepository<WarehouseProduct, int> warehouseProductRepository,
+        IRepository<DMS.Media.MediaFile, int> mediaRepository)
         : base(repository)
     {
         _warehouseProductRepository = warehouseProductRepository;
+        _mediaRepository = mediaRepository;
+    }
+
+    protected override WarehouseDto MapToEntityDto(Warehouse entity)
+    {
+        var dto = base.MapToEntityDto(entity);
+        dto.Media = _mediaRepository.GetAll()
+            .Where(m => m.MediaType == DMS.Media.MediaType.Warehouse && m.ModelId == entity.Id)
+            .Select(m => new DMS.Application.Media.Dto.MediaItemDto { Id = m.Id, Path = m.FilePath })
+            .ToList();
+        return dto;
     }
 
     protected override IQueryable<Warehouse> CreateFilteredQuery(PagedWarehouseResultRequestDto input)
@@ -54,6 +68,7 @@ public class WarehouseAppService : DmsCrudAppService<
         return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
+    [HttpPost]
     public async Task<ApiResponse<object>> BulkDeleteAsync(List<int> ids)
     {
         if (ids == null || ids.Count == 0)

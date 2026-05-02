@@ -11,5 +11,11 @@ public class WarehouseToWarehouseTransferDto : EntityDto<int>
     public DateTime TransferDate { get; set; }
     public string Notes { get; set; }
     public int Status { get; set; }
+    public string TransactionNumber { get; set; }
+    public string FromWarehouseName { get; set; }
+    public string ToWarehouseName { get; set; }
+    public int WarehouseToWarehouseStatus => Status;
+    public int ProductsQuantity { get; set; }
+    public DateTime CreatedDate { get; set; }
     public List<TransferItemDto> Items { get; set; } = new();
 }

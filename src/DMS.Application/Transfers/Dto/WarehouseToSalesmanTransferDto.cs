@@ -12,5 +12,11 @@ public class WarehouseToSalesmanTransferDto : EntityDto<int>
     public string Notes { get; set; }
     public int Status { get; set; }
     public string RejectionReason { get; set; }
+    public string TransactionNumber { get; set; }
+    public string WarehouseName { get; set; }
+    public string SalesManName { get; set; }
+    public int TransactionStatus => Status;
+    public int ProductNumber { get; set; }
+    public DateTime CreatedDate { get; set; }
     public List<TransferItemDto> Items { get; set; } = new();
 }

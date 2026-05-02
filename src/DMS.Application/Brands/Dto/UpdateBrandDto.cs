@@ -1,5 +1,6 @@
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DMS.Brands.Dto;
@@ -15,4 +16,6 @@ public class UpdateBrandDto : EntityDto<int>
     public string Name_EN { get; set; }
 
     public bool IsActive { get; set; }
+
+    public List<string> Paths { get; set; } = new List<string>();
 }

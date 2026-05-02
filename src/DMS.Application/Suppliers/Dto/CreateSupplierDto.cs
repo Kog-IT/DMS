@@ -13,8 +13,8 @@ public class CreateSupplierDto
     [StringLength(Supplier.MaxCodeLength)]
     public string Code { get; set; }
 
-    [StringLength(Supplier.MaxPhoneLength)]
-    public string Phone { get; set; }
+    [StringLength(Supplier.MaxMobileLength)]
+    public string Mobile { get; set; }
 
     [StringLength(Supplier.MaxEmailLength)]
     public string Email { get; set; }
@@ -22,12 +22,15 @@ public class CreateSupplierDto
     [StringLength(Supplier.MaxAddressLength)]
     public string Address { get; set; }
 
+    [StringLength(Supplier.MaxCollaborationAdministratorLength)]
+    public string CollaborationAdministrator { get; set; }
+
     public int GovernorateId { get; set; }
 
     public int CityId { get; set; }
 
-    [StringLength(Supplier.MaxImageUrlLength)]
-    public string ImageUrl { get; set; }
+    [StringLength(Supplier.MaxPathLength)]
+    public string Path { get; set; }
 
     public bool IsActive { get; set; } = true;
 }

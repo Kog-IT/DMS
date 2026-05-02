@@ -1,6 +1,7 @@
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using DMS.Warehouses;
+using System.Collections.Generic;
 
 namespace DMS.Warehouses.Dto;
 
@@ -15,8 +16,9 @@ public class WarehouseDto : EntityDto<int>
     public int CityId { get; set; }
     public string? Street { get; set; }
     public string? Landmark { get; set; }
-    public string? Latitude { get; set; }
-    public string? Longitude { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public string? BuildingData { get; set; }
     public bool IsActive { get; set; }
+    public List<DMS.Application.Media.Dto.MediaItemDto> Media { get; set; } = new List<DMS.Application.Media.Dto.MediaItemDto>();
 }

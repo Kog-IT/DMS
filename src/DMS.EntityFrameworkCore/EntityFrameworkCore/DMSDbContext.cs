@@ -23,6 +23,7 @@ using DMS.Suppliers;
 using DMS.Salesmen;
 using DMS.Dispatches;
 using DMS.Transfers;
+using DMS.Media;
 using DMS.SalesmanRequests;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,6 +51,7 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<CustomerGroup> CustomerGroups { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Salesman> Salesmen { get; set; }
+    public DbSet<SalesmanWarehouse> SalesmanWarehouses { get; set; }
     public DbSet<PlannedDispatch> PlannedDispatches { get; set; }
     public DbSet<ActualDispatch> ActualDispatches { get; set; }
 
@@ -65,6 +67,7 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
 
     public DbSet<SalesmanRequest> SalesmanRequests { get; set; }
     public DbSet<SalesmanRequestItem> SalesmanRequestItems { get; set; }
+    public DbSet<MediaFile> MediaFiles { get; set; }
 
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderLine> OrderLines { get; set; }
@@ -104,6 +107,7 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
         modelBuilder.ApplyConfiguration(new CustomerGroupConfiguration());
         modelBuilder.ApplyConfiguration(new SupplierConfiguration());
         modelBuilder.ApplyConfiguration(new SalesmanConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesmanWarehouseConfiguration());
         modelBuilder.ApplyConfiguration(new PlannedDispatchConfiguration());
         modelBuilder.ApplyConfiguration(new ActualDispatchConfiguration());
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
@@ -128,5 +132,6 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
 
         modelBuilder.ApplyConfiguration(new SalesmanRequestConfiguration());
         modelBuilder.ApplyConfiguration(new SalesmanRequestItemConfiguration());
+        modelBuilder.ApplyConfiguration(new MediaFileConfiguration());
     }
 }

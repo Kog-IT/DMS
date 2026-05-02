@@ -1,5 +1,6 @@
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using System.Collections.Generic;
 
 namespace DMS.Suppliers.Dto;
 
@@ -15,4 +16,5 @@ public class SupplierDto : EntityDto<int>
     public int CityId { get; set; }
     public string ImageUrl { get; set; }
     public bool IsActive { get; set; }
+    public List<DMS.Application.Media.Dto.MediaItemDto> Media { get; set; } = new List<DMS.Application.Media.Dto.MediaItemDto>();
 }

@@ -30,11 +30,9 @@ public class CreateWarehouseDto
     [StringLength(Warehouse.MaxLandmarkLength)]
     public string? Landmark { get; set; }
 
-    [StringLength(Warehouse.MaxCoordLength)]
-    public string? Latitude { get; set; }
+    public double? Latitude { get; set; }
 
-    [StringLength(Warehouse.MaxCoordLength)]
-    public string? Longitude { get; set; }
+    public double? Longitude { get; set; }
 
     [StringLength(Warehouse.MaxBuildingDataLength)]
     public string? BuildingData { get; set; }
