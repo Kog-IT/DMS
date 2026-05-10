@@ -2694,6 +2694,94 @@ namespace DMS.Migrations
                     b.ToTable("ProductVariants");
                 });
 
+            modelBuilder.Entity("DMS.Returns.Return", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReturnNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Returns");
+                });
+
+            modelBuilder.Entity("DMS.Returns.ReturnLine", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ReturnId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReturnId");
+
+                    b.ToTable("ReturnLines");
+                });
+
+            modelBuilder.Entity("DMS.Returns.ReturnPhoto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReturnId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReturnId");
+
+                    b.ToTable("ReturnPhotos");
+                });
+
             modelBuilder.Entity("DMS.Routes.Route", b =>
                 {
                     b.Property<int>("Id")
@@ -3326,6 +3414,24 @@ namespace DMS.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("DMS.Returns.ReturnLine", b =>
+                {
+                    b.HasOne("DMS.Returns.Return", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("ReturnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DMS.Returns.ReturnPhoto", b =>
+                {
+                    b.HasOne("DMS.Returns.Return", null)
+                        .WithMany("Photos")
+                        .HasForeignKey("ReturnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DMS.Routes.RouteItem", b =>
                 {
                     b.HasOne("DMS.Routes.Route", "Route")
@@ -3454,6 +3560,13 @@ namespace DMS.Migrations
             modelBuilder.Entity("DMS.Products.Product", b =>
                 {
                     b.Navigation("Variants");
+                });
+
+            modelBuilder.Entity("DMS.Returns.Return", b =>
+                {
+                    b.Navigation("Lines");
+
+                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("DMS.Routes.Route", b =>

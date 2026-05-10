@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DMS.Migrations
 {
     /// <inheritdoc />
-    public partial class inti : Migration
+    public partial class Initial_Setup : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -596,6 +596,28 @@ namespace DMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Returns",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReturnNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeleterUserId = table.Column<long>(type: "bigint", nullable: true),
+                    DeletionTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Returns", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Routes",
                 columns: table => new
                 {
@@ -1148,6 +1170,46 @@ namespace DMS.Migrations
                         name: "FK_PriceListItems_PriceLists_PriceListId",
                         column: x => x.PriceListId,
                         principalTable: "PriceLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReturnLines",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReturnId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReturnLines", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReturnLines_Returns_ReturnId",
+                        column: x => x.ReturnId,
+                        principalTable: "Returns",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReturnPhotos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReturnId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReturnPhotos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReturnPhotos_Returns_ReturnId",
+                        column: x => x.ReturnId,
+                        principalTable: "Returns",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -2038,6 +2100,16 @@ namespace DMS.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ReturnLines_ReturnId",
+                table: "ReturnLines",
+                column: "ReturnId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReturnPhotos_ReturnId",
+                table: "ReturnPhotos",
+                column: "ReturnId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RouteItems_RouteId",
                 table: "RouteItems",
                 column: "RouteId");
@@ -2209,6 +2281,12 @@ namespace DMS.Migrations
                 name: "ProductVariants");
 
             migrationBuilder.DropTable(
+                name: "ReturnLines");
+
+            migrationBuilder.DropTable(
+                name: "ReturnPhotos");
+
+            migrationBuilder.DropTable(
                 name: "RouteItems");
 
             migrationBuilder.DropTable(
@@ -2243,6 +2321,9 @@ namespace DMS.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Returns");
 
             migrationBuilder.DropTable(
                 name: "Routes");
