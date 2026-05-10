@@ -120,5 +120,11 @@
     <text name="403PageHeader">Forbidden</text>
     <text name="403PageDescription">You don't have permission to access this resource. Please contact your administrator.</text>
     <text name="403PageButton">Go back to Dashboard</text>
+    <text name="RetrievedSuccessfully" value="Retrieved successfully" />
+    <text name="CreatedSuccessfully" value="Created successfully" />
+    <text name="UpdatedSuccessfully" value="Updated successfully" />
+    <text name="DeletedSuccessfully" value="Deleted successfully" />
+    <text name="CustomersBlock" value="Block/Unblock Customers" />
+    <text name="CustomersManageCredit" value="Manage Customer Credit" />
   </texts>
 </localizationDictionary>

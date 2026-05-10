@@ -1,4 +1,4 @@
-﻿using DMS.Users;
+using DMS.Users;
 using DMS.Users.Dto;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
@@ -23,7 +23,7 @@ public class UserAppService_Tests : DMSTestBase
         var output = await _userAppService.GetAllAsync(new PagedUserResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
         // Assert
-        output.Items.Count.ShouldBeGreaterThan(0);
+        output.Data.Items.Count.ShouldBeGreaterThan(0);
     }
 
     [Fact]

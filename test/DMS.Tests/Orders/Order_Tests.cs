@@ -72,10 +72,10 @@ public class Order_Tests : DMSTestBase
             Lines = new() { new CreateOrderLineDto { ProductId = productId, Quantity = 2 } }
         });
 
-        result.Id.ShouldBeGreaterThan(0);
-        result.SubTotal.ShouldBe(200m);
-        result.Total.ShouldBe(200m);
-        result.Status.ShouldBe(OrderStatus.Draft);
+        result.Data.Id.ShouldBeGreaterThan(0);
+        result.Data.SubTotal.ShouldBe(200m);
+        result.Data.Total.ShouldBe(200m);
+        result.Data.Status.ShouldBe(OrderStatus.Draft);
     }
 
     [Fact]
@@ -109,10 +109,10 @@ public class Order_Tests : DMSTestBase
         });
 
         // DiscountLimitSalesRep defaults to "0" meaning no limit → goes straight to Confirmed
-        await _orderService.SubmitAsync(order.Id);
+        await _orderService.SubmitAsync(order.Data.Id);
 
-        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Id));
-        updated.Status.ShouldBe(OrderStatus.Confirmed);
+        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Data.Id));
+        updated.Data.Status.ShouldBe(OrderStatus.Confirmed);
     }
 
     [Fact]
@@ -141,10 +141,10 @@ public class Order_Tests : DMSTestBase
             }
         });
 
-        await _orderService.SubmitAsync(order.Id);
+        await _orderService.SubmitAsync(order.Data.Id);
 
-        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Id));
-        updated.Status.ShouldBe(OrderStatus.PendingApproval);
+        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Data.Id));
+        updated.Data.Status.ShouldBe(OrderStatus.PendingApproval);
     }
 
     [Fact]
@@ -170,12 +170,12 @@ public class Order_Tests : DMSTestBase
                 }
             }
         });
-        await _orderService.SubmitAsync(order.Id);
+        await _orderService.SubmitAsync(order.Data.Id);
 
-        await _orderService.ApproveAsync(order.Id);
+        await _orderService.ApproveAsync(order.Data.Id);
 
-        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Id));
-        updated.Status.ShouldBe(OrderStatus.Confirmed);
+        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Data.Id));
+        updated.Data.Status.ShouldBe(OrderStatus.Confirmed);
     }
 
     [Fact]
@@ -201,13 +201,13 @@ public class Order_Tests : DMSTestBase
                 }
             }
         });
-        await _orderService.SubmitAsync(order.Id);
+        await _orderService.SubmitAsync(order.Data.Id);
 
-        await _orderService.RejectAsync(order.Id, "Too high discount");
+        await _orderService.RejectAsync(order.Data.Id, "Too high discount");
 
-        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Id));
-        updated.Status.ShouldBe(OrderStatus.Cancelled);
-        updated.RejectionReason.ShouldBe("Too high discount");
+        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Data.Id));
+        updated.Data.Status.ShouldBe(OrderStatus.Cancelled);
+        updated.Data.RejectionReason.ShouldBe("Too high discount");
     }
 
     [Fact]
@@ -223,12 +223,12 @@ public class Order_Tests : DMSTestBase
             OrderDate = DateTime.UtcNow,
             Lines = new() { new CreateOrderLineDto { ProductId = productId, Quantity = 1 } }
         });
-        await _orderService.SubmitAsync(order.Id); // → Confirmed (no limit)
+        await _orderService.SubmitAsync(order.Data.Id); // → Confirmed (no limit)
 
         await Should.ThrowAsync<UserFriendlyException>(async () =>
             await _orderService.UpdateAsync(new UpdateOrderDto
             {
-                Id = order.Id,
+                Id = order.Data.Id,
                 CustomerId = customerId,
                 OrderDate = DateTime.UtcNow,
                 Lines = new() { new CreateOrderLineDto { ProductId = productId, Quantity = 2 } }
@@ -249,12 +249,12 @@ public class Order_Tests : DMSTestBase
             OrderDate = DateTime.UtcNow,
             Lines = new() { new CreateOrderLineDto { ProductId = productId, Quantity = 1 } }
         });
-        await _orderService.SubmitAsync(order.Id); // → Confirmed
+        await _orderService.SubmitAsync(order.Data.Id); // → Confirmed
 
-        await _orderService.CancelAsync(order.Id);
+        await _orderService.CancelAsync(order.Data.Id);
 
-        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Id));
-        updated.Status.ShouldBe(OrderStatus.Cancelled);
+        var updated = await _orderService.GetAsync(new EntityDto<int>(order.Data.Id));
+        updated.Data.Status.ShouldBe(OrderStatus.Cancelled);
     }
 
     [Fact]
@@ -292,7 +292,7 @@ public class Order_Tests : DMSTestBase
             Lines = new() { new CreateOrderLineDto { ProductId = productId, Quantity = 1 } }
         });
 
-        result.Lines.ShouldNotBeEmpty();
-        result.Lines[0].IsBackOrder.ShouldBeFalse();
+        result.Data.Lines.ShouldNotBeEmpty();
+        result.Data.Lines[0].IsBackOrder.ShouldBeFalse();
     }
 }

@@ -23,7 +23,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.Status).HasConversion<int>();
         builder.Property(o => o.OrderDiscountType).HasConversion<int>();
 
-        builder.HasOne<Customer>()
+        builder.HasOne(o => o.Customer)
             .WithMany()
             .HasForeignKey(o => o.CustomerId)
             .OnDelete(DeleteBehavior.Restrict);

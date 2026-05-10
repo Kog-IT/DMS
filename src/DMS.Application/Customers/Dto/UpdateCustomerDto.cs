@@ -35,4 +35,7 @@ public class UpdateCustomerDto : EntityDto<int>
     public decimal CreditLimit { get; set; }
 
     public bool CreditEnabled { get; set; }
+
+    [Range(0, 365)]
+    public int CreditDays { get; set; }
 }

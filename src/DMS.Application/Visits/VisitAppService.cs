@@ -1,4 +1,3 @@
-using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.Configuration;
 using Abp.Domain.Repositories;
@@ -6,7 +5,10 @@ using Abp.Linq.Extensions;
 using Abp.Timing;
 using Abp.UI;
 using DMS.Authorization;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.Customers;
+using DMS.Media;
 using DMS.Visits.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,7 +20,7 @@ using System.Threading.Tasks;
 namespace DMS.Visits;
 
 [AbpAuthorize(PermissionNames.Pages_Visits)]
-public class VisitAppService : AsyncCrudAppService<
+public class VisitAppService : DmsCrudAppService<
     Visit,
     VisitDto,
     int,
@@ -29,12 +31,14 @@ public class VisitAppService : AsyncCrudAppService<
     private readonly IRepository<VisitPhoto, int> _photoRepository;
     private readonly IRepository<Customer, int> _customerRepository;
     private readonly ISettingManager _settingManager;
+    private readonly IRepository<MediaFile, int> _mediaRepository;
 
     public VisitAppService(
         IRepository<Visit, int> repository,
         IRepository<VisitPhoto, int> photoRepository,
         IRepository<Customer, int> customerRepository,
-        ISettingManager settingManager)
+        ISettingManager settingManager,
+        IRepository<MediaFile, int> mediaRepository)
         : base(repository)
     {
         GetPermissionName = PermissionNames.Pages_Visits;
@@ -46,11 +50,30 @@ public class VisitAppService : AsyncCrudAppService<
         _photoRepository = photoRepository;
         _customerRepository = customerRepository;
         _settingManager = settingManager;
+        _mediaRepository = mediaRepository;
     }
+
+    protected override VisitDto MapToEntityDto(Visit entity)
+    {
+        var dto = base.MapToEntityDto(entity);
+        dto.Media = _mediaRepository.GetAll()
+            .Where(m => m.MediaType == MediaType.Visit && m.ModelId == entity.Id)
+            .Select(m => new DMS.Application.Media.Dto.MediaItemDto { Id = m.Id, Path = m.FilePath })
+            .ToList();
+        return dto;
+    }
+
+    protected override async Task<Visit> GetEntityByIdAsync(int id)
+        => await Repository.GetAll()
+            .Include(v => v.Customer)
+            .Include(v => v.Photos)
+            .FirstOrDefaultAsync(v => v.Id == id)
+            ?? throw new UserFriendlyException("Visit not found.");
 
     protected override IQueryable<Visit> CreateFilteredQuery(PagedVisitResultRequestDto input)
     {
         return Repository.GetAll()
+            .Include(v => v.Customer)
             .WhereIf(input.Status.HasValue, v => v.Status == input.Status.Value)
             .WhereIf(input.AssignedUserId.HasValue, v => v.AssignedUserId == input.AssignedUserId.Value)
             .WhereIf(input.CustomerId.HasValue, v => v.CustomerId == input.CustomerId.Value)
@@ -59,7 +82,7 @@ public class VisitAppService : AsyncCrudAppService<
     }
 
     [AbpAuthorize(PermissionNames.Pages_Visits_CheckIn)]
-    public async Task<VisitDto> CheckInAsync(CheckInDto input)
+    public async Task<ApiResponse<VisitDto>> CheckInAsync(CheckInDto input)
     {
         var visit = await Repository.GetAsync(input.VisitId);
 
@@ -91,11 +114,11 @@ public class VisitAppService : AsyncCrudAppService<
         visit.CheckInLongitude = input.Longitude;
 
         await Repository.UpdateAsync(visit);
-        return ObjectMapper.Map<VisitDto>(visit);
+        return Ok(ObjectMapper.Map<VisitDto>(visit), L("UpdatedSuccessfully"));
     }
 
     [AbpAuthorize(PermissionNames.Pages_Visits_CheckOut)]
-    public async Task<VisitDto> CheckOutAsync(CheckOutDto input)
+    public async Task<ApiResponse<VisitDto>> CheckOutAsync(CheckOutDto input)
     {
         var visit = await Repository.GetAsync(input.VisitId);
 
@@ -113,10 +136,10 @@ public class VisitAppService : AsyncCrudAppService<
             visit.DurationMinutes = (int)(visit.CheckOutTime.Value - visit.CheckInTime.Value).TotalMinutes;
 
         await Repository.UpdateAsync(visit);
-        return ObjectMapper.Map<VisitDto>(visit);
+        return Ok(ObjectMapper.Map<VisitDto>(visit), L("UpdatedSuccessfully"));
     }
 
-    public async Task<VisitDto> SkipAsync(SkipVisitDto input)
+    public async Task<ApiResponse<VisitDto>> SkipAsync(SkipVisitDto input)
     {
         if (string.IsNullOrWhiteSpace(input.SkipReason))
             throw new UserFriendlyException("Skip reason is required.");
@@ -130,10 +153,10 @@ public class VisitAppService : AsyncCrudAppService<
         visit.SkipReason = input.SkipReason;
 
         await Repository.UpdateAsync(visit);
-        return ObjectMapper.Map<VisitDto>(visit);
+        return Ok(ObjectMapper.Map<VisitDto>(visit), L("UpdatedSuccessfully"));
     }
 
-    public async Task<VisitPhotoDto> UploadPhotoAsync(UploadVisitPhotoDto input)
+    public async Task<ApiResponse<VisitPhotoDto>> UploadPhotoAsync(UploadVisitPhotoDto input)
     {
         var allowedExtensions = new[] { "jpg", "jpeg", "png" };
         var ext = input.FileExtension?.ToLowerInvariant().TrimStart('.');
@@ -162,10 +185,10 @@ public class VisitAppService : AsyncCrudAppService<
         };
 
         var savedPhoto = await _photoRepository.InsertAsync(photo);
-        return ObjectMapper.Map<VisitPhotoDto>(savedPhoto);
+        return Ok(ObjectMapper.Map<VisitPhotoDto>(savedPhoto), L("CreatedSuccessfully"));
     }
 
-    public async Task<List<SyncVisitResultDto>> SyncVisitsAsync(List<SyncVisitDto> input)
+    public async Task<ApiResponse<List<SyncVisitResultDto>>> SyncVisitsAsync(List<SyncVisitDto> input)
     {
         var results = new List<SyncVisitResultDto>();
 
@@ -225,7 +248,7 @@ public class VisitAppService : AsyncCrudAppService<
             }
         }
 
-        return results;
+        return Ok(results, L("RetrievedSuccessfully"));
     }
 
     private static double HaversineDistance(double lat1, double lon1, double lat2, double lon2)

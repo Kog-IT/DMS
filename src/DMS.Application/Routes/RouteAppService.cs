@@ -1,4 +1,3 @@
-using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.Configuration;
 using Abp.Domain.Repositories;
@@ -7,6 +6,8 @@ using Abp.Linq.Extensions;
 using Abp.Timing;
 using Abp.UI;
 using DMS.Authorization;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.Customers;
 using DMS.Routes.Dto;
 using DMS.Visits;
@@ -19,7 +20,7 @@ using System.Threading.Tasks;
 namespace DMS.Routes;
 
 [AbpAuthorize(PermissionNames.Pages_Routes)]
-public class RouteAppService : AsyncCrudAppService<
+public class RouteAppService : DmsCrudAppService<
     Route,
     RouteDto,
     int,
@@ -55,9 +56,18 @@ public class RouteAppService : AsyncCrudAppService<
         _optimizationService = optimizationService;
     }
 
+    protected override async Task<Route> GetEntityByIdAsync(int id)
+        => await Repository.GetAll()
+            .Include(r => r.Items).ThenInclude(i => i.Customer)
+            .Include(r => r.Items).ThenInclude(i => i.Visit)
+            .FirstOrDefaultAsync(r => r.Id == id)
+            ?? throw new UserFriendlyException("Route not found.");
+
     protected override IQueryable<Route> CreateFilteredQuery(PagedRouteResultRequestDto input)
     {
         return Repository.GetAll()
+            .Include(r => r.Items).ThenInclude(i => i.Customer)
+            .Include(r => r.Items).ThenInclude(i => i.Visit)
             .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), r => r.Name.Contains(input.Keyword))
             .WhereIf(input.AssignedUserId.HasValue, r => r.AssignedUserId == input.AssignedUserId.Value)
             .WhereIf(input.Status.HasValue, r => r.Status == input.Status.Value)
@@ -66,7 +76,7 @@ public class RouteAppService : AsyncCrudAppService<
     }
 
     [AbpAuthorize(PermissionNames.Pages_Routes_Edit)]
-    public async Task ActivateAsync(int routeId)
+    public async Task<ApiResponse<object>> ActivateAsync(int routeId)
     {
         var route = await Repository.GetAll()
             .Include(r => r.Items)
@@ -94,10 +104,11 @@ public class RouteAppService : AsyncCrudAppService<
                 PlannedDate = route.PlannedDate
             });
         }
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
     [AbpAuthorize(PermissionNames.Pages_Routes_Edit)]
-    public async Task<OptimizeRouteResultDto> OptimizeRouteAsync(OptimizeRouteInputDto input)
+    public async Task<ApiResponse<OptimizeRouteResultDto>> OptimizeRouteAsync(OptimizeRouteInputDto input)
     {
         var route = await Repository.GetAll()
             .Include(r => r.Items)
@@ -110,7 +121,7 @@ public class RouteAppService : AsyncCrudAppService<
             throw new UserFriendlyException("Cannot optimize a completed route.");
 
         if (!route.Items.Any())
-            return new OptimizeRouteResultDto { RouteId = input.RouteId };
+            return Ok(new OptimizeRouteResultDto { RouteId = input.RouteId }, L("RetrievedSuccessfully"));
 
         // Load customer GPS data
         var customerIds = route.Items.Select(i => i.CustomerId).Distinct().ToList();
@@ -182,13 +193,13 @@ public class RouteAppService : AsyncCrudAppService<
                     ? (i.DistanceFromPreviousKm / travelSpeed) * 60
                     : 0);
 
-        return new OptimizeRouteResultDto
+        return Ok(new OptimizeRouteResultDto
         {
             RouteId = input.RouteId,
             Items = resultItems,
             TotalDistanceKm = Math.Round(totalDistanceKm, 3),
             TotalDurationMinutes = totalDurationMinutes,
             EstimatedEndTime = startTime.AddMinutes(totalDurationMinutes)
-        };
+        }, L("RetrievedSuccessfully"));
     }
 }

@@ -73,8 +73,8 @@ public class CreditManagement_Tests : DMSTestBase
                 new() { ProductId = productId, Quantity = qty, DiscountType = DiscountType.None, DiscountValue = 0 }
             }
         });
-        await _orderService.SubmitAsync(order.Id);
-        return order.Id;
+        await _orderService.SubmitAsync(order.Data.Id);
+        return order.Data.Id;
     }
 
     private async Task SeedOpenInvoiceAsync(int orderId, decimal total, decimal paidAmount = 0m)
@@ -109,7 +109,7 @@ public class CreditManagement_Tests : DMSTestBase
         var orderId = await CreateAndSubmitOrderAsync(custId, prodId, qty: 1);
 
         var order = await _orderService.GetAsync(new EntityDto<int>(orderId));
-        order.Status.ShouldBe(OrderStatus.Confirmed);
+        order.Data.Status.ShouldBe(OrderStatus.Confirmed);
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class CreditManagement_Tests : DMSTestBase
         var orderId = await CreateAndSubmitOrderAsync(custId, prodId, qty: 1);
 
         var order = await _orderService.GetAsync(new EntityDto<int>(orderId));
-        order.Status.ShouldBe(OrderStatus.Confirmed);
+        order.Data.Status.ShouldBe(OrderStatus.Confirmed);
     }
 
     [Fact]
@@ -133,7 +133,7 @@ public class CreditManagement_Tests : DMSTestBase
         var orderId = await CreateAndSubmitOrderAsync(custId, prodId, qty: 1);
 
         var order = await _orderService.GetAsync(new EntityDto<int>(orderId));
-        order.Status.ShouldBe(OrderStatus.PendingApproval);
+        order.Data.Status.ShouldBe(OrderStatus.PendingApproval);
     }
 
     [Fact]
@@ -151,7 +151,7 @@ public class CreditManagement_Tests : DMSTestBase
         var newOrderId = await CreateAndSubmitOrderAsync(custId, prodId2, qty: 1);
 
         var order = await _orderService.GetAsync(new EntityDto<int>(newOrderId));
-        order.Status.ShouldBe(OrderStatus.PendingApproval);
+        order.Data.Status.ShouldBe(OrderStatus.PendingApproval);
     }
 
     [Fact]
@@ -166,9 +166,9 @@ public class CreditManagement_Tests : DMSTestBase
 
         var status = await _customerService.GetCreditStatusAsync(custId);
 
-        status.CreditEnabled.ShouldBeTrue();
-        status.CreditLimit.ShouldBe(300m);
-        status.OutstandingBalance.ShouldBe(100m);
-        status.AvailableCredit.ShouldBe(200m);
+        status.Data.CreditEnabled.ShouldBeTrue();
+        status.Data.CreditLimit.ShouldBe(300m);
+        status.Data.OutstandingBalance.ShouldBe(100m);
+        status.Data.AvailableCredit.ShouldBe(200m);
     }
 }

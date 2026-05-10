@@ -1,13 +1,18 @@
-using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using DMS.Common.Dto;
 using DMS.Invoices.Dto;
 using System.Threading.Tasks;
 
 namespace DMS.Invoices;
 
-public interface IInvoiceAppService : IAsyncCrudAppService<InvoiceDto, int, PagedInvoiceResultRequestDto, GenerateInvoiceDto, GenerateInvoiceDto>
+public interface IInvoiceAppService
 {
-    Task<InvoiceDto> GenerateFromOrderAsync(int orderId);
-    Task IssueAsync(int id);
-    Task VoidAsync(VoidInvoiceDto input);
+    Task<ApiResponse<InvoiceDto>> GetAsync(EntityDto<int> input);
+    Task<ApiResponse<PagedResultDto<InvoiceDto>>> GetAllAsync(PagedInvoiceResultRequestDto input);
+    Task<ApiResponse<InvoiceDto>> CreateAsync(GenerateInvoiceDto input);
+    Task<ApiResponse<InvoiceDto>> UpdateAsync(GenerateInvoiceDto input);
+    Task<ApiResponse<object>> DeleteAsync(EntityDto<int> input);
+    Task<ApiResponse<InvoiceDto>> GenerateFromOrderAsync(int orderId);
+    Task<ApiResponse<object>> IssueAsync(int id);
+    Task<ApiResponse<object>> VoidAsync(VoidInvoiceDto input);
 }

@@ -23,6 +23,7 @@
     <ProjectReference Include="..\DMS.EntityFrameworkCore\DMS.EntityFrameworkCore.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.2" />
     <PackageReference Include="Abp.AspNetCore" Version="10.2.0" />

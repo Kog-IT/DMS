@@ -1,18 +1,19 @@
-using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using DMS.Common.Dto;
 using DMS.PriceLists.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DMS.PriceLists;
 
-public interface IPriceListAppService : IAsyncCrudAppService<
-    PriceListDto,
-    int,
-    PagedPriceListRequestDto,
-    CreatePriceListDto,
-    UpdatePriceListDto>
+public interface IPriceListAppService
 {
-    Task<List<PriceListItemDto>> GetItemsAsync(int priceListId);
-    Task SetItemsAsync(SetPriceListItemsDto input);
+    Task<ApiResponse<PriceListDto>> GetAsync(EntityDto<int> input);
+    Task<ApiResponse<PagedResultDto<PriceListDto>>> GetAllAsync(PagedPriceListRequestDto input);
+    Task<ApiResponse<PriceListDto>> CreateAsync(CreatePriceListDto input);
+    Task<ApiResponse<PriceListDto>> UpdateAsync(UpdatePriceListDto input);
+    Task<ApiResponse<object>> DeleteAsync(EntityDto<int> input);
+
+    Task<ApiResponse<List<PriceListItemDto>>> GetItemsAsync(int priceListId);
+    Task<ApiResponse<object>> SetItemsAsync(SetPriceListItemsDto input);
 }

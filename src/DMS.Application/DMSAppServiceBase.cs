@@ -2,6 +2,7 @@
 using Abp.IdentityFramework;
 using Abp.Runtime.Session;
 using DMS.Authorization.Users;
+using DMS.Common.Dto;
 using DMS.MultiTenancy;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -22,6 +23,9 @@ public abstract class DMSAppServiceBase : ApplicationService
     {
         LocalizationSourceName = DMSConsts.LocalizationSourceName;
     }
+
+    protected ApiResponse<T> Ok<T>(T data, string message) =>
+        new ApiResponse<T> { Data = data, Message = message };
 
     protected virtual async Task<User> GetCurrentUserAsync()
     {

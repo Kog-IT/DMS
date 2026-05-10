@@ -3,6 +3,7 @@ using Abp.Domain.Services;
 using DMS.Invoices;
 using DMS.Orders;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,25 +40,40 @@ public class CreditCheckService : DomainService
             };
         }
 
-        // Outstanding balance = sum of unpaid invoice amounts for this customer
-        // Invoice links to Order which has CustomerId
+        // Unpaid invoice amounts
         var customerOrderIds = _orderRepository.GetAll()
             .Where(o => o.CustomerId == customerId)
             .Select(o => o.Id);
 
-        var outstandingBalance = await _invoiceRepository.GetAll()
+        var invoiceBalance = await _invoiceRepository.GetAll()
             .Where(i => customerOrderIds.Contains(i.OrderId) &&
                         i.Status != InvoiceStatus.Voided)
             .SumAsync(i => i.Total - i.PaidAmount);
 
+        // Confirmed/pending orders not yet invoiced
+        var invoicedOrderIds = _invoiceRepository.GetAll()
+            .Where(i => i.Status != InvoiceStatus.Voided)
+            .Select(i => i.OrderId);
+
+        var pendingOrdersBalance = await _orderRepository.GetAll()
+            .Where(o => o.CustomerId == customerId &&
+                        (o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.PendingApproval) &&
+                        !invoicedOrderIds.Contains(o.Id))
+            .SumAsync(o => o.Total);
+
+        var outstandingBalance = invoiceBalance + pendingOrdersBalance;
         var availableCredit = customer.CreditLimit - outstandingBalance;
+        var utilizationPercent = customer.CreditLimit > 0
+            ? Math.Round((outstandingBalance / customer.CreditLimit) * 100, 2)
+            : 0m;
 
         return new CreditCheckResult
         {
             IsOverLimit = (outstandingBalance + orderTotal) > customer.CreditLimit,
             CreditLimit = customer.CreditLimit,
             OutstandingBalance = outstandingBalance,
-            AvailableCredit = availableCredit
+            AvailableCredit = availableCredit,
+            UtilizationPercent = utilizationPercent
         };
     }
 }

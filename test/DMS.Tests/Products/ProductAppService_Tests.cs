@@ -23,7 +23,7 @@ public class ProductAppService_Tests : DMSTestBase
     private async Task<int> CreateCategoryAsync(string name = "Beverages")
     {
         var cat = await _categoryAppService.CreateAsync(new CreateCategoryDto { Name = name });
-        return cat.Id;
+        return cat.Data.Id;
     }
 
     [Fact]
@@ -32,8 +32,8 @@ public class ProductAppService_Tests : DMSTestBase
         var result = await _productAppService.GetAllAsync(
             new PagedProductResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
-        result.TotalCount.ShouldBe(0);
-        result.Items.Count.ShouldBe(0);
+        result.Data.TotalCount.ShouldBe(0);
+        result.Data.Items.Count.ShouldBe(0);
     }
 
     [Fact]
@@ -49,14 +49,14 @@ public class ProductAppService_Tests : DMSTestBase
             CategoryId = catId
         });
 
-        created.Id.ShouldBeGreaterThan(0);
-        created.Name.ShouldBe("Cola 330ml");
-        created.Price.ShouldBe(5.50m);
-        created.CategoryId.ShouldBe(catId);
+        created.Data.Id.ShouldBeGreaterThan(0);
+        created.Data.Name.ShouldBe("Cola 330ml");
+        created.Data.Price.ShouldBe(5.50m);
+        created.Data.CategoryId.ShouldBe(catId);
 
-        var fetched = await _productAppService.GetAsync(new EntityDto<int>(created.Id));
-        fetched.Name.ShouldBe("Cola 330ml");
-        fetched.CategoryName.ShouldBe("Beverages");
+        var fetched = await _productAppService.GetAsync(new EntityDto<int>(created.Data.Id));
+        fetched.Data.Name.ShouldBe("Cola 330ml");
+        fetched.Data.CategoryName.ShouldBe("Beverages");
     }
 
     [Fact]
@@ -69,8 +69,8 @@ public class ProductAppService_Tests : DMSTestBase
         var result = await _productAppService.GetAllAsync(
             new PagedProductResultRequestDto { MaxResultCount = 20, SkipCount = 0, Keyword = "Cola" });
 
-        result.TotalCount.ShouldBe(1);
-        result.Items[0].Name.ShouldBe("Cola 330ml");
+        result.Data.TotalCount.ShouldBe(1);
+        result.Data.Items[0].Name.ShouldBe("Cola 330ml");
     }
 
     [Fact]
@@ -85,8 +85,8 @@ public class ProductAppService_Tests : DMSTestBase
         var result = await _productAppService.GetAllAsync(
             new PagedProductResultRequestDto { MaxResultCount = 20, SkipCount = 0, CategoryId = catB });
 
-        result.TotalCount.ShouldBe(1);
-        result.Items[0].Name.ShouldBe("Chips");
+        result.Data.TotalCount.ShouldBe(1);
+        result.Data.Items[0].Name.ShouldBe("Chips");
     }
 
     [Fact]
@@ -102,14 +102,14 @@ public class ProductAppService_Tests : DMSTestBase
 
         var updated = await _productAppService.UpdateAsync(new UpdateProductDto
         {
-            Id = created.Id,
+            Id = created.Data.Id,
             Name = "New Name",
             Price = 9.99m,
             CategoryId = catId
         });
 
-        updated.Name.ShouldBe("New Name");
-        updated.Price.ShouldBe(9.99m);
+        updated.Data.Name.ShouldBe("New Name");
+        updated.Data.Price.ShouldBe(9.99m);
     }
 
     [Fact]
@@ -123,11 +123,11 @@ public class ProductAppService_Tests : DMSTestBase
             CategoryId = catId
         });
 
-        await _productAppService.DeleteAsync(new EntityDto<int>(created.Id));
+        await _productAppService.DeleteAsync(new EntityDto<int>(created.Data.Id));
 
         var result = await _productAppService.GetAllAsync(
             new PagedProductResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
-        result.Items.ShouldNotContain(p => p.Id == created.Id);
+        result.Data.Items.ShouldNotContain(p => p.Id == created.Data.Id);
     }
 }

@@ -1,9 +1,11 @@
-using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
+using Abp.UI;
 using DMS.Authorization;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.Customers.Dto;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 namespace DMS.Customers;
 
 [AbpAuthorize(PermissionNames.Pages_Customers)]
-public class CustomerAppService : AsyncCrudAppService<
+public class CustomerAppService : DmsCrudAppService<
     Customer,
     CustomerDto,
     int,
@@ -20,10 +22,12 @@ public class CustomerAppService : AsyncCrudAppService<
     UpdateCustomerDto>, ICustomerAppService
 {
     private readonly CreditCheckService _creditCheckService;
+    private readonly IRepository<DMS.Media.MediaFile, int> _mediaRepository;
 
     public CustomerAppService(
         IRepository<Customer, int> repository,
-        CreditCheckService creditCheckService)
+        CreditCheckService creditCheckService,
+        IRepository<DMS.Media.MediaFile, int> mediaRepository)
         : base(repository)
     {
         GetPermissionName = PermissionNames.Pages_Customers;
@@ -33,6 +37,17 @@ public class CustomerAppService : AsyncCrudAppService<
         DeletePermissionName = PermissionNames.Pages_Customers_Delete;
 
         _creditCheckService = creditCheckService;
+        _mediaRepository = mediaRepository;
+    }
+
+    protected override CustomerDto MapToEntityDto(Customer entity)
+    {
+        var dto = base.MapToEntityDto(entity);
+        dto.Media = _mediaRepository.GetAll()
+            .Where(m => m.MediaType == DMS.Media.MediaType.Customer && m.ModelId == entity.Id)
+            .Select(m => new DMS.Application.Media.Dto.MediaItemDto { Id = m.Id, Path = m.FilePath })
+            .ToList();
+        return dto;
     }
 
     protected override IQueryable<Customer> CreateFilteredQuery(PagedCustomerResultRequestDto input)
@@ -45,18 +60,58 @@ public class CustomerAppService : AsyncCrudAppService<
     }
 
     [AbpAuthorize(PermissionNames.Pages_Customers)]
-    public async Task<CreditStatusDto> GetCreditStatusAsync(int customerId)
+    public async Task<ApiResponse<CreditStatusDto>> GetCreditStatusAsync(int customerId)
     {
         var customer = await Repository.GetAsync(customerId);
         var result = await _creditCheckService.CheckCreditAsync(customerId, orderTotal: 0m);
 
-        return new CreditStatusDto
+        var dto = new CreditStatusDto
         {
             CustomerId = customerId,
             CreditEnabled = customer.CreditEnabled,
+            IsBlocked = customer.IsBlocked,
+            CreditDays = customer.CreditDays,
             CreditLimit = result.CreditLimit,
             OutstandingBalance = result.OutstandingBalance,
-            AvailableCredit = result.AvailableCredit
+            AvailableCredit = result.AvailableCredit,
+            UtilizationPercent = result.UtilizationPercent
         };
+
+        return Ok(dto, L("RetrievedSuccessfully"));
+    }
+
+    [AbpAuthorize(PermissionNames.Pages_Customers_Block)]
+    public async Task<ApiResponse<object>> BlockAsync(int customerId, string reason)
+    {
+        var customer = await Repository.GetAsync(customerId);
+        if (customer.IsBlocked)
+            throw new UserFriendlyException("Customer is already blocked.");
+
+        customer.IsBlocked = true;
+        await Repository.UpdateAsync(customer);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
+    }
+
+    [AbpAuthorize(PermissionNames.Pages_Customers_Block)]
+    public async Task<ApiResponse<object>> UnblockAsync(int customerId)
+    {
+        var customer = await Repository.GetAsync(customerId);
+        if (!customer.IsBlocked)
+            throw new UserFriendlyException("Customer is not blocked.");
+
+        customer.IsBlocked = false;
+        await Repository.UpdateAsync(customer);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
+    }
+
+    [AbpAuthorize(PermissionNames.Pages_Customers_ManageCredit)]
+    public async Task<ApiResponse<object>> UpdateCreditLimitAsync(int customerId, UpdateCreditLimitDto input)
+    {
+        var customer = await Repository.GetAsync(customerId);
+        customer.CreditLimit = input.CreditLimit;
+        customer.CreditEnabled = input.CreditEnabled;
+        customer.CreditDays = input.CreditDays;
+        await Repository.UpdateAsync(customer);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 }

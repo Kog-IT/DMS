@@ -1,13 +1,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.UI;
 using DMS.Authorization;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.Customers;
 using DMS.Invoices.Dto;
 using DMS.Orders;
@@ -16,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DMS.Invoices;
 
 [AbpAuthorize(PermissionNames.Pages_Invoices)]
-public class InvoiceAppService : AsyncCrudAppService<
+public class InvoiceAppService : DmsCrudAppService<
     Invoice,
     InvoiceDto,
     int,
@@ -77,14 +78,15 @@ public class InvoiceAppService : AsyncCrudAppService<
     }
 
     protected override async Task<Invoice> GetEntityByIdAsync(int id)
-    {
-        return await Repository.GetAll()
+        => await Repository.GetAll()
             .Include(i => i.Lines)
             .FirstOrDefaultAsync(i => i.Id == id)
             ?? throw new UserFriendlyException("Invoice not found.");
-    }
 
-    public async Task<InvoiceDto> GenerateFromOrderAsync(int orderId)
+    public override Task<ApiResponse<InvoiceDto>> CreateAsync(GenerateInvoiceDto input)
+        => GenerateFromOrderAsync(input.OrderId);
+
+    public async Task<ApiResponse<InvoiceDto>> GenerateFromOrderAsync(int orderId)
     {
         var order = await _orderRepository.GetAll()
             .Include(o => o.Lines)
@@ -147,7 +149,7 @@ public class InvoiceAppService : AsyncCrudAppService<
         return await GetAsync(new EntityDto<int>(invoice.Id));
     }
 
-    public async Task IssueAsync(int id)
+    public async Task<ApiResponse<object>> IssueAsync(int id)
     {
         var invoice = await GetEntityByIdAsync(id);
 
@@ -156,9 +158,10 @@ public class InvoiceAppService : AsyncCrudAppService<
 
         invoice.Status = InvoiceStatus.Issued;
         await Repository.UpdateAsync(invoice);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 
-    public async Task VoidAsync(VoidInvoiceDto input)
+    public async Task<ApiResponse<object>> VoidAsync(VoidInvoiceDto input)
     {
         await PermissionChecker.AuthorizeAsync(PermissionNames.Pages_Invoices_Void);
 
@@ -175,5 +178,6 @@ public class InvoiceAppService : AsyncCrudAppService<
         invoice.VoidReason = input.Reason;
         invoice.Status = InvoiceStatus.Voided;
         await Repository.UpdateAsync(invoice);
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 }

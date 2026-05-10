@@ -62,7 +62,7 @@ var abp = abp || {};
             }
         };
 
-        xhr.open('POST', '/api/TokenAuth/Authenticate', true);
+        xhr.open('POST', '/ApiVanSales/api/TokenAuth/Authenticate', true);
         xhr.setRequestHeader('Abp-TenantId', tenantId);
         xhr.setRequestHeader('Content-type', 'application/json');
         addAntiForgeryTokenToXhr(xhr);
@@ -91,7 +91,7 @@ var abp = abp || {};
                 }
             };
 
-            xhrTenancyName.open('POST', '/api/services/app/Account/IsTenantAvailable', true);
+            xhrTenancyName.open('POST', '/ApiVanSales/api/services/app/Account/IsTenantAvailable', true);
             xhrTenancyName.setRequestHeader('Content-type', 'application/json');
             addAntiForgeryTokenToXhr(xhrTenancyName);
             xhrTenancyName.send(

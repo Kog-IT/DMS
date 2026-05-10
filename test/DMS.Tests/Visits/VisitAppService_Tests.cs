@@ -25,7 +25,7 @@ public class VisitAppService_Tests : DMSTestBase
 
     private async Task<CustomerDto> CreateCustomerAtLocation(double lat, double lon)
     {
-        return await _customerAppService.CreateAsync(new CreateCustomerDto
+        var response = await _customerAppService.CreateAsync(new CreateCustomerDto
         {
             Code = $"C-{Guid.NewGuid():N}".Substring(0, 10),
             Name = "Test Customer",
@@ -33,16 +33,18 @@ public class VisitAppService_Tests : DMSTestBase
             Longitude = lon,
             IsActive = true
         });
+        return response.Data;
     }
 
     private async Task<VisitDto> CreatePlannedVisit(int customerId)
     {
-        return await _visitAppService.CreateAsync(new CreateVisitDto
+        var response = await _visitAppService.CreateAsync(new CreateVisitDto
         {
             CustomerId = customerId,
             AssignedUserId = AbpSession.UserId.Value,
             PlannedDate = DateTime.Today
         });
+        return response.Data;
     }
 
     [Fact]
@@ -51,7 +53,7 @@ public class VisitAppService_Tests : DMSTestBase
         var result = await _visitAppService.GetAllAsync(
             new PagedVisitResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
-        result.TotalCount.ShouldBe(0);
+        result.Data.TotalCount.ShouldBe(0);
     }
 
     [Fact]
@@ -78,9 +80,9 @@ public class VisitAppService_Tests : DMSTestBase
             Longitude = 31.2357
         });
 
-        result.Status.ShouldBe(VisitStatus.InProgress);
-        result.CheckInTime.ShouldNotBeNull();
-        result.CheckInLatitude.ShouldBe(30.0444);
+        result.Data.Status.ShouldBe(VisitStatus.InProgress);
+        result.Data.CheckInTime.ShouldNotBeNull();
+        result.Data.CheckInLatitude.ShouldBe(30.0444);
     }
 
     [Fact]
@@ -105,11 +107,11 @@ public class VisitAppService_Tests : DMSTestBase
             NoSaleReason = null
         });
 
-        result.Status.ShouldBe(VisitStatus.Completed);
-        result.CheckOutTime.ShouldNotBeNull();
-        result.DurationMinutes.ShouldNotBeNull();
-        result.DurationMinutes.Value.ShouldBeGreaterThanOrEqualTo(0);
-        result.Notes.ShouldBe("All good");
+        result.Data.Status.ShouldBe(VisitStatus.Completed);
+        result.Data.CheckOutTime.ShouldNotBeNull();
+        result.Data.DurationMinutes.ShouldNotBeNull();
+        result.Data.DurationMinutes.Value.ShouldBeGreaterThanOrEqualTo(0);
+        result.Data.Notes.ShouldBe("All good");
     }
 
     [Fact]
@@ -136,8 +138,8 @@ public class VisitAppService_Tests : DMSTestBase
             SkipReason = "Customer closed"
         });
 
-        result.Status.ShouldBe(VisitStatus.Skipped);
-        result.SkipReason.ShouldBe("Customer closed");
+        result.Data.Status.ShouldBe(VisitStatus.Skipped);
+        result.Data.SkipReason.ShouldBe("Customer closed");
     }
 
     [Fact]
@@ -178,9 +180,9 @@ public class VisitAppService_Tests : DMSTestBase
                 Status = VisitStatus.Skipped
             });
 
-        skipped.Items.ShouldAllBe(v => v.Status == VisitStatus.Skipped);
-        skipped.Items.ShouldContain(v => v.Id == visit1.Id);
-        skipped.Items.ShouldNotContain(v => v.Id == visit2.Id);
+        skipped.Data.Items.ShouldAllBe(v => v.Status == VisitStatus.Skipped);
+        skipped.Data.Items.ShouldContain(v => v.Id == visit1.Id);
+        skipped.Data.Items.ShouldNotContain(v => v.Id == visit2.Id);
     }
 
     [Fact]

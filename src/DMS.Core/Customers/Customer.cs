@@ -42,4 +42,6 @@ public class Customer : FullAuditedEntity<int>, IMustHaveTenant
 
     public decimal CreditLimit { get; set; } = 0m;
     public bool CreditEnabled { get; set; } = false;
+    public int CreditDays { get; set; } = 0;
+    public bool IsBlocked { get; set; } = false;
 }

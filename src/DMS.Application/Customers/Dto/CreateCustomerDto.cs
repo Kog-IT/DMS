@@ -33,4 +33,7 @@ public class CreateCustomerDto
     public decimal CreditLimit { get; set; } = 0m;
 
     public bool CreditEnabled { get; set; } = false;
+
+    [Range(0, 365)]
+    public int CreditDays { get; set; } = 0;
 }

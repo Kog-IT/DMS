@@ -1,4 +1,3 @@
-using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
@@ -6,6 +5,8 @@ using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Abp.UI;
 using DMS.Authorization;
+using DMS.Common;
+using DMS.Common.Dto;
 using DMS.PriceLists.Dto;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 namespace DMS.PriceLists;
 
 [AbpAuthorize(PermissionNames.Pages_PriceLists)]
-public class PriceListAppService : AsyncCrudAppService<
+public class PriceListAppService : DmsCrudAppService<
     PriceList,
     PriceListDto,
     int,
@@ -53,7 +54,7 @@ public class PriceListAppService : AsyncCrudAppService<
                      (p.EndDate == null || p.EndDate >= input.ActiveOn.Value));
     }
 
-    public override async Task<PriceListDto> CreateAsync(CreatePriceListDto input)
+    public override async Task<ApiResponse<PriceListDto>> CreateAsync(CreatePriceListDto input)
     {
         if (input.EndDate.HasValue && input.EndDate.Value <= input.StartDate)
             throw new UserFriendlyException("EndDate must be after StartDate.");
@@ -61,7 +62,7 @@ public class PriceListAppService : AsyncCrudAppService<
         return await base.CreateAsync(input);
     }
 
-    public override async Task<PriceListDto> UpdateAsync(UpdatePriceListDto input)
+    public override async Task<ApiResponse<PriceListDto>> UpdateAsync(UpdatePriceListDto input)
     {
         if (input.EndDate.HasValue && input.EndDate.Value <= input.StartDate)
             throw new UserFriendlyException("EndDate must be after StartDate.");
@@ -69,7 +70,7 @@ public class PriceListAppService : AsyncCrudAppService<
         return await base.UpdateAsync(input);
     }
 
-    public override async Task DeleteAsync(EntityDto<int> input)
+    public override async Task<ApiResponse<object>> DeleteAsync(EntityDto<int> input)
     {
         var hasAssignments = await _assignmentRepository.GetAll()
             .AnyAsync(a => a.PriceListId == input.Id);
@@ -78,11 +79,11 @@ public class PriceListAppService : AsyncCrudAppService<
             throw new UserFriendlyException(
                 "Cannot delete a price list that is assigned to customers. Remove all assignments first.");
 
-        await base.DeleteAsync(input);
+        return await base.DeleteAsync(input);
     }
 
     [AbpAuthorize(PermissionNames.Pages_PriceLists)]
-    public async Task<List<PriceListItemDto>> GetItemsAsync(int priceListId)
+    public async Task<ApiResponse<List<PriceListItemDto>>> GetItemsAsync(int priceListId)
     {
         var items = await _itemRepository.GetAll()
             .Where(i => i.PriceListId == priceListId)
@@ -90,11 +91,12 @@ public class PriceListAppService : AsyncCrudAppService<
             .ThenBy(i => i.MinQuantity)
             .ToListAsync();
 
-        return ObjectMapper.Map<List<PriceListItemDto>>(items);
+        var dto = ObjectMapper.Map<List<PriceListItemDto>>(items);
+        return Ok(dto, L("RetrievedSuccessfully"));
     }
 
     [AbpAuthorize(PermissionNames.Pages_PriceLists_Edit)]
-    public async Task SetItemsAsync(SetPriceListItemsDto input)
+    public async Task<ApiResponse<object>> SetItemsAsync(SetPriceListItemsDto input)
     {
         var hasDuplicates = input.Items
             .GroupBy(i => new { i.ProductId, i.MinQuantity })
@@ -122,5 +124,6 @@ public class PriceListAppService : AsyncCrudAppService<
         }
 
         await CurrentUnitOfWork.SaveChangesAsync();
+        return Ok<object>(null, L("UpdatedSuccessfully"));
     }
 }

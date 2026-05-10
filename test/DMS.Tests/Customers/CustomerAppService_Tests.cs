@@ -24,8 +24,8 @@ public class CustomerAppService_Tests : DMSTestBase
         var result = await _customerAppService.GetAllAsync(
             new PagedCustomerResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
-        result.TotalCount.ShouldBe(0);
-        result.Items.Count.ShouldBe(0);
+        result.Data.TotalCount.ShouldBe(0);
+        result.Data.Items.Count.ShouldBe(0);
     }
 
     [Fact]
@@ -45,11 +45,11 @@ public class CustomerAppService_Tests : DMSTestBase
 
         var created = await _customerAppService.CreateAsync(input);
 
-        created.Id.ShouldBeGreaterThan(0);
-        created.Code.ShouldBe("CUST-001");
-        created.Name.ShouldBe("Acme Distribution");
-        created.Latitude.ShouldBe(30.0444);
-        created.IsActive.ShouldBeTrue();
+        created.Data.Id.ShouldBeGreaterThan(0);
+        created.Data.Code.ShouldBe("CUST-001");
+        created.Data.Name.ShouldBe("Acme Distribution");
+        created.Data.Latitude.ShouldBe(30.0444);
+        created.Data.IsActive.ShouldBeTrue();
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public class CustomerAppService_Tests : DMSTestBase
         var result = await _customerAppService.GetAllAsync(
             new PagedCustomerResultRequestDto { MaxResultCount = 20, SkipCount = 0, Keyword = "Acme" });
 
-        result.TotalCount.ShouldBe(1);
-        result.Items[0].Name.ShouldBe("Acme Corp");
+        result.Data.TotalCount.ShouldBe(1);
+        result.Data.Items[0].Name.ShouldBe("Acme Corp");
     }
 
     [Fact]
@@ -74,8 +74,8 @@ public class CustomerAppService_Tests : DMSTestBase
         var result = await _customerAppService.GetAllAsync(
             new PagedCustomerResultRequestDto { MaxResultCount = 20, SkipCount = 0, Keyword = "NORTH" });
 
-        result.TotalCount.ShouldBe(1);
-        result.Items[0].Code.ShouldBe("NORTH-01");
+        result.Data.TotalCount.ShouldBe(1);
+        result.Data.Items[0].Code.ShouldBe("NORTH-01");
     }
 
     [Fact]
@@ -86,15 +86,15 @@ public class CustomerAppService_Tests : DMSTestBase
 
         var updated = await _customerAppService.UpdateAsync(new UpdateCustomerDto
         {
-            Id = created.Id,
+            Id = created.Data.Id,
             Code = "C001-NEW",
             Name = "New Name",
             IsActive = false
         });
 
-        updated.Code.ShouldBe("C001-NEW");
-        updated.Name.ShouldBe("New Name");
-        updated.IsActive.ShouldBeFalse();
+        updated.Data.Code.ShouldBe("C001-NEW");
+        updated.Data.Name.ShouldBe("New Name");
+        updated.Data.IsActive.ShouldBeFalse();
     }
 
     [Fact]
@@ -103,12 +103,12 @@ public class CustomerAppService_Tests : DMSTestBase
         var created = await _customerAppService.CreateAsync(
             new CreateCustomerDto { Code = "DEL-01", Name = "To Delete", IsActive = true });
 
-        await _customerAppService.DeleteAsync(new EntityDto<int>(created.Id));
+        await _customerAppService.DeleteAsync(new EntityDto<int>(created.Data.Id));
 
         var result = await _customerAppService.GetAllAsync(
             new PagedCustomerResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
-        result.Items.ShouldNotContain(c => c.Id == created.Id);
+        result.Data.Items.ShouldNotContain(c => c.Id == created.Data.Id);
     }
 
     [Fact]
@@ -123,7 +123,7 @@ public class CustomerAppService_Tests : DMSTestBase
         {
             var customer = await context.Set<DMS.Customers.Customer>()
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(c => c.Id == created.Id);
+                .FirstOrDefaultAsync(c => c.Id == created.Data.Id);
 
             customer.ShouldNotBeNull();
             customer.TenantId.ShouldBe(AbpSession.TenantId.Value);
@@ -131,7 +131,7 @@ public class CustomerAppService_Tests : DMSTestBase
             // Verify a query scoped to a different TenantId returns nothing
             var otherTenantCustomers = await context.Set<DMS.Customers.Customer>()
                 .IgnoreQueryFilters()
-                .Where(c => c.TenantId == 999 && c.Id == created.Id)
+                .Where(c => c.TenantId == 999 && c.Id == created.Data.Id)
                 .ToListAsync();
 
             otherTenantCustomers.ShouldBeEmpty();

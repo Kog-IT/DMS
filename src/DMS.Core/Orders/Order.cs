@@ -1,5 +1,6 @@
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
+using DMS.Customers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,6 +14,7 @@ public class Order : FullAuditedEntity<int>, IMustHaveTenant
 
     public int TenantId { get; set; }
     public int CustomerId { get; set; }
+    public virtual Customer Customer { get; set; }
     public int? VisitId { get; set; }
     public long AssignedUserId { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.Draft;

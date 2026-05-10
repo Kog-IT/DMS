@@ -19,6 +19,8 @@ public static class PermissionNames
     public const string Pages_Customers_Edit = "Pages.Customers.Edit";
     public const string Pages_Customers_Delete = "Pages.Customers.Delete";
     public const string Pages_Customers_Classify = "Pages.Customers.Classify";
+    public const string Pages_Customers_Block = "Pages.Customers.Block";
+    public const string Pages_Customers_ManageCredit = "Pages.Customers.ManageCredit";
     public const string Pages_Customers_Contacts = "Pages.Customers.Contacts";
     public const string Pages_Customers_Contacts_Create = "Pages.Customers.Contacts.Create";
     public const string Pages_Customers_Contacts_Edit = "Pages.Customers.Contacts.Edit";

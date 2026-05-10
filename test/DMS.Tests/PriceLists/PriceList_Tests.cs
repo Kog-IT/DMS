@@ -71,7 +71,7 @@ public class PriceList_Tests : DMSTestBase
             IsActive = true,
             ForClassification = forClassification
         });
-        return dto.Id;
+        return dto.Data.Id;
     }
 
     [Fact]
@@ -90,8 +90,8 @@ public class PriceList_Tests : DMSTestBase
             }
         });
 
-        order.Lines[0].UnitPrice.ShouldBe(10m);
-        order.Lines[0].IsBasePriceFallback.ShouldBeTrue();
+        order.Data.Lines[0].UnitPrice.ShouldBe(10m);
+        order.Data.Lines[0].IsBasePriceFallback.ShouldBeTrue();
     }
 
     [Fact]
@@ -120,8 +120,8 @@ public class PriceList_Tests : DMSTestBase
             }
         });
 
-        order.Lines[0].UnitPrice.ShouldBe(8m);
-        order.Lines[0].IsBasePriceFallback.ShouldBeFalse();
+        order.Data.Lines[0].UnitPrice.ShouldBe(8m);
+        order.Data.Lines[0].IsBasePriceFallback.ShouldBeFalse();
     }
 
     [Fact]
@@ -155,8 +155,8 @@ public class PriceList_Tests : DMSTestBase
             }
         });
 
-        order.Lines[0].UnitPrice.ShouldBe(6m);
-        order.Lines[0].IsBasePriceFallback.ShouldBeFalse();
+        order.Data.Lines[0].UnitPrice.ShouldBe(6m);
+        order.Data.Lines[0].IsBasePriceFallback.ShouldBeFalse();
     }
 
     [Fact]
@@ -192,7 +192,7 @@ public class PriceList_Tests : DMSTestBase
             }
         });
 
-        order.Lines[0].UnitPrice.ShouldBe(7m);
+        order.Data.Lines[0].UnitPrice.ShouldBe(7m);
     }
 
     [Fact]
@@ -224,7 +224,7 @@ public class PriceList_Tests : DMSTestBase
                     new() { ProductId = prodId, Quantity = qty, DiscountType = DiscountType.None, DiscountValue = 0 }
                 }
             });
-            return o.Lines[0].UnitPrice;
+            return o.Data.Lines[0].UnitPrice;
         }
 
         (await GetPrice(1)).ShouldBe(10m);
