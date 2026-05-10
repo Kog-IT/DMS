@@ -2,6 +2,7 @@ using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using DMS.Customers;
 using System;
+using System.Collections.Generic;
 
 namespace DMS.Customers.Dto;
 
@@ -22,4 +23,5 @@ public class CustomerDto : FullAuditedEntityDto<int>
     public bool CreditEnabled { get; set; }
     public int CreditDays { get; set; }
     public bool IsBlocked { get; set; }
+    public List<DMS.Application.Media.Dto.MediaItemDto> Media { get; set; } = new List<DMS.Application.Media.Dto.MediaItemDto>();
 }

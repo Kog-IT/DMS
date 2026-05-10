@@ -56,9 +56,18 @@ public class RouteAppService : DmsCrudAppService<
         _optimizationService = optimizationService;
     }
 
+    protected override async Task<Route> GetEntityByIdAsync(int id)
+        => await Repository.GetAll()
+            .Include(r => r.Items).ThenInclude(i => i.Customer)
+            .Include(r => r.Items).ThenInclude(i => i.Visit)
+            .FirstOrDefaultAsync(r => r.Id == id)
+            ?? throw new UserFriendlyException("Route not found.");
+
     protected override IQueryable<Route> CreateFilteredQuery(PagedRouteResultRequestDto input)
     {
         return Repository.GetAll()
+            .Include(r => r.Items).ThenInclude(i => i.Customer)
+            .Include(r => r.Items).ThenInclude(i => i.Visit)
             .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), r => r.Name.Contains(input.Keyword))
             .WhereIf(input.AssignedUserId.HasValue, r => r.AssignedUserId == input.AssignedUserId.Value)
             .WhereIf(input.Status.HasValue, r => r.Status == input.Status.Value)

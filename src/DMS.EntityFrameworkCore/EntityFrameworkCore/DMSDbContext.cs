@@ -15,6 +15,16 @@ using DMS.Categories;
 using DMS.Governorates;
 using DMS.Cities;
 using DMS.PriceLists;
+using DMS.Brands;
+using DMS.ProductGroups;
+using DMS.Warehouses;
+using DMS.CustomerGroups;
+using DMS.Suppliers;
+using DMS.Salesmen;
+using DMS.Dispatches;
+using DMS.Transfers;
+using DMS.Media;
+using DMS.SalesmanRequests;
 using Microsoft.EntityFrameworkCore;
 
 namespace DMS.EntityFrameworkCore;
@@ -34,7 +44,30 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<Category> Categories { get; set; }
     public DbSet<Governorate> Governorates { get; set; }
     public DbSet<City> Cities { get; set; }
+    public DbSet<Brand> Brands { get; set; }
+    public DbSet<ProductGroup> ProductGroups { get; set; }
+    public DbSet<Warehouse> Warehouses { get; set; }
+    public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
+    public DbSet<CustomerGroup> CustomerGroups { get; set; }
+    public DbSet<Supplier> Suppliers { get; set; }
+    public DbSet<Salesman> Salesmen { get; set; }
+    public DbSet<SalesmanWarehouse> SalesmanWarehouses { get; set; }
+    public DbSet<PlannedDispatch> PlannedDispatches { get; set; }
+    public DbSet<ActualDispatch> ActualDispatches { get; set; }
 
+    public DbSet<WarehouseToWarehouseTransfer> WarehouseToWarehouseTransfers { get; set; }
+    public DbSet<WarehouseToWarehouseTransferItem> WarehouseToWarehouseTransferItems { get; set; }
+    public DbSet<WarehouseToSalesmanTransfer> WarehouseToSalesmanTransfers { get; set; }
+    public DbSet<WarehouseToSalesmanTransferItem> WarehouseToSalesmanTransferItems { get; set; }
+    public DbSet<SalesmanToWarehouseTransfer> SalesmanToWarehouseTransfers { get; set; }
+    public DbSet<SalesmanToWarehouseTransferItem> SalesmanToWarehouseTransferItems { get; set; }
+    public DbSet<SalesmanToSalesmanTransfer> SalesmanToSalesmanTransfers { get; set; }
+    public DbSet<SalesmanToSalesmanTransferItem> SalesmanToSalesmanTransferItems { get; set; }
+
+
+    public DbSet<SalesmanRequest> SalesmanRequests { get; set; }
+    public DbSet<SalesmanRequestItem> SalesmanRequestItems { get; set; }
+    public DbSet<MediaFile> MediaFiles { get; set; }
 
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderLine> OrderLines { get; set; }
@@ -67,6 +100,16 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new ProductVariantConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new BrandConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductGroupConfiguration());
+        modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
+        modelBuilder.ApplyConfiguration(new WarehouseProductConfiguration());
+        modelBuilder.ApplyConfiguration(new CustomerGroupConfiguration());
+        modelBuilder.ApplyConfiguration(new SupplierConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesmanConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesmanWarehouseConfiguration());
+        modelBuilder.ApplyConfiguration(new PlannedDispatchConfiguration());
+        modelBuilder.ApplyConfiguration(new ActualDispatchConfiguration());
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
         modelBuilder.ApplyConfiguration(new OrderLineConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
@@ -77,5 +120,18 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
         modelBuilder.ApplyConfiguration(new PriceListConfiguration());
         modelBuilder.ApplyConfiguration(new PriceListItemConfiguration());
         modelBuilder.ApplyConfiguration(new PriceListAssignmentConfiguration());
+
+        modelBuilder.ApplyConfiguration(new WarehouseToWarehouseTransferConfiguration());
+        modelBuilder.ApplyConfiguration(new WarehouseToWarehouseTransferItemConfiguration());
+        modelBuilder.ApplyConfiguration(new WarehouseToSalesmanTransferConfiguration());
+        modelBuilder.ApplyConfiguration(new WarehouseToSalesmanTransferItemConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesmanToWarehouseTransferConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesmanToWarehouseTransferItemConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesmanToSalesmanTransferConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesmanToSalesmanTransferItemConfiguration());
+
+        modelBuilder.ApplyConfiguration(new SalesmanRequestConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesmanRequestItemConfiguration());
+        modelBuilder.ApplyConfiguration(new MediaFileConfiguration());
     }
 }

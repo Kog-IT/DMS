@@ -12,4 +12,5 @@ public interface ITenantAppService
     Task<ApiResponse<TenantDto>> CreateAsync(CreateTenantDto input);
     Task<ApiResponse<TenantDto>> UpdateAsync(TenantDto input);
     Task<ApiResponse<object>> DeleteAsync(EntityDto<int> input);
+    Task<ApiResponse<TenantDto>> UpdateTenantImageAsync(UpdateTenantImageDto input);
 }

@@ -1,6 +1,7 @@
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Abp.MultiTenancy;
+using DMS.MultiTenancy;
 using System.ComponentModel.DataAnnotations;
 
 namespace DMS.MultiTenancy.Dto;
@@ -18,4 +19,7 @@ public class TenantDto : EntityDto
     public string Name { get; set; }
 
     public bool IsActive { get; set; }
+
+    [StringLength(Tenant.MaxImageUrlLength)]
+    public string? ImageUrl { get; set; }
 }

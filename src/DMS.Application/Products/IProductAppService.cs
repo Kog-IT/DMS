@@ -14,6 +14,12 @@ namespace DMS.Products
         Task<ApiResponse<ProductDto>> UpdateAsync(UpdateProductDto input);
         Task<ApiResponse<object>> DeleteAsync(EntityDto<int> input);
 
+        Task<ApiResponse<object>> ActivateAsync(EntityDto<int> input);
+        Task<ApiResponse<object>> DeactivateAsync(EntityDto<int> input);
+        Task<ApiResponse<object>> BulkDeleteAsync(List<int> ids);
+        Task<ApiResponse<object>> BulkActivateAsync(List<int> ids);
+        Task<ApiResponse<object>> BulkDeactivateAsync(List<int> ids);
+
         Task<ApiResponse<string>> UploadProductImage(Microsoft.AspNetCore.Http.IFormFile file);
         Task<ApiResponse<ProductVariantDto>> CreateVariantAsync(CreateProductVariantDto input);
         Task<ApiResponse<List<ProductVariantDto>>> GetVariantsByProductIdAsync(int productId);

@@ -22,10 +22,12 @@ public class CustomerAppService : DmsCrudAppService<
     UpdateCustomerDto>, ICustomerAppService
 {
     private readonly CreditCheckService _creditCheckService;
+    private readonly IRepository<DMS.Media.MediaFile, int> _mediaRepository;
 
     public CustomerAppService(
         IRepository<Customer, int> repository,
-        CreditCheckService creditCheckService)
+        CreditCheckService creditCheckService,
+        IRepository<DMS.Media.MediaFile, int> mediaRepository)
         : base(repository)
     {
         GetPermissionName = PermissionNames.Pages_Customers;
@@ -35,6 +37,17 @@ public class CustomerAppService : DmsCrudAppService<
         DeletePermissionName = PermissionNames.Pages_Customers_Delete;
 
         _creditCheckService = creditCheckService;
+        _mediaRepository = mediaRepository;
+    }
+
+    protected override CustomerDto MapToEntityDto(Customer entity)
+    {
+        var dto = base.MapToEntityDto(entity);
+        dto.Media = _mediaRepository.GetAll()
+            .Where(m => m.MediaType == DMS.Media.MediaType.Customer && m.ModelId == entity.Id)
+            .Select(m => new DMS.Application.Media.Dto.MediaItemDto { Id = m.Id, Path = m.FilePath })
+            .ToList();
+        return dto;
     }
 
     protected override IQueryable<Customer> CreateFilteredQuery(PagedCustomerResultRequestDto input)

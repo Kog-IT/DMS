@@ -77,13 +77,14 @@ public class InvoiceAppService : DmsCrudAppService<
         return query;
     }
 
-    protected async Task<Invoice> GetEntityByIdAsync(int id)
-    {
-        return await Repository.GetAll()
+    protected override async Task<Invoice> GetEntityByIdAsync(int id)
+        => await Repository.GetAll()
             .Include(i => i.Lines)
             .FirstOrDefaultAsync(i => i.Id == id)
             ?? throw new UserFriendlyException("Invoice not found.");
-    }
+
+    public override Task<ApiResponse<InvoiceDto>> CreateAsync(GenerateInvoiceDto input)
+        => GenerateFromOrderAsync(input.OrderId);
 
     public async Task<ApiResponse<InvoiceDto>> GenerateFromOrderAsync(int orderId)
     {
