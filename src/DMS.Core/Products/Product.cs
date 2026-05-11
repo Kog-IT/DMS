@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using DMS.Brands;
@@ -21,6 +27,8 @@ namespace DMS.Products
         [Required]
         [StringLength(MaxNameLength)]
         public string Name { get; set; }
+        public string SKU { get; set; }
+        public string Barcode { get; set; }
 
         [StringLength(MaxDescriptionLength)]
         public string Description { get; set; }

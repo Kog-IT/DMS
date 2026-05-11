@@ -12,6 +12,13 @@ namespace DMS.Products.Dto
         [StringLength(Product.MaxNameLength)]
         public string Name { get; set; }
 
+        [Required]
+        [MaxLength(50)]
+        public string SKU { get; set; } 
+
+        [MaxLength(50)]
+        public string Barcode { get; set; }
+
         [StringLength(Product.MaxDescriptionLength)]
         public string Description { get; set; }
 

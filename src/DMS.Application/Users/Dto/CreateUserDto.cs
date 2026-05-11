@@ -29,6 +29,7 @@ public class CreateUserDto : IShouldNormalize
 
     public bool IsActive { get; set; }
 
+
     public string[] RoleNames { get; set; }
 
     [Required]

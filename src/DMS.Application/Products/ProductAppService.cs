@@ -17,6 +17,8 @@ using DMS.Products.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace DMS.Products
 {
     public class ProductAppService : DmsCrudAppService<
@@ -28,14 +30,16 @@ namespace DMS.Products
       UpdateProductDto>, IProductAppService
     {
         private readonly IRepository<ProductVariant, int> _variantRepository;
-        private readonly IRepository<DMS.Media.MediaFile, int> _mediaRepository;
+        private readonly IRepository<Product, int> _productRepository;
+         private readonly IRepository<DMS.Media.MediaFile, int> _mediaRepository;
 
-        public ProductAppService(IRepository<Product, int> repository,
+        public ProductAppService(IRepository<Product, int> productRepository,
             IRepository<ProductVariant, int> variantRepository,
             IRepository<DMS.Media.MediaFile, int> mediaRepository)
-            : base(repository)
+            : base(productRepository)
         {
             _variantRepository = variantRepository;
+            _productRepository = productRepository; 
             _mediaRepository = mediaRepository;
 
             GetPermissionName = PermissionNames.Pages_Products;
@@ -45,8 +49,48 @@ namespace DMS.Products
             DeletePermissionName = PermissionNames.Pages_Products_Delete;
         }
 
-        protected override IQueryable<Product> CreateFilteredQuery(PagedProductResultRequestDto input)
+        public override async Task<ProductDto> CreateAsync(CreateProductDto input)
         {
+           
+            if (!string.IsNullOrEmpty(input.Barcode))
+            {
+                var isBarcodeExists = await _productRepository.GetAll().AnyAsync(p => p.Barcode == input.Barcode);
+                if (isBarcodeExists)
+                {
+                    throw new UserFriendlyException("عفواً، هذا الباركود مسجل مسبقاً لمنتج آخر!");
+                }
+            }
+
+          
+            var isSkuExists = await _productRepository.GetAll().AnyAsync(p => p.SKU == input.SKU);
+            if (isSkuExists)
+            {
+                throw new UserFriendlyException("عفواً، هذا الـ SKU مستخدم بالفعل!");
+            }
+
+            return await base.CreateAsync(input);
+        }
+
+        public override async Task<ProductDto> UpdateAsync(UpdateProductDto input)
+        {
+            
+            if (!string.IsNullOrEmpty(input.Barcode))
+            {
+                var isBarcodeExists = await _productRepository.GetAll().AnyAsync(p =>
+                    p.Barcode == input.Barcode); 
+
+                if (isBarcodeExists)
+                {
+                    throw new UserFriendlyException("هذا الباركود مستخدم بالفعل في منتج آخر!");
+                }
+            }
+
+            return await base.UpdateAsync(input);
+        }
+
+        protected override IQueryable<Product> CreateFilteredQuery(PagedProductResultRequestDto input)
+        { 
+        
             return Repository.GetAll()
                 .Include(x => x.Category)
                 .Include(x => x.Brand)
@@ -226,17 +270,20 @@ namespace DMS.Products
         [Microsoft.AspNetCore.Mvc.Consumes("multipart/form-data")]
         public async Task<ApiResponse<string>> UploadProductImage(IFormFile file)
         {
+           
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
             var extension = Path.GetExtension(file.FileName).ToLower();
             if (!allowedExtensions.Contains(extension))
                 throw new UserFriendlyException("Only image files are allowed!");
 
+          
             var folderName = Path.Combine("wwwroot", "images", "oils");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
             if (!Directory.Exists(pathToSave))
                 Directory.CreateDirectory(pathToSave);
 
+            
             var fileName = Guid.NewGuid().ToString() + extension;
             var fullPath = Path.Combine(pathToSave, fileName);
 
@@ -244,7 +291,7 @@ namespace DMS.Products
             {
                 await file.CopyToAsync(stream);
             }
-
+ 
             var result = "/images/oils/" + fileName;
             return Ok(result, L("CreatedSuccessfully"));
         }
@@ -264,6 +311,7 @@ namespace DMS.Products
 
             var inserted = await _variantRepository.InsertAsync(variant);
 
+            
             await CurrentUnitOfWork.SaveChangesAsync();
 
             var dto = ObjectMapper.Map<ProductVariantDto>(inserted);
@@ -277,6 +325,20 @@ namespace DMS.Products
 
             var dto = ObjectMapper.Map<List<ProductVariantDto>>(variants);
             return Ok(dto, L("RetrievedSuccessfully"));
+        }
+
+        public async Task<ProductDto> GetByBarcodeAsync(GetProductByBarcodeDto input)
+        {
+            
+            var product = await Repository.GetAllIncluding(p => p.Category, p => p.Variants)
+                .FirstOrDefaultAsync(p => p.Barcode == input.Barcode);
+
+            if (product == null)
+            {
+                throw new UserFriendlyException("عفواً، لا يوجد منتج مسجل بهذا الباركود!");
+            }
+
+            return ObjectMapper.Map<ProductDto>(product);
         }
     }
 }
