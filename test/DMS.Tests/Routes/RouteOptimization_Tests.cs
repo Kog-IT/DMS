@@ -56,7 +56,8 @@ public class RouteOptimization_Tests : DMSTestBase
             PlannedDate = DateTime.Today.AddDays(1),
             Items = items
         });
-        return response.Data;
+        return response.
+            Data;
     }
 
     private OptimizeRouteInputDto RepAt(int routeId, double lat, double lon) => new OptimizeRouteInputDto

@@ -26,6 +26,7 @@ using DMS.Transfers;
 using DMS.Media;
 using DMS.SalesmanRequests;
 using Microsoft.EntityFrameworkCore;
+using DMS.Returns;
 
 namespace DMS.EntityFrameworkCore;
 
@@ -79,7 +80,9 @@ public class DMSDbContext : AbpZeroDbContext<Tenant, Role, User, DMSDbContext>
     public DbSet<PriceList> PriceLists { get; set; }
     public DbSet<PriceListItem> PriceListItems { get; set; }
     public DbSet<PriceListAssignment> PriceListAssignments { get; set; }
-
+    public virtual DbSet<Return> Returns { get; set; }
+    public virtual DbSet<ReturnLine> ReturnLines { get; set; }
+    public DbSet<ReturnPhoto> ReturnPhotos { get; set; }
 
     public DMSDbContext(DbContextOptions<DMSDbContext> options)
         : base(options)
