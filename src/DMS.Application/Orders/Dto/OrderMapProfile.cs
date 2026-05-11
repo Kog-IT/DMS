@@ -8,6 +8,8 @@ public class OrderMapProfile : Profile
     public OrderMapProfile()
     {
         CreateMap<Order, OrderDto>()
+            .ForMember(d => d.CustomerName, opt => opt.MapFrom(s => s.Customer != null ? s.Customer.Name : null))
+            .ForMember(d => d.StatusName, opt => opt.MapFrom(s => s.Status.ToString()))
             .ForMember(d => d.Lines, opt => opt.MapFrom(s => s.Lines));
 
         CreateMap<OrderLine, OrderLineDto>();

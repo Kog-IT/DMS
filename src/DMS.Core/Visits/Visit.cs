@@ -3,6 +3,8 @@ using Abp.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using DMS.Customers;
+using DMS.Routes;
 
 namespace DMS.Visits;
 
@@ -19,6 +21,7 @@ public class Visit : FullAuditedEntity<int>, IMustHaveTenant
     public int? RouteItemId { get; set; }
 
     public int CustomerId { get; set; }
+    public virtual Customer Customer { get; set; }
 
     public long AssignedUserId { get; set; }
 
@@ -50,4 +53,6 @@ public class Visit : FullAuditedEntity<int>, IMustHaveTenant
     public string ExternalId { get; set; }
 
     public virtual ICollection<VisitPhoto> Photos { get; set; } = new List<VisitPhoto>();
+
+    public virtual ICollection<RouteItem> RouteItems { get; set; } = new List<RouteItem>();
 }

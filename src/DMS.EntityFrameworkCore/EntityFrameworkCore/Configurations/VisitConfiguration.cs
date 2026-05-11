@@ -22,6 +22,12 @@ public class VisitConfiguration : IEntityTypeConfiguration<Visit>
             .HasForeignKey(p => p.VisitId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasOne<Routes.RouteItem>()
+            .WithOne(i => i.Visit)
+            .HasForeignKey<Visit>(v => v.RouteItemId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
+
         builder.HasIndex(v => new { v.TenantId, v.AssignedUserId });
         builder.HasIndex(v => new { v.TenantId, v.Status });
         builder.HasIndex(v => v.PlannedDate);

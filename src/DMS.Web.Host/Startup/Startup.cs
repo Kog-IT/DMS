@@ -140,6 +140,16 @@ namespace DMS.Web.Host.Startup
             }); // URL: /swagger
         }
 
+        private static string SchemaIdFor(Type type)
+        {
+            if (!type.IsGenericType)
+                return (type.FullName ?? type.Name).Replace("+", ".");
+
+            var baseName = (type.FullName ?? type.Name).Split('`')[0].Replace("+", ".");
+            var args = string.Join("_", type.GetGenericArguments().Select(SchemaIdFor));
+            return $"{baseName}_{args}";
+        }
+
         private void ConfigureSwagger(IServiceCollection services)
         {
             services.AddSwaggerGen(options =>
@@ -149,7 +159,6 @@ namespace DMS.Web.Host.Startup
                     Version = _apiVersion,
                     Title = "ApiVanSales API",
                     Description = "DMS",
-                    // uncomment if needed TermsOfService = new Uri("https://example.com/terms"),
                     Contact = new OpenApiContact
                     {
                         Name = "DMS",
@@ -162,9 +171,11 @@ namespace DMS.Web.Host.Startup
                         Url = new Uri("https://github.com/aspnetboilerplate/aspnetboilerplate/blob/dev/LICENSE.md"),
                     }
                 });
-                options.DocInclusionPredicate((docName, description) => true);
 
-                // Define the BearerAuth scheme that's in use
+                options.DocInclusionPredicate((docName, description) => true);
+                options.CustomSchemaIds(SchemaIdFor);
+                options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+
                 options.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme()
                 {
                     Description =
@@ -174,7 +185,6 @@ namespace DMS.Web.Host.Startup
                     Type = SecuritySchemeType.ApiKey
                 });
 
-                //add summaries to swagger
                 bool canShowSummaries = _appConfiguration.GetValue<bool>("Swagger:ShowSummaries");
                 if (canShowSummaries)
                 {
@@ -182,11 +192,11 @@ namespace DMS.Web.Host.Startup
                     var hostXmlPath = Path.Combine(AppContext.BaseDirectory, hostXmlFile);
                     options.IncludeXmlComments(hostXmlPath);
 
-                    var applicationXml = $"DMS.Application.xml";
+                    var applicationXml = "DMS.Application.xml";
                     var applicationXmlPath = Path.Combine(AppContext.BaseDirectory, applicationXml);
                     options.IncludeXmlComments(applicationXmlPath);
 
-                    var webCoreXmlFile = $"DMS.Web.Core.xml";
+                    var webCoreXmlFile = "DMS.Web.Core.xml";
                     var webCoreXmlPath = Path.Combine(AppContext.BaseDirectory, webCoreXmlFile);
                     options.IncludeXmlComments(webCoreXmlPath);
                 }
